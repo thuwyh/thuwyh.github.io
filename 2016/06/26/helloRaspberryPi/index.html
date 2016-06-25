@@ -84,17 +84,44 @@
 
 
 
-<meta name="description">
+<meta name="description" content="其实很早就听说过这款产品，但一直没有契机（也没有钱）去接触。最近正好两个方面条件都具备，就买了一块来玩。粗略玩了大概一天，将所学简记于此。
+配置硬件准备为了让你的板子跑起来，你至少还需要：
+
+一个电源
+一张存储卡
+一个显示器
+键盘（鼠标）
+
+其中后两者只在你第一次配置时需要，之后完全可以通过远程操作。
+安装系统配置的第一步应该是下载一个NOOBS，这是官方为了方便玩家安装出的一种安装器，里面默认">
 <meta property="og:type" content="article">
 <meta property="og:title" content="你好树莓派">
 <meta property="og:url" content="http://yoursite.com/2016/06/26/helloRaspberryPi/index.html">
 <meta property="og:site_name" content="皓弟的网志">
-<meta property="og:description">
+<meta property="og:description" content="其实很早就听说过这款产品，但一直没有契机（也没有钱）去接触。最近正好两个方面条件都具备，就买了一块来玩。粗略玩了大概一天，将所学简记于此。
+配置硬件准备为了让你的板子跑起来，你至少还需要：
+
+一个电源
+一张存储卡
+一个显示器
+键盘（鼠标）
+
+其中后两者只在你第一次配置时需要，之后完全可以通过远程操作。
+安装系统配置的第一步应该是下载一个NOOBS，这是官方为了方便玩家安装出的一种安装器，里面默认">
 <meta property="og:image" content="http://wyhhexo.oss-cn-hangzhou.aliyuncs.com/helloRaspberryPi/raspberrypi.jpg">
-<meta property="og:updated_time" content="2016-06-25T16:31:08.000Z">
+<meta property="og:updated_time" content="2016-06-25T16:55:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="你好树莓派">
-<meta name="twitter:description">
+<meta name="twitter:description" content="其实很早就听说过这款产品，但一直没有契机（也没有钱）去接触。最近正好两个方面条件都具备，就买了一块来玩。粗略玩了大概一天，将所学简记于此。
+配置硬件准备为了让你的板子跑起来，你至少还需要：
+
+一个电源
+一张存储卡
+一个显示器
+键盘（鼠标）
+
+其中后两者只在你第一次配置时需要，之后完全可以通过远程操作。
+安装系统配置的第一步应该是下载一个NOOBS，这是官方为了方便玩家安装出的一种安装器，里面默认">
 <meta name="twitter:image" content="http://wyhhexo.oss-cn-hangzhou.aliyuncs.com/helloRaspberryPi/raspberrypi.jpg">
 
 
@@ -296,6 +323,23 @@
 
       
         <p><img src="http://wyhhexo.oss-cn-hangzhou.aliyuncs.com/helloRaspberryPi/raspberrypi.jpg" alt="树莓派"></p>
+<p>其实很早就听说过这款产品，但一直没有契机（也没有钱）去接触。最近正好两个方面条件都具备，就买了一块来玩。粗略玩了大概一天，将所学简记于此。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><h3 id="硬件准备"><a href="#硬件准备" class="headerlink" title="硬件准备"></a>硬件准备</h3><p>为了让你的板子跑起来，你至少还需要：</p>
+<ul>
+<li>一个电源</li>
+<li>一张存储卡</li>
+<li>一个显示器</li>
+<li>键盘（鼠标）</li>
+</ul>
+<p>其中后两者只在你第一次配置时需要，之后完全可以通过远程操作。</p>
+<h3 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h3><p>配置的第一步应该是下载一个NOOBS，这是官方为了方便玩家安装出的一种安装器，里面默认是带的raspbian操作系统，懒得折腾的话用这个就ok了。还需要下载一个SDCard Formatter，格式化你的tf卡。软件的下载链接在NOOBS包里的README中有。格式化好就把解压后的NOOBS整个放到TF卡根目录，然后插到树莓派上，连好硬件，一路傻瓜化操作便可安好系统。</p>
+<h3 id="配置中文"><a href="#配置中文" class="headerlink" title="配置中文"></a>配置中文</h3><p>Raspbian默认不支持中文，用浏览器打开个中文网站全是乱码。让系统支持中文需要下载一个字体，为了实现中文输入，还需要下载一个输入法。</p>
+<p>在Linux世界里其实安装软件是挺方便的，通过一个叫<code>apt-get</code>（不同发行版的Linux用不同的工具）的工具即可在知道名字的情况下装上基本上所有你需要的软件。现在只需要打开Terminal，输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ttf-wqy-zenhei</span><br><span class="line">sudo apt-get install scim-pinyin</span><br></pre></td></tr></table></figure>
+<p>即可装上上文提到的字体和输入法。输入法不太智能，将就着用吧，其实以后在这个环境下用中文的机会应该不多。</p>
+<p>装好后需要改一下系统的locale，改成中文。</p>
+<h3 id="初试SSH"><a href="#初试SSH" class="headerlink" title="初试SSH"></a>初试SSH</h3><p>SSH是什么呢，请自行搜索，基本就是一种协议，可以让我们远程控制树莓派。要控制他你得首先知道它的IP地址。我们打开Terminal，输入<code>ifconfig</code>，会出来一大坨东西，在第一坨里就能找到本机的IP地址啦。</p>
+<p>常用的SSH工具有putty，xshell之类的，选一个你看着比较顺眼的装上然后打开。新建一个连接，地址填上树莓派的IP，端口22，协议SSH，点连接。现在会让你输入用户名和密码，树莓派的默认账户叫pi，密码是raspberry，输好之后应该就能看到提示符已经变成跟在树莓派的Terminal上类似的样子。现在你就可以拆掉派上的显示器和键鼠，用你的计算机来操作它咯。</p>
 
       
     </div>
@@ -448,7 +492,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">1.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件准备"><span class="nav-number">1.1.</span> <span class="nav-text">硬件准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装系统"><span class="nav-number">1.2.</span> <span class="nav-text">安装系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置中文"><span class="nav-number">1.3.</span> <span class="nav-text">配置中文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初试SSH"><span class="nav-number">1.4.</span> <span class="nav-text">初试SSH</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
