@@ -1,0 +1,768 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,机器学习,SVM," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="本节内容是SVM。支持向量机（SVM）是一个二类分类器，当然可以通过多层嵌套来实现多类分类器。它可能是最棒的off-the-shelf监督学习算法。
+思路1.首先希望把两类分开；
+2.然后希望在训练集分类全对的基础上分界线离两类的最小距离尽可能远（定义了函数距离和几何距离）
+函数距离定义如下，训练集中的数是（x(i),y(i)）。函数距离其实就是真实结果和预测结果的乘积（所有讨论都是针对二类分类问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习lecture note3阅读笔记">
+<meta property="og:url" content="http://wuyuanhao.com/2015/10/09/机器学习lecture note3阅读笔记/index.html">
+<meta property="og:site_name" content="有趣的皓弟">
+<meta property="og:description" content="本节内容是SVM。支持向量机（SVM）是一个二类分类器，当然可以通过多层嵌套来实现多类分类器。它可能是最棒的off-the-shelf监督学习算法。
+思路1.首先希望把两类分开；
+2.然后希望在训练集分类全对的基础上分界线离两类的最小距离尽可能远（定义了函数距离和几何距离）
+函数距离定义如下，训练集中的数是（x(i),y(i)）。函数距离其实就是真实结果和预测结果的乘积（所有讨论都是针对二类分类问">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617279c13ddd.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727acd2c8f.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727c258f3d.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727dbb327b.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727f363fa9.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172809281aa.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-5.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728186a011.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-6.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617282477a58.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172835da4e9.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617286ef0fae.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617287934215.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172892207a3.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617289f54f95.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-12.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728ae610a9.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728c81f2f4.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728be4b505.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728daed383.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-16.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728eca69a8.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617295953ff8.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172969c7a52.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617297eb45f5.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617298ace9a4.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729a797906.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729b3b308f.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729beaf5ae.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729e006b77.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729eab602a.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a0b14023.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a159e4f6.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a230a1a1.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a2ca8b0b.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-30.png">
+<meta property="og:updated_time" content="2016-07-06T00:31:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习lecture note3阅读笔记">
+<meta name="twitter:description" content="本节内容是SVM。支持向量机（SVM）是一个二类分类器，当然可以通过多层嵌套来实现多类分类器。它可能是最棒的off-the-shelf监督学习算法。
+思路1.首先希望把两类分开；
+2.然后希望在训练集分类全对的基础上分界线离两类的最小距离尽可能远（定义了函数距离和几何距离）
+函数距离定义如下，训练集中的数是（x(i),y(i)）。函数距离其实就是真实结果和预测结果的乘积（所有讨论都是针对二类分类问">
+<meta name="twitter:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617279c13ddd.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://wuyuanhao.com/2015/10/09/机器学习lecture note3阅读笔记/"/>
+
+  <title> 机器学习lecture note3阅读笔记 | 有趣的皓弟 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57085044";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有趣的皓弟</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                机器学习lecture note3阅读笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-09T10:46:39+08:00" content="2015-10-09">
+              2015-10-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Theory-Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Theory&Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/09/机器学习lecture note3阅读笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/09/机器学习lecture note3阅读笔记/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本节内容是SVM。支持向量机（SVM）是一个二类分类器，当然可以通过多层嵌套来实现多类分类器。它可能是最棒的off-the-shelf监督学习算法。</p>
+<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>1.首先希望把两类分开；</p>
+<p>2.然后希望在<strong>训练集分类全对</strong>的基础上分界线离两类的最小距离尽可能远（定义了函数距离和几何距离）</p>
+<p>函数距离定义如下，训练集中的数是（x(i),y(i)）。函数距离其实就是真实结果和预测结果的乘积（所有讨论都是针对二类分类问题，y取值只有正负1），这个值越大说明我们分类越准。</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617279c13ddd.png" alt=""></p>
+<p>但是可以发现，通过调整学习结果w和b，函数距离可以变得任意大，这就失去了评价分类准确性的意义。于是定义了如下的几何距离：</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727acd2c8f.png" alt=""></p>
+<p>&nbsp;</p>
+<a id="more"></a>
+<p>和函数距离的差别其实很小，就是将系数做了归一化。它的几何意义也很明确，如下图，就是样本点到分类平面的距离（推导见原文）。</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727c258f3d.png" alt=""></p>
+<p>对于整个训练集，也定义了距离，就是所有训练集样本几何距离的最小值。</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727dbb327b.png" alt=""></p>
+<pre><code>3.得到的最优化问题
+</code></pre><p>定义好了距离，就可以讨论我们的求解目标。实际就是求一组w和b，使得集合的函数距离最大化，并且为了防止w和b的值影响距离，希望w的模为1（实际就是几何距离）。所以原始的问题是<img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561727f363fa9.png" alt=""></p>
+<p>但是不希望有条件：<img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172809281aa.png" alt=""><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-5.png" alt="">，因为它使得问题变得是非凸的。</p>
+<p>于是利用<img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728186a011.png" alt=""><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-6.png" alt="">转换为</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617282477a58.png" alt=""></p>
+<p>这样虽然去掉了之前的限制，但它仍然无法用现有的算法求解。又因为优化目标分子上的函数距离是可以“缩放”的，可以假定它为1，那么就转化为最大化w，这就变成了一个典型的凸优化问题</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172835da4e9.png" alt=""></p>
+<p>于是可以用现成的QP求解。</p>
+<div><br><br><em> </em> *<br><br></div>
+
+<h1 id="插播拉格朗日对偶"><a href="#插播拉格朗日对偶" class="headerlink" title="插播拉格朗日对偶"></a><strong>插播拉格朗日对偶</strong></h1><p>先介绍拉格朗日乘子解最优化问题。</p>
+<p>原优化问题</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617286ef0fae.png" alt=""></p>
+<p>通过一些系数构建拉格朗日算子，把条件和优化目标结合起来，如下</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617287934215.png" alt=""></p>
+<p>然后定义一个新的符号θ，可以发现之前希望最小化f，现在是最大化L</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172892207a3.png" alt=""></p>
+<p>当限制条件有任意违背时，可以知道上式可以得到正无穷（对于非负的g或h，使其系数为无穷就好了）。所以为了得到有限值（且等于f(w))，必须有所有限制条件都满足！</p>
+<p>因此，可以通过求</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617289f54f95.png" alt=""></p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-12.png" alt="">得到与原最优化问题等价的解。</p>
+<p>还可以定义原问题的对偶问题，刚才的p*是先最大化L再最小化θ，对偶问题是反过来，先最小化L，再最大化θ</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728ae610a9.png" alt=""></p>
+<p>其实对偶问题和原问题是等价的，只是换了求极大极小的顺序，定义</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728c81f2f4.png" alt=""></p>
+<p>有（证明可以百度“max min min max”）</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728be4b505.png" alt=""></p>
+<p>在特定情况下d<em>=p</em>，所以可以将原问题转化为对偶问题。并且对偶问题有解<img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728daed383.png" alt=""><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-16.png" alt="">，且解满足KKT条件；反过来如果有参数满足KKT条件，他们也是对偶问题的解。KKT条件中有一条是</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561728eca69a8.png" alt=""></p>
+<p>意味着对于α不等于0的情况，g一定等于0.</p>
+<p>插播完毕。</p>
+<div><br><br><em> </em> <em><br><br></em></div><br>为了求出这个最优的分类器，我们将条件项移项整理成<br><br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617295953ff8.png" alt=""><br><br>由前面介绍的KKT条件可以知道，只有虚线上的点对应的α才大于0！而这些点就被称为<strong>支持向量（support vector）</strong><br><br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172969c7a52.png" alt=""><br><br>支持向量：落在最优划分线上的训练点（每个点都是向量），支持向量比训练集的数量少得多！<br><br>接下来期望把算法写成内积的形式，为使用核函数做铺垫。经过一些推导，原问题的对偶问题转化为<br><br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617297eb45f5.png" alt=""><br><br>解出α后能解出w和b。由于w和b都是α的函数，在预测一个新的数据点时实际计算的是<br><br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_5617298ace9a4.png" alt=""><br><br>前面已经说了，只有支持向量对应的α才不非零，所以实际上我们只要求支持向量与待预测数据点的内积。<br><div>
+
+ <em> </em><br><br></div>
+
+<h1 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h1><p>核函数是通过回顾之前的面积与房价关系的线性拟合问题引入的。为了获得高阶拟合，引入了面积x的函数x²，x三次方等等，这是将属性映射到特征，然后在将特征作为输入交由算法去学习。由于我们之前已经把问题写成了内积的形式，所以x可以是个多维的向量，处理起来自然没有问题。核函数定义为</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729a797906.png" alt=""></p>
+<p>其中Φ的就是特征映射了。</p>
+<p>更重要的是计算核函数还比计算相应的特征映射节省时间！</p>
+<p>然后引入了一种对核函数直观的解释（并不严谨），因为核函数实际是向量的内积，那么就可以看作是两个向量相似程度的度量。内积小，相似度低，对应接近垂直；内积大，相似度高，接近平行。或者可以干脆用下面这个核函数</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729b3b308f.png" alt=""></p>
+<p>而且这确实就是一个核函数，称为高斯核，它对应的特征映射是无穷维的（计算这个式子的时间却只跟x和z的维度n有关，而对于一个无穷维的映射，根本就无法计算）。</p>
+<p>那么问题来了，给了一个核函数，他是不是有效的呢？能不能找到对应的特征映射？为了解决这个问题，引入了核矩阵K（符号和核函数的一样）的概念。核矩阵的每个元素</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729beaf5ae.png" alt=""></p>
+<p>而且可以证明，若K是一个核函数，它相关的核矩阵必须是一个对称半正定矩阵（可以证明这是一个充要条件）。</p>
+<p>其实核函数的形式还可以更丰富，例如用字符串匹配算法来当核函数来处理字符串的分类，详情见原文。</p>
+<div><br><br><em> </em> <em><br><br></em></div><br>规整和不可分情形<br><br>有的时候线性不可分，那怎么办呢？其实办法挺直观的，就是放松一点要求，让有一些点可以在边界的里面，但是对这种情况要增加一些惩罚，来达到区分度和可分度的平衡。问题变成下面的形式<br><br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729e006b77.png" alt=""><br><br>c就是调节这种平衡的系数了。其对偶形式如下<br><br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_561729eab602a.png" alt=""><br><br><div>
+
+ <em> </em><br><br></div>
+
+<h1 id="SMO算法"><a href="#SMO算法" class="headerlink" title="SMO算法"></a>SMO算法</h1><p>说了那么多，其实对于导出的最优化问题我们还不会解，求解这些问题就得靠这节介绍的SMO算法了。</p>
+<p>先介绍了一下坐标上升算法，其实很简单的，例如对于一个没有限制的最大化问题max w(α1，α2…)，一个一个地考虑参数αi，使目标函数变大。重复这个优化过程，直到收敛。</p>
+<p>然后回看上面的最优化问题，由于第二个条件的限制，使得固定其他参数调整一个参数来优化变得不可行了（等式约束）</p>
+<p>那怎么办呢，SMO的解决办法是选两个参数同时来优化，这样就可以保证不打破等式的限制。同时，使用SMO来优化还非常高效。例如挑选第1和第2个参数来优化，则他俩必须满足</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a0b14023.png" alt=""></p>
+<p>则他俩的图像应该像下面这样（同时被C约束），</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a159e4f6.png" alt=""></p>
+<p>将α1表示成α2的函数，则最优化问题变成</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a230a1a1.png" alt=""></p>
+<p>然后可以直接求导得到极值点，再与约束条件比较一下，就可以得到结论</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/img_56172a2ca8b0b.png" alt=""></p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/10/Image-30.png" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag">#Machine Learning</a>
+          
+            <a href="/tags/机器学习/" rel="tag">#机器学习</a>
+          
+            <a href="/tags/SVM/" rel="tag">#SVM</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/30/机器学习lecture note2阅读笔记/" rel="next" title="机器学习lecture note2阅读笔记">
+                <i class="fa fa-chevron-left"></i> 机器学习lecture note2阅读笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/01/stm32-e5-ae-9e-e7-8e-b0usb-e8-af-bb-e5-8d-a1-e5-99-a8/" rel="prev" title="stm32实现usb读卡器">
+                stm32实现usb读卡器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="wuyhthu" />
+          <p class="site-author-name" itemprop="name">wuyhthu</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#思路"><span class="nav-number">1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#插播拉格朗日对偶"><span class="nav-number">2.</span> <span class="nav-text">插播拉格朗日对偶</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核函数"><span class="nav-number">3.</span> <span class="nav-text">核函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SMO算法"><span class="nav-number">4.</span> <span class="nav-text">SMO算法</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuyhthu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'wuyuanhao';
+      var disqus_identifier = '2015/10/09/机器学习lecture note3阅读笔记/';
+      var disqus_title = "机器学习lecture note3阅读笔记";
+      var disqus_url = 'http://wuyuanhao.com/2015/10/09/机器学习lecture note3阅读笔记/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

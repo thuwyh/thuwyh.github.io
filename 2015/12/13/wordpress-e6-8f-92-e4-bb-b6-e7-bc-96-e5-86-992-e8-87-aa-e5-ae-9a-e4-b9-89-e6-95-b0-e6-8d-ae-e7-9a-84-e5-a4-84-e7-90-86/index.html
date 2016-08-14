@@ -1,0 +1,688 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="wordpress,php,开发,插件," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="做完上篇文章的工作之后，你就可以开始添加你想成列的项目了。但是此时的添加新项目页面是这样的
+
+只有一个输入标题的地方，和右下角添加特色图片的地方。我们现在要做的就是修改一下这个页面。首先把右下角的特色图片功能移到主分栏里，代码如下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wordpress插件开发2:自定义数据的处理">
+<meta property="og:url" content="http://wuyuanhao.com/2015/12/13/wordpress-e6-8f-92-e4-bb-b6-e7-bc-96-e5-86-992-e8-87-aa-e5-ae-9a-e4-b9-89-e6-95-b0-e6-8d-ae-e7-9a-84-e5-a4-84-e7-90-86/index.html">
+<meta property="og:site_name" content="有趣的皓弟">
+<meta property="og:description" content="做完上篇文章的工作之后，你就可以开始添加你想成列的项目了。但是此时的添加新项目页面是这样的
+
+只有一个输入标题的地方，和右下角添加特色图片的地方。我们现在要做的就是修改一下这个页面。首先把右下角的特色图片功能移到主分栏里，代码如下">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/12/1-1024x514.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/12/2-1-1024x514.png">
+<meta property="og:updated_time" content="2016-07-05T13:56:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="wordpress插件开发2:自定义数据的处理">
+<meta name="twitter:description" content="做完上篇文章的工作之后，你就可以开始添加你想成列的项目了。但是此时的添加新项目页面是这样的
+
+只有一个输入标题的地方，和右下角添加特色图片的地方。我们现在要做的就是修改一下这个页面。首先把右下角的特色图片功能移到主分栏里，代码如下">
+<meta name="twitter:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/12/1-1024x514.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://wuyuanhao.com/2015/12/13/wordpress-e6-8f-92-e4-bb-b6-e7-bc-96-e5-86-992-e8-87-aa-e5-ae-9a-e4-b9-89-e6-95-b0-e6-8d-ae-e7-9a-84-e5-a4-84-e7-90-86/"/>
+
+  <title> wordpress插件开发2:自定义数据的处理 | 有趣的皓弟 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57085044";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有趣的皓弟</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                wordpress插件开发2:自定义数据的处理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-13T10:50:40+08:00" content="2015-12-13">
+              2015-12-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Code4Fun/" itemprop="url" rel="index">
+                    <span itemprop="name">Code4Fun</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/13/wordpress-e6-8f-92-e4-bb-b6-e7-bc-96-e5-86-992-e8-87-aa-e5-ae-9a-e4-b9-89-e6-95-b0-e6-8d-ae-e7-9a-84-e5-a4-84-e7-90-86/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/13/wordpress-e6-8f-92-e4-bb-b6-e7-bc-96-e5-86-992-e8-87-aa-e5-ae-9a-e4-b9-89-e6-95-b0-e6-8d-ae-e7-9a-84-e5-a4-84-e7-90-86/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>做完上篇文章的工作之后，你就可以开始添加你想成列的项目了。但是此时的添加新项目页面是这样的</p>
+<p><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/12/1-1024x514.png" alt="默认页面"></p>
+<p>只有一个输入标题的地方，和右下角添加特色图片的地方。我们现在要做的就是修改一下这个页面。首先把右下角的特色图片功能移到主分栏里，代码如下</p>
+<a id="more"></a>
+<p><pre class="lang:php decode:true">add_action(‘do_meta_boxes’, ‘review_list_image_text’);<br>function review_list_image_text() {</pre></p>
+<pre><code>remove_meta_box( &apos;postimagediv&apos;, &apos;review&apos;, &apos;side&apos; );
+if (current_theme_supports(&apos;post-thumbnails&apos;)) {
+    add_meta_box(&apos;postimagediv&apos;, &apos;Cover&apos;, &apos;post_thumbnail_meta_box&apos;, &apos;review&apos;, &apos;normal&apos;, &apos;high&apos;);
+} else {
+    add_meta_box(&apos;staff-member-warning&apos;,&apos;Cover&apos;, &apos;review_list_warning_meta_box&apos;, &apos;review&apos;, &apos;normal&apos;, &apos;high&apos;);
+}
+</code></pre><p>}<br>wordpress里那些输入框都叫做meta_box，这段代码首先移除了特色图片框，然后添加了一个新的框，add_meta_box函数文档中对其用法的描述如下</p>
+<p><pre class="lang:php decode:true ">&lt;?php<br>    add_meta_box( $id, $title, $callback, $screen, $context, $priority, $callback_args );<br>?&gt;</pre><br>其中的参数title指定了这个框的标题，以后就不叫特色图片了，而叫cover；screen指定了只有在review这个文章类型中才会显示这个框，而context则指定了显示的位置，设为normal就意味着这个框将在主分栏显示，其他参数大家看文档就好了。<br>图片框加好了，现在来增加一些额外的信息。由于我们希望做一个reading list，那么可能需要包含例如阅读日期啊、打分等等。这些数据可以存到文章的custom数据区。我们将用一个meta_box来方便地编辑这些数据，代码如下。</p>
+<div><br><pre class="lang:php decode:true">add_action(‘do_meta_boxes’, ‘review_list_add_meta_boxes’);<br>function review_list_add_meta_boxes() {<br>    add_meta_box(‘review-info’,’Reviewed item Info’, ‘reviewed_item_info_meta_box’, ‘review’, ‘normal’, ‘high’);<br>}<br>?&gt;<br><br>&lt;?php<br>function reviewed_item_info_meta_box(){<br>    global $post;<br>    $custom = get_post_custom($post-&gt;ID);<br>    $_item_rating     = $custom[“_item_rating”][0];<br>    $_item_date       = $custom[“_item_date”][0];<br>    $_item_review_url = $custom[“_item_review_url”][0];<br>    ?&gt;<br><br>    &lt;div class=”sslp_admin_wrap”&gt;<br>        &lt;label for=”_item_rating”&gt;Rating:&lt;input type=”text” name=”_item_rating” id=”_item_rating” placeholder=”&lt;?php if ($_item_rating == ‘’) echo ‘rating for the item ,max=5’; ?&gt;” value=”&lt;?php if ($_item_rating != ‘’) echo $_item_rating; ?&gt;” /&gt;&lt;/label&gt;&lt;/br&gt;<br>        &lt;label for=”_item_date”&gt;Date:&lt;input type=”text” name=”_item_date” id=”_item_date” placeholder=”&lt;?php if ($_item_date == ‘’) echo ‘date’; ?&gt;” value=”&lt;?php if ($_item_date != ‘’) echo $_item_date; ?&gt;” /&gt;&lt;/label&gt;&lt;/br&gt;<br>        &lt;label for=”_item_review_url”&gt;Review URL:&lt;input type=”text” name=”_item_review_url” id=”_item_review_url” placeholder=”&lt;?php if ($_item_review_url == ‘’) echo ‘review url’; ?&gt;” value=”&lt;?php if ($_item_review_url != ‘’) echo $_item_review_url; ?&gt;” /&gt;&lt;/label&gt;<br><br>    &lt;/div&gt;<br>&lt;?php<br>}<br>?&gt;</pre><br>首先是跟刚才一样调用add_mata_box函数，但是这些东西不是系统自带的内容，所以我们需要是轰动实现一个回调函数（参数中的$callback）reviewed_item_info_meta_box()。这个函数比较有意思，它既有php代码，又有html代码，html代码很简单，就是显示出一堆的inputbox。而前面用到了get_post_custom函数来获得之前保存的custom数据，如果这些数据非空，则metabox中将会显示已有数据，否则将显示占位符。其实刚才的两个函数可以写在一起使程序更加简洁。那么现在我们的页面将变成这个样子（经过考虑我在CPT的support中增加了editor和comment）。<br><br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/12/2-1-1024x514.png" alt="修改后页面"><br><br>想要让数据能够真的存储下来，光有个编辑页面是不够，还需要写一个处理数据的函数，并将函数绑定到save_post动作上。函数很简单，调用update_post_meta就行了，这个函数会在文章不包含该meta时新建，包含是更新，是一个很鲁棒的函数。代码如下<br><div><br><pre class="lang:php decode:true ">&lt;?php<br>//  Save Custom Post Type Fields<br>add_action(‘save_post’, ‘review_list_save_details’);<br><br>function review_list_save_details(){<br>    global $post;<br><br>    if ( defined( ‘DOING_AUTOSAVE’ ) &amp;&amp; DOING_AUTOSAVE )<br>        return $post-&gt;ID;<br>    if ($post-&gt;post_type==’review’){<br>        update_post_meta($post-&gt;ID, “_item_rating”, $_POST[“_item_rating”]);<br>        update_post_meta($post-&gt;ID, “_item_date”, $_POST[“_item_date”]);<br>        update_post_meta($post-&gt;ID, “_item_review_url”, $_POST[“_item_review_url”]);<br>    }<br>}<br>?&gt;</pre><br>至此，数据部分就大功告成了。<br><br></div><br></div>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/wordpress/" rel="tag">#wordpress</a>
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+            <a href="/tags/开发/" rel="tag">#开发</a>
+          
+            <a href="/tags/插件/" rel="tag">#插件</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/11/wordpress-e6-8f-92-e4-bb-b6-e7-bc-96-e5-86-991/" rel="next" title="wordpress插件开发1:CPT及管理页面">
+                <i class="fa fa-chevron-left"></i> wordpress插件开发1:CPT及管理页面
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/19/stm32-e7-9a-84systick/" rel="prev" title="STM32的Systick">
+                STM32的Systick <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="wuyhthu" />
+          <p class="site-author-name" itemprop="name">wuyhthu</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuyhthu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'wuyuanhao';
+      var disqus_identifier = '2015/12/13/wordpress-e6-8f-92-e4-bb-b6-e7-bc-96-e5-86-992-e8-87-aa-e5-ae-9a-e4-b9-89-e6-95-b0-e6-8d-ae-e7-9a-84-e5-a4-84-e7-90-86/';
+      var disqus_title = "wordpress插件开发2:自定义数据的处理";
+      var disqus_url = 'http://wuyuanhao.com/2015/12/13/wordpress-e6-8f-92-e4-bb-b6-e7-bc-96-e5-86-992-e8-87-aa-e5-ae-9a-e4-b9-89-e6-95-b0-e6-8d-ae-e7-9a-84-e5-a4-84-e7-90-86/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

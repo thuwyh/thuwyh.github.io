@@ -1,0 +1,686 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="matlab," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="matlab 是我在日常科研和学习中常用的数据处理和仿真工具，自然也会经常用到他的绘图功能。matlab的绘图功能其实是很强大的，但是初学者往往不能很好掌握。其实不仅是技术上的问题，以我对身边同学的观察，我们对图表的要求和处理图表的能力和优秀期刊文章的水平相差实在太远了。之前知乎就有一个问题：
+
+如何在论文中画出漂亮的插图？第一次看的时候真的被里面漂亮的图画震撼到了，但那个回答主要是介绍matpl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matlab绘图">
+<meta property="og:url" content="http://wuyuanhao.com/2015/05/10/matlab-e7-bb-98-e5-9b-be/index.html">
+<meta property="og:site_name" content="有趣的皓弟">
+<meta property="og:description" content="matlab 是我在日常科研和学习中常用的数据处理和仿真工具，自然也会经常用到他的绘图功能。matlab的绘图功能其实是很强大的，但是初学者往往不能很好掌握。其实不仅是技术上的问题，以我对身边同学的观察，我们对图表的要求和处理图表的能力和优秀期刊文章的水平相差实在太远了。之前知乎就有一个问题：
+
+如何在论文中画出漂亮的插图？第一次看的时候真的被里面漂亮的图画震撼到了，但那个回答主要是介绍matpl">
+<meta property="og:updated_time" content="2016-07-05T13:56:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Matlab绘图">
+<meta name="twitter:description" content="matlab 是我在日常科研和学习中常用的数据处理和仿真工具，自然也会经常用到他的绘图功能。matlab的绘图功能其实是很强大的，但是初学者往往不能很好掌握。其实不仅是技术上的问题，以我对身边同学的观察，我们对图表的要求和处理图表的能力和优秀期刊文章的水平相差实在太远了。之前知乎就有一个问题：
+
+如何在论文中画出漂亮的插图？第一次看的时候真的被里面漂亮的图画震撼到了，但那个回答主要是介绍matpl">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://wuyuanhao.com/2015/05/10/matlab-e7-bb-98-e5-9b-be/"/>
+
+  <title> Matlab绘图 | 有趣的皓弟 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57085044";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有趣的皓弟</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Matlab绘图
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-05-10T00:00:14+08:00" content="2015-05-10">
+              2015-05-10
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Code4Fun/" itemprop="url" rel="index">
+                    <span itemprop="name">Code4Fun</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/05/10/matlab-e7-bb-98-e5-9b-be/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/05/10/matlab-e7-bb-98-e5-9b-be/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>matlab 是我在日常科研和学习中常用的数据处理和仿真工具，自然也会经常用到他的绘图功能。matlab的绘图功能其实是很强大的，但是初学者往往不能很好掌握。其实不仅是技术上的问题，以我对身边同学的观察，我们对图表的要求和处理图表的能力和优秀期刊文章的水平相差实在太远了。之前知乎就有一个问题：</p>
+<blockquote>
+<p><a href="http://www.zhihu.com/question/21664179" target="_blank" rel="external">如何在论文中画出漂亮的插图？</a><br>第一次看的时候真的被里面漂亮的图画震撼到了，但那个回答主要是介绍matplotlib的，毕竟是python上的东西，用起来不如matlab顺手，于是之前就花了点时间学习了matlab绘图，今天将一些经验在这里分享。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="1-规范"><a href="#1-规范" class="headerlink" title="1. 规范"></a>1. 规范</h2><p>画图，不管用什么工具，首先要时刻牢记保持图的规范性。一张规范的图需要有以下几个部分：</p>
+<ol>
+<li>标题</li>
+<li>坐标轴、坐标轴的标题、单位及刻度</li>
+<li>图例</li>
+<li>其他辅助性的文本和标注<br>对于期刊文章中使用的图，标题一般不出现在图中，而是题注在图下方，而且必须包含图片编号。而且通常在题注中要对图有基本的说明，可以不看正文就看懂图的表面含义。付老师常说好的图要是自含式的，通过图就能清晰地将你要揭示的规律展示出来，这当然又是更高的要求。不过画图之前确实应该精心谋划一下，例如坐标轴的选择，图的形式等等。</li>
+</ol>
+<h2 id="2-图线、坐标轴及图例"><a href="#2-图线、坐标轴及图例" class="headerlink" title="2. 图线、坐标轴及图例"></a>2. 图线、坐标轴及图例</h2><p>首先推荐大家使用matlab中的句柄，可以方便地修改图的参数。获得句柄非常简单，例如</p>
+<pre class="lang:matlab decode:true ">L1=plot(x/1e3, y_dis/1e6);</pre>
+l1就是句柄了，相当于给图线取了一个名字，方便修改。
+
+有了句柄我们就可以设置图线的各种属性了，比较常用的属性有linewidth、linestyle、color。从名字看，他们的意义都非常明了了。其中linestyle有几种常用的
+
+*   -  ：实线
+*   -- ：虚线
+*   -. ：点划线
+color我想重点说下，matlab自带的颜色比如rgb、cmyk都太丑了，应该果断抛弃。其实我们是可以自定颜色的，方法很简单，给出相应的rgb分量值就行了（不同于0-255整数表示，matlab是用0-1浮点数表示的）。可以到网上搜到大量的配色方案，这样你就可以画出逼格比较高的图了，例如
+<pre class="lang:matlab decode:true ">set(l1,'color',[216,34,13]./255);</pre>
+图线说完了说说坐标轴，可以直接通过句柄gca操作当前坐标轴。坐标轴的常用属性有*tick, *lim，*代表x或y。前者用来指定显示的坐标刻度，后者用来指定坐标轴范围。大家用matlab里试一下就清楚了，例如
+<pre class="lang:matlab decode:true ">set(gca,'xTick',[0,5,10]);
+set(gca,'xlim',[-1,11]);</pre>
+matlab还有很强大的一点是他的坐标轴label以及图例legend中的文字可以解析latex。这样你就可以方便地表示\(\theta\),\(\alpha\)之类的特殊符号以及分式等比较复杂的东西，置于latex语法大家可以到网上搜，结合[在线latex编辑器](http://latex.codecogs.com/eqneditor/editor.php)就能很方便地练习和尝试了。说到文字就不得不提一下字体和字号的设置，这些可以用fontsize, fontname属性来搞定，例如
+<pre class="lang:matlab decode:true ">set(gca,'fontname','Times New Roman','fontsize',13);</pre>
+或者直接在输出时指定
+<pre class="lang:matlab decode:true ">xlabel('\fontname{TimesNewRoman}\fontsize{13}\it\theta \rm(^{\circ})');
+ylabel('\fontname{TimesNewRoman}\fontsize{13}\ity');</pre>
+
+<h2 id="3-尺寸控制及输出"><a href="#3-尺寸控制及输出" class="headerlink" title="3. 尺寸控制及输出"></a>3. 尺寸控制及输出</h2><p>大部分人用matlab画图是不控制尺寸的，画出来贴到word里再调，这是很不好的。最大的弊端就是你无法准确判断图经过缩放后的效果（特别是字的大小和线的粗细），造成返工浪费时间的情况。所以应该在画图的时候就规划好，而且这在正式场合是容易做到的，你应该很清楚你的图是占整页例如16cm宽还是分两栏中的一栏如8cm宽。使用下面的代码就可以修改图的大小了</p>
+<p><pre class="lang:matlab decode:true ">width=8;<br>height=8;<br>set (gcf,’windowstyle’,’normal’);<br>set (gcf,’units’,’centimeters’,’Position’,[0,0,width,height]);</pre><br>其中的width和height是以厘米为单位的，你可以随意定制。</p>
+<p>做好图之后还有一道重要的工序就是输出。请不要使用截图工具！！！！！那样真的太不专业了，另外我也不建议使用copyfigure，我用的时候总有一些问题，比如线有锯齿之类的。在这里强烈推荐大家一个插件export_fig，它是一个开源项目，具体使用方法请移步项目首页 <a href="https://github.com/altmany/export_fig" target="_blank" rel="external">https://github.com/altmany/export_fig</a></p>
+<p>好了，我要说的说完了，给大家提供一个模板，你可以方便地用于自己作图。也可以<a href="http://www.wuyuanhao.com/wp-content/uploads/2015/04/20150510.rar" target="_blank" rel="external">下载</a>我在某次讲座中的材料，那里除了介绍matlab画图还涉及到一些matlab GUI相关知识。</p>
+<p><pre class="lang:matlab decode:true " title="sample.m">% ————————————————-<br>% coded by wyh<br>% see more detail on www.wuyuanhao.com<br>% ————————————————-<br>%数据<br>x=0:0.001:10;<br>y1=sin(x);<br>y2=sin(2<em>x)+sin(3</em>x);<br>%画图<br>figure(1)<br>hold on;<br>l1=plot(x,y1);<br>l2=plot(x,y2);<br>%线宽<br>set(l1,’linewidth’,1.5);<br>set(l2,’linewidth’,1.5);<br>%颜色<br>set(l1,’color’,[216,34,13]./255);<br>set(l2,’color’,[88,76,157]./255);<br>%线形<br>set(l1,’linestyle’,’–’);<br>%坐标轴<br>set(gca,’fontname’,’Times New Roman’,’fontsize’,13);<br>set(gca,’xTick’,[0,5,10]);<br>set(gca,’xlim’,[-1,11]);<br>set(gca,’xgrid’,’on’);<br>%坐标轴标题<br>xlabel(‘\fontname{TimesNewRoman}\fontsize{13}\it\theta \rm(^{\circ})’);<br>ylabel(‘\fontname{TimesNewRoman}\fontsize{13}\ity’);<br>%标注<br>legend(‘y1’,’y2’);<br>%尺寸<br>width=8;<br>height=8;<br>set (gcf,’windowstyle’,’normal’);<br>set (gcf,’units’,’centimeters’,’Position’,[0,0,width,height]);<br>%输出<br>export_fig fig1.tiff -r600 -painters -transparent</pre><br>&nbsp;</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/matlab/" rel="tag">#matlab</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/05/07/DH方法/" rel="next" title="DH方法">
+                <i class="fa fa-chevron-left"></i> DH方法
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/05/15/坐标变换与空间旋转/" rel="prev" title="坐标变换与空间旋转">
+                坐标变换与空间旋转 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="wuyhthu" />
+          <p class="site-author-name" itemprop="name">wuyhthu</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-规范"><span class="nav-number">1.</span> <span class="nav-text">1. 规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-图线、坐标轴及图例"><span class="nav-number">2.</span> <span class="nav-text">2. 图线、坐标轴及图例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-尺寸控制及输出"><span class="nav-number">3.</span> <span class="nav-text">3. 尺寸控制及输出</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuyhthu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'wuyuanhao';
+      var disqus_identifier = '2015/05/10/matlab-e7-bb-98-e5-9b-be/';
+      var disqus_title = "Matlab绘图";
+      var disqus_url = 'http://wuyuanhao.com/2015/05/10/matlab-e7-bb-98-e5-9b-be/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

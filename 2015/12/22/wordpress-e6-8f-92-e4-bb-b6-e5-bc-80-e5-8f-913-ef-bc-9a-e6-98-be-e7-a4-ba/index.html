@@ -1,0 +1,671 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="wordpress,php," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="有了前面两篇实现的数据录入和管理功能为基础，这一篇将介绍一下内容的显示。基本的东西就两个，模版和shortcode。所谓模版就是定义了你要显示哪些东西，按什么顺序显示，基本就是一堆占位符，当渲染的时候将真正的内容填充进去。而所谓shortcode，则是一个告诉wordpress系统何时应该显示这些内容的标识，其实也是一个占位符，当页面中出现特定占位符时调用回调函数进行渲染。好，先从shortcod">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wordpress插件开发3：显示">
+<meta property="og:url" content="http://wuyuanhao.com/2015/12/22/wordpress-e6-8f-92-e4-bb-b6-e5-bc-80-e5-8f-913-ef-bc-9a-e6-98-be-e7-a4-ba/index.html">
+<meta property="og:site_name" content="有趣的皓弟">
+<meta property="og:description" content="有了前面两篇实现的数据录入和管理功能为基础，这一篇将介绍一下内容的显示。基本的东西就两个，模版和shortcode。所谓模版就是定义了你要显示哪些东西，按什么顺序显示，基本就是一堆占位符，当渲染的时候将真正的内容填充进去。而所谓shortcode，则是一个告诉wordpress系统何时应该显示这些内容的标识，其实也是一个占位符，当页面中出现特定占位符时调用回调函数进行渲染。好，先从shortcod">
+<meta property="og:updated_time" content="2016-07-05T14:09:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="wordpress插件开发3：显示">
+<meta name="twitter:description" content="有了前面两篇实现的数据录入和管理功能为基础，这一篇将介绍一下内容的显示。基本的东西就两个，模版和shortcode。所谓模版就是定义了你要显示哪些东西，按什么顺序显示，基本就是一堆占位符，当渲染的时候将真正的内容填充进去。而所谓shortcode，则是一个告诉wordpress系统何时应该显示这些内容的标识，其实也是一个占位符，当页面中出现特定占位符时调用回调函数进行渲染。好，先从shortcod">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://wuyuanhao.com/2015/12/22/wordpress-e6-8f-92-e4-bb-b6-e5-bc-80-e5-8f-913-ef-bc-9a-e6-98-be-e7-a4-ba/"/>
+
+  <title> wordpress插件开发3：显示 | 有趣的皓弟 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57085044";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有趣的皓弟</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                wordpress插件开发3：显示
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-22T23:54:10+08:00" content="2015-12-22">
+              2015-12-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Code4Fun/" itemprop="url" rel="index">
+                    <span itemprop="name">Code4Fun</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/22/wordpress-e6-8f-92-e4-bb-b6-e5-bc-80-e5-8f-913-ef-bc-9a-e6-98-be-e7-a4-ba/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/22/wordpress-e6-8f-92-e4-bb-b6-e5-bc-80-e5-8f-913-ef-bc-9a-e6-98-be-e7-a4-ba/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>有了前面两篇实现的数据录入和管理功能为基础，这一篇将介绍一下内容的显示。基本的东西就两个，模版和shortcode。所谓模版就是定义了你要显示哪些东西，按什么顺序显示，基本就是一堆占位符，当渲染的时候将真正的内容填充进去。而所谓shortcode，则是一个告诉wordpress系统何时应该显示这些内容的标识，其实也是一个占位符，当页面中出现特定占位符时调用回调函数进行渲染。<br>好，先从shortcode开始，很简单，把一个shortcode和一个回调函数关联起来就行了，代码如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add_shortcode(<span class="string">'review-list'</span>, <span class="string">'review_list_shortcode_func'</span>);</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>这样每次你的页面或文章中出现[review-list]这个shortcode时系统就会调用review_list_shortcode_func。这个shortcode<br>还可包含一些参数，这些参数可以传递给函数来实现定制化的显示。现在就开始实现这个回调函数吧，代码如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">review_list_shortcode_func</span><span class="params">($atts)</span> </span>&#123;</span><br><span class="line">	extract(shortcode_atts(<span class="keyword">array</span>(</span><br><span class="line">	  <span class="string">'single'</span> =&amp;gt; <span class="string">'no'</span>,</span><br><span class="line">	  <span class="string">'type'</span> =&amp;gt; <span class="string">''</span>,</span><br><span class="line">	  <span class="string">'wrap_class'</span> =&amp;gt; <span class="string">''</span>,</span><br><span class="line">	  <span class="string">'order'</span> =&amp;gt; <span class="string">'ASC'</span>,</span><br><span class="line">	), $atts));</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Get Template and CSS</span></span><br><span class="line">	$default_template = <span class="string">'</span><br><span class="line">[staff_loop]</span><br><span class="line">	&amp;lt;a href="[review-url]"&amp;gt;&amp;lt;img class="item-cover" src="[item-photo-url]" alt="[item-name]"&amp;gt;&amp;lt;/a&amp;gt;</span><br><span class="line">	&amp;lt;div class="item-info-wrap"&amp;gt;</span><br><span class="line">		[item-rating]</span><br><span class="line">	&amp;lt;/div&amp;gt;</span><br><span class="line">[/staff_loop]'</span>;</span><br><span class="line">	$custom_html 				= stripslashes_deep($default_template);</span><br><span class="line"></span><br><span class="line">	$default_css=<span class="string">'</span><br><span class="line">	div.item_listing&#123;</span><br><span class="line">	width:80%;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">div.single-item &#123;</span><br><span class="line">	position:relative;</span><br><span class="line">	width:25%;</span><br><span class="line">	float:left;</span><br><span class="line">	height:220px;</span><br><span class="line">	text-align:center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">img.item-cover&#123;</span><br><span class="line">	max-height:200px;</span><br><span class="line">	vertical-align:middle;</span><br><span class="line">&#125;</span><br><span class="line">div.item-info-wrap&#123;</span><br><span class="line">	height:20%;</span><br><span class="line">	text-align:center;</span><br><span class="line">&#125;</span><br><span class="line">div.reviewed &#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    z-index: 1;</span><br><span class="line">    top: -4px;</span><br><span class="line">    right: 10px;</span><br><span class="line">    height: 20px;</span><br><span class="line">    width: 90px;</span><br><span class="line">    background-image: url("REVIEW_RIBBON");</span><br><span class="line">    background-repeat: no-repeat;</span><br><span class="line">    background-size: cover;</span><br><span class="line">    background-position: 50% 50%;</span><br><span class="line">    background-repeat: no-repeat;</span><br><span class="line">&#125;'</span>;</span><br><span class="line"></span><br><span class="line">	$custom_css 				= stripslashes_deep($default_css);</span><br><span class="line">	$custom_css = str_replace(<span class="string">"REVIEW_RIBBON"</span>,REVIEWLIST_PATH.<span class="string">"review_ribbon.png"</span>,$custom_css);</span><br><span class="line">	$output						= <span class="string">''</span>;</span><br><span class="line">	$type						= strtolower($type);</span><br><span class="line">	$order						= strtoupper($order);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	  * Set up our WP_Query</span><br><span class="line">	  */</span></span><br><span class="line"></span><br><span class="line">	$args = <span class="keyword">array</span>( <span class="string">'post_type'</span> =&amp;gt; <span class="string">'review'</span>, <span class="string">'posts_per_page'</span> =&amp;gt; <span class="number">-1</span>, <span class="string">'orderby'</span> =&amp;gt; <span class="string">'menu_order'</span>, <span class="string">'post_status'</span> =&amp;gt; <span class="string">'publish'</span> );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check user's 'order' value</span></span><br><span class="line">	<span class="keyword">if</span> ($order != <span class="string">'ASC'</span> &amp;amp;&amp;amp; $order != <span class="string">'DESC'</span>) &#123;</span><br><span class="line">		$order = <span class="string">'ASC'</span>;</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="comment">// Set 'order' in our query args</span></span><br><span class="line">	$args[<span class="string">'order'</span>] = $order;</span><br><span class="line">	$args[<span class="string">'review-type'</span>] = $type;</span><br><span class="line"></span><br><span class="line">	$review = <span class="keyword">new</span> WP_Query( $args );</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	  * Set up our loop_markup</span><br><span class="line">	  */</span></span><br><span class="line"></span><br><span class="line">	$loop_markup = $loop_markup_reset = str_replace(<span class="string">"[staff_loop]"</span>, <span class="string">""</span>, substr($custom_html, strpos($custom_html, <span class="string">"[staff_loop]"</span>), strpos($custom_html, <span class="string">"[/staff_loop]"</span>) - strpos($custom_html, <span class="string">"[staff_loop]"</span>)));</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Doing this so I can concatenate class names for current and possibly future use.</span></span><br><span class="line">	$review_classes = $wrap_class;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Prepare to output styles if not using external style sheet</span></span><br><span class="line">	$style_output = <span class="string">'&amp;lt;style&amp;gt;'</span>.$custom_css.<span class="string">'&amp;lt;/style&amp;gt;'</span>;</span><br><span class="line"></span><br><span class="line">	$i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>( $review-&amp;gt;have_posts() ) &#123;</span><br><span class="line"></span><br><span class="line">		$output .= <span class="string">'&amp;lt;div class="item-listing '</span>.$type.<span class="string">'"&amp;gt;'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>( $review-&amp;gt;have_posts() ) : $review-&amp;gt;the_post();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> ($i == ($review-&amp;gt;found_posts)<span class="number">-1</span>) &#123;</span><br><span class="line">			$review_classes .= <span class="string">" last"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">global</span> $post;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> ($i % <span class="number">2</span>) &#123;</span><br><span class="line">			$output .= <span class="string">'&amp;lt;div class="single-item odd '</span>.$review_classes.<span class="string">'"&amp;gt;'</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$output .= <span class="string">'&amp;lt;div class="single-item even '</span>.$review_classes.<span class="string">'"&amp;gt;'</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$custom 			= get_post_custom();</span><br><span class="line">		$name 				= get_the_title();</span><br><span class="line">		$name_slug			= basename(get_permalink());</span><br><span class="line">		$_item_rating 		= $custom[<span class="string">"_item_rating"</span>][<span class="number">0</span>];</span><br><span class="line">		$_item_date 		= $custom[<span class="string">"_item_date"</span>][<span class="number">0</span>];</span><br><span class="line">		$_item_review_url 	= $custom[<span class="string">"_item_review_url"</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">if</span> ($_item_review_url!=<span class="string">""</span>)&#123;</span><br><span class="line">			<span class="comment">//$name = '&amp;lt;a href="http://'.$_item_review_url.'" style="font-weight:bold;"&amp;gt;'.$name.'&amp;lt;/a&amp;gt;';</span></span><br><span class="line">			<span class="comment">//$review_classes .=" reviewed";</span></span><br><span class="line">			$output .= <span class="string">'&amp;lt;div class="reviewed" &amp;gt;&amp;lt;/div&amp;gt;'</span>;</span><br><span class="line">			$_item_review_url =<span class="string">'http://'</span>.$_item_review_url;</span><br><span class="line">		&#125;<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			$_item_review_url=<span class="string">'#'</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		$rating=(int)$_item_rating;</span><br><span class="line">		$_item_rating=<span class="string">""</span>;</span><br><span class="line">		<span class="keyword">for</span>($i=<span class="number">0</span>;$i&amp;lt;<span class="number">5</span>;$i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>($i&amp;lt;$rating)&#123;</span><br><span class="line">				$_item_rating=$_item_rating.<span class="string">'★'</span>;</span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				$_item_rating=$_item_rating.<span class="string">'☆'</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(has_post_thumbnail())&#123;</span><br><span class="line"></span><br><span class="line">			$photo_url = wp_get_attachment_url( get_post_thumbnail_id() );</span><br><span class="line">			$photo = <span class="string">'&amp;lt;img class="item-cover" src="'</span>.$photo_url.<span class="string">'" alt = "'</span>.$title.<span class="string">'"&amp;gt;'</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			$photo_url = <span class="string">''</span>;</span><br><span class="line">			$photo = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$default_tags = <span class="keyword">array</span>(<span class="string">'[item-name]'</span>,  <span class="string">'[item-photo-url]'</span>, <span class="string">'[item-rating]'</span>, <span class="string">'[item-date]'</span>,<span class="string">'[review-url]'</span>);</span><br><span class="line">		$accepted_single_tags = $default_tags;</span><br><span class="line">		$replace_single_values = <span class="keyword">array</span>($name, $photo_url, $_item_rating, $_item_date, $_item_review_url);</span><br><span class="line"></span><br><span class="line">		$loop_markup = str_replace($accepted_single_tags, $replace_single_values, $loop_markup);</span><br><span class="line">		$loop_markup = str_replace($accepted_formatted_tags, $replace_formatted_values, $loop_markup);</span><br><span class="line"></span><br><span class="line">		$output .= $loop_markup;</span><br><span class="line"></span><br><span class="line">		$loop_markup = $loop_markup_reset;</span><br><span class="line"></span><br><span class="line">		$output .= <span class="string">'&amp;lt;/div&amp;gt; &amp;lt;!-- Close staff-member --&amp;gt;'</span>;</span><br><span class="line">		$i += <span class="number">1</span>;	</span><br><span class="line"></span><br><span class="line">	<span class="keyword">endwhile</span>;</span><br><span class="line"></span><br><span class="line">	$output .= <span class="string">"&amp;lt;/div&amp;gt; &amp;lt;!-- Close staff-member-listing --&amp;gt;"</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	wp_reset_query();</span><br><span class="line">	$output = $style_output.$output;</span><br><span class="line">	<span class="keyword">return</span> do_shortcode($output);</span><br><span class="line">&#125;</span><br><span class="line">add_shortcode(<span class="string">'review-list'</span>, <span class="string">'review_list_shortcode_func'</span>);</span><br></pre></td></tr></table></figure>
+<p>首先是从shortcode中提取参数，参数都是用键值对的形式传递的，例如我定义了一个type参数，当我写shortcode为[review-list type=”movies”]时变量$type就会成为movies了。</p>
+<p>接着定义了显示的模版，是一段html，但其中有的内容被中括号包围的关键词暂时替代，待会我们从数据库中得到内容后再将他们替换掉。然后我定义了一个css样式，这个样式会和内容一起输出到最后呈现的网页中。其中的一个功能是从盖茨的网站上直接拔过来的，就是有review的项目右上角会出现一个小角标，这是用css实现的，看代码就很好理解了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$custom_css = str_replace(&quot;REVIEW_RIBBON&quot;,REVIEWLIST_PATH.&quot;review_ribbon.png&quot;,$custom_css);</span><br></pre></td></tr></table></figure></p>
+<p>这句话把css里的图片链接换成正确的地址，REVIEWLIST_PATH 定义如下：<br><code>define( &#39;REVIEWLIST_PATH&#39;, plugin_dir_url(__FILE__) );</code></p>
+<p>然后就是从数据库查询数据，设置好各个参数后调用<code>$review = new WP_Query( $args );</code>会返回所有符合条件的post。对每个返回的post，得到他们的customfield中的相应数据，再填到模板里，并在<code>$output</code>后面不停地追加内容，最后调用<code>return do_shortcode($output);</code>返回内容即可。最终效果如下，css还有些需要微调的地方。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/wordpress/" rel="tag">#wordpress</a>
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/19/stm32-e7-9a-84systick/" rel="next" title="STM32的Systick">
+                <i class="fa fa-chevron-left"></i> STM32的Systick
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/25/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="wuyhthu" />
+          <p class="site-author-name" itemprop="name">wuyhthu</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuyhthu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'wuyuanhao';
+      var disqus_identifier = '2015/12/22/wordpress-e6-8f-92-e4-bb-b6-e5-bc-80-e5-8f-913-ef-bc-9a-e6-98-be-e7-a4-ba/';
+      var disqus_title = "wordpress插件开发3：显示";
+      var disqus_url = 'http://wuyuanhao.com/2015/12/22/wordpress-e6-8f-92-e4-bb-b6-e5-bc-80-e5-8f-913-ef-bc-9a-e6-98-be-e7-a4-ba/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

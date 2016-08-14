@@ -1,0 +1,688 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,机器学习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这一系列记录一下我梳理的Andrew Ng Machine Learning 的lecture notes的思路。这是第一篇，note的名字是Supervised Learning, Discriminative Algorithms。从一个房屋面积推测房屋价格的例子引入监督学习
+ 
+监督学习就是从训练数据中找出输入和输出的规律，求出一个函数，可以预测未知输入的输出值。监督学习回归(regress">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习lecture note1阅读笔记">
+<meta property="og:url" content="http://wuyuanhao.com/2015/09/24/机器学习lecture note1阅读笔记/index.html">
+<meta property="og:site_name" content="有趣的皓弟">
+<meta property="og:description" content="这一系列记录一下我梳理的Andrew Ng Machine Learning 的lecture notes的思路。这是第一篇，note的名字是Supervised Learning, Discriminative Algorithms。从一个房屋面积推测房屋价格的例子引入监督学习
+ 
+监督学习就是从训练数据中找出输入和输出的规律，求出一个函数，可以预测未知输入的输出值。监督学习回归(regress">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image1.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-1.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-2.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-3.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-4.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-5.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-6.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-7.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-8.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-9-1024x288.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-10.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-11.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-12.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-13.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-14.png">
+<meta property="og:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-15.png">
+<meta property="og:updated_time" content="2016-07-06T00:30:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习lecture note1阅读笔记">
+<meta name="twitter:description" content="这一系列记录一下我梳理的Andrew Ng Machine Learning 的lecture notes的思路。这是第一篇，note的名字是Supervised Learning, Discriminative Algorithms。从一个房屋面积推测房屋价格的例子引入监督学习
+ 
+监督学习就是从训练数据中找出输入和输出的规律，求出一个函数，可以预测未知输入的输出值。监督学习回归(regress">
+<meta name="twitter:image" content="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://wuyuanhao.com/2015/09/24/机器学习lecture note1阅读笔记/"/>
+
+  <title> 机器学习lecture note1阅读笔记 | 有趣的皓弟 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57085044";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">有趣的皓弟</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                机器学习lecture note1阅读笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-09-24T23:06:57+08:00" content="2015-09-24">
+              2015-09-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Theory-Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Theory&Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/24/机器学习lecture note1阅读笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/09/24/机器学习lecture note1阅读笔记/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这一系列记录一下我梳理的Andrew Ng Machine Learning 的lecture notes的思路。这是第一篇，note的名字是Supervised Learning, Discriminative Algorithms。<br>从一个房屋面积推测房屋价格的例子引入监督学习</p>
+<p> <a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image1.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image1.png" alt="Image"></a></p>
+<p>监督学习就是从训练数据中找出输入和输出的规律，求出一个函数，可以预测未知输入的输出值。<br>监督学习回归(regression)和分类(classification)：连续和离散</p>
+<a id="more"></a>
+<hr>
+<h1 id="回归"><a href="#回归" class="headerlink" title="回归"></a>回归</h1><p>先是讨论回归。<br>首先提出cost function的概念，是求得函数的评价指标，其实就是函数在训练集上预测与实际输出的误差，希望最小化它。<br>常选least-squares cost function（二范数的平方）作为cost function<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-1.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-1.png" alt="Image [1]"></a></p>
+<p>怎么办呢？<br>1、梯度下降<br>其实就是迭代，假设目前的函数预测和实际有偏差，那我就根据偏差成比例地修正一下我的系数，然后找到一个最好的系数组合使得在训练集上代价函数最小。有两种典型的策略如下。<br>batch gradient descent：每一步都考虑训练集的所有数据<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-2.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-2.png" alt="Image [2]"></a><br>stochastic gradient descent 或 incremental gradient descent：每一个训练集先更新一遍所有权值<br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-3.png" alt="Image [3]"><br>stochastic gradient descent is often preferred over batch gradient descent，因为它很快做出改进（特别是当训练集很大的时候，batch 算法是很费时间的）</p>
+<p>2、非迭代算法<br>用矩阵形式写代价函数，求导，令导数为0，经过推导可以得到标准方程<br><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-4.png" alt="Image [4]"><br>（在高等数值分析课程上有学证明方法，解这类问题可以用cholesky、svd等算法）</p>
+<hr>
+<p>为什么要选这样的评价指标呢？其实是有原因的。<br>将真实值分解为预测值与误差两个部分（误差可以是我们考虑因素不全带来的，也可以是随机的噪声，且每个样本的误差是独立的，即误差是独立同分布的）<br>那么对于每个样本的误差即为<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-5.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-5.png" alt="Image [5]"></a><br>把误差换成真值-预测值，又可以变成条件概率，即<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-6.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-6.png" alt="Image [6]"></a><br>考虑整个样本集，则在我们给定预测参数的情况下，出现与真实情况一致的概率将是（用到了前面提到的单个样本误差独立同分布，直接乘即可）<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-7.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-7.png" alt="Image [7]"></a><br>那么我们就是要让预测参数尽可能准确，即这个可能性尽可能大。但是这种形式不太好看出来，对上式取对数，得到<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-8.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-8.png" alt="Image [8]"></a><br>为了最大化L，就要最小化第二项。第二项是什么？就是我们的最小平方代价函数。这就是为什么要取这个代价函数的一个解释。</p>
+<hr>
+<p>然后又探讨了局部加权线性回归Locally weighted linear regression<br>首先探讨了一下过拟合与欠拟合<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-9.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-9-1024x288.png" alt="Image [9]"></a><br>上图还是很棒的，第一个是欠拟合，只用直线拟合，中间加了平方项，最右边用了5阶多项式。可以看出，随着高次项的加入，拟合曲线可以和样本点越来越接近，但是你很难说最右边的情况比最左边的情况更有预测意义（学习的目的就是对位置的情况做判断吧）。</p>
+<p>而局部加权线性回归考虑的不是这种问题。它是假设你有足够多样本点，可以拟合出一个好函数。现在要预测一个点x的输出y，怎么让预测更准。这个算法是用权重来调节。我知道了要预测的输入点，那我就让训练集中靠近输入点的权重大一点，离得远的权重小一点。常用的权重选择函数<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-10.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-10.png" alt="Image [10]"></a></p>
+<hr>
+<h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><p>上面是拟合，下面是分类了</p>
+<p>为了过渡先聊了一下逻辑拟合？Logistic regression<br>和前面不同的是这次的函数形式从多项式变成了带指数项的分式<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-11.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-11.png" alt="Image [11]"></a><br>g(z)就很重要了，称为logistic function或者sigmoid function，在BP神经网络里用的也是这个东西（其实BP神经网络的学习就是一个梯度下降的过程）。<br>这种函数有一个重要的性质，就是导数g’(z)=g(z)[1-g(z)]<br>其实现在还是用拟合那一套来处理的，这就需要先弄个likelihood函数，即<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-12.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-12.png" alt="Image [12]"></a><br>（推导见原文件啦）<br>然后也是对它求导，每一步迭代的更新量就是<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-13.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-13.png" alt="Image [13]"></a><br>第二项就是导数，α是学习的速率（神经网络里称为学习率）</p>
+<hr>
+<p>接着介绍了牛顿法求零点。牛顿法是迭代算法，它的的理念很简单，就是不停地做切线，直到找到0点。</p>
+<p>一维情况当然很好理解，问题是怎么扩展到高维。公式变成<a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-14.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-14.png" alt="Image [14]"></a><br>H是海赛矩阵<br><a href="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-15.png" target="_blank" rel="external"><img src="http://www.wuyuanhao.com/wp-content/uploads/2015/09/Image-15.png" alt="Image [15]"></a><br>然后说通常情况，牛顿法比梯度下降法快（样本多了之后，求逆变得困难，就慢了）。</p>
+<hr>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag">#Machine Learning</a>
+          
+            <a href="/tags/机器学习/" rel="tag">#机器学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/18/美国游记下/" rel="next" title="美国游记（无图版）——下">
+                <i class="fa fa-chevron-left"></i> 美国游记（无图版）——下
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/09/30/机器学习lecture note2阅读笔记/" rel="prev" title="机器学习lecture note2阅读笔记">
+                机器学习lecture note2阅读笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="wuyhthu" />
+          <p class="site-author-name" itemprop="name">wuyhthu</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#回归"><span class="nav-number">1.</span> <span class="nav-text">回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分类"><span class="nav-number">2.</span> <span class="nav-text">分类</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wuyhthu</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'wuyuanhao';
+      var disqus_identifier = '2015/09/24/机器学习lecture note1阅读笔记/';
+      var disqus_title = "机器学习lecture note1阅读笔记";
+      var disqus_url = 'http://wuyuanhao.com/2015/09/24/机器学习lecture note1阅读笔记/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
