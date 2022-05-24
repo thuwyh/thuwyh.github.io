@@ -100,6 +100,6 @@ tag_archive:
 comments:
   provider: "disqus"
   disqus:
-    shortname: "multihead-attention"
+    shortname: "wuyuanhao"
 
 JEKYLL_ENV: "production"
