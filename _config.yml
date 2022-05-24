@@ -73,6 +73,7 @@ defaults:
       show_date: true
       share: true
       related: true
+      comments: true
 
 author:
   name     : "Yuanhao"
@@ -94,3 +95,11 @@ category_archive:
 tag_archive:
   type: liquid
   path: /tags/
+
+
+comments:
+  provider: "disqus"
+  disqus:
+    shortname: "multihead-attention"
+
+JEKYLL_ENV: "production"
