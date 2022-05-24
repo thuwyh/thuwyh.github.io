@@ -11,6 +11,7 @@ source "https://rubygems.org"
 # This is the default theme for new Jekyll sites. You may change this to anything you like.
 gem "github-pages", "~> 226", group: :jekyll_plugins
 gem "jekyll-include-cache", group: :jekyll_plugins
+gem "jekyll-remote-theme"
 gem "webrick"
 # gem "minimal-mistakes-jekyll"
 # gem "minima", "~> 2.5"
