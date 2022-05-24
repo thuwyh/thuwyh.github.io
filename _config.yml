@@ -39,6 +39,9 @@ locale: "zh-CN"
 # theme: minimal-mistakes-jekyll
 remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-remote-theme
@@ -100,6 +103,6 @@ tag_archive:
 comments:
   provider: "disqus"
   disqus:
-    shortname: "wuyuanhao"
+    shortname: "multihead-attention"
 
 JEKYLL_ENV: "production"
