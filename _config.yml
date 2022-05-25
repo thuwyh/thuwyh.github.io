@@ -125,11 +125,11 @@ comments:
 JEKYLL_ENV: "production"
 
 
-analytics:
-  provider: "google-gtag"
-  google:
-    tracking_id: "G-NWW8ZQMQ6Y"
-    anonymize_ip: false # default
+# analytics:
+#   provider: "custome"
+#   google:
+#     tracking_id: "G-NWW8ZQMQ6Y"
+#     anonymize_ip: false # default
 
 logo: "/assets/logo.png"
 
