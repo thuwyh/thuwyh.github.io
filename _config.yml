@@ -45,6 +45,8 @@ plugins:
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-remote-theme
+  - jekyll-seo-tag
+
 
 include:
  - _pages
