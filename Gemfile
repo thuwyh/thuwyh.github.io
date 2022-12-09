@@ -13,6 +13,8 @@ gem "github-pages", "~> 226", group: :jekyll_plugins
 gem "jekyll-include-cache", group: :jekyll_plugins
 gem "jekyll-remote-theme"
 gem "webrick"
+gem 'jekyll-seo-tag'
+
 # gem "minimal-mistakes-jekyll"
 # gem "minima", "~> 2.5"
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and

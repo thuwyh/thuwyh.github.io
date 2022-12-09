@@ -281,6 +281,7 @@ DEPENDENCIES
   jekyll-feed (~> 0.12)
   jekyll-include-cache
   jekyll-remote-theme
+  jekyll-seo-tag
   tzinfo (~> 1.2)
   tzinfo-data
   wdm (~> 0.1.1)
