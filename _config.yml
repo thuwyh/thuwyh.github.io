@@ -24,12 +24,10 @@ name: Yuanhao
 
 email: wuyhthu@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  AI算命，朋克养生
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "thuwyh.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-domain: "https://thuwyh.github.io"
+url: "https://www.yuanhao.site" # the base hostname & protocol for your site, e.g. http://example.com
+domain: "https://www.yuanhao.site"
 twitter_username: yuanhao
 github_username:  thuwyh
 repository: "thuwyh/thuwyh.github.io"
