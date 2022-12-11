@@ -8,6 +8,8 @@ tags:
     - 软件工程
 comments: true
 toc: true
+header:
+    teaser: /assets/bazaar.jpeg
 ---
 
 # 第五章 有多少眼球驯服了复杂度

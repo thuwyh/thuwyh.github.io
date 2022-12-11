@@ -9,6 +9,8 @@ tags:
     - NLP
 comments: true
 toc: true
+header:
+    teaser: /assets/KPE/Untitled4.png
 ---
 
 做了一段时间的新闻NLP，越来越感受到抓重点对长文本理解的重要性。类别、话题、关键词句这种离散标签对下游的推荐、搜索业务以及产品的形态都有很重大的影响。最近读了两篇关键短语抽取（Key Phrase Extraction，KPE）相关的论文，感觉挺有意思，跟大家分享一下。

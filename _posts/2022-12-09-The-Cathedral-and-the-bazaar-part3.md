@@ -8,6 +8,8 @@ tags:
     - 软件工程
 comments: true
 toc: true
+header:
+    teaser: /assets/bazaar.jpeg
 ---
 
 # 第九章 由 Fetchmail 学到的一些经验

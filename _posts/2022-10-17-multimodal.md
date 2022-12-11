@@ -11,6 +11,8 @@ tags:
     - TTS
 comments: true
 toc: true
+header:
+    teaser: /assets/recentAI/crow_and_bottle.png
 ---
 
 为了迎接宝宝的诞生，前段时间收集了一些中英文故事，做了一个讲故事小程序。
