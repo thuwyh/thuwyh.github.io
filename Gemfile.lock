@@ -280,6 +280,7 @@ DEPENDENCIES
   http_parser.rb (~> 0.6.0)
   jekyll-feed (~> 0.12)
   jekyll-include-cache
+  jekyll-paginate
   jekyll-remote-theme
   jekyll-seo-tag
   tzinfo (~> 1.2)

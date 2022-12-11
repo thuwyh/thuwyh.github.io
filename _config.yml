@@ -45,6 +45,7 @@ plugins:
   - jekyll-include-cache
   - jekyll-remote-theme
   - jekyll-seo-tag
+  - jekyll-paginate
 
 
 include:
@@ -134,3 +135,5 @@ JEKYLL_ENV: "production"
 
 logo: "/assets/logo.png"
 
+# paginate: 10
+# paginate_path: "/page:num/"

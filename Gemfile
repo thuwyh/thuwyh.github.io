@@ -14,6 +14,7 @@ gem "jekyll-include-cache", group: :jekyll_plugins
 gem "jekyll-remote-theme"
 gem "webrick"
 gem 'jekyll-seo-tag'
+gem 'jekyll-paginate'
 
 # gem "minimal-mistakes-jekyll"
 # gem "minima", "~> 2.5"
