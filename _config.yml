@@ -33,6 +33,7 @@ twitter:
 github_username:  thuwyh
 repository: "thuwyh/thuwyh.github.io"
 locale: "zh-CN"
+encoding: utf-8
 
 # Build settings
 # theme: minimal-mistakes-jekyll
@@ -45,7 +46,7 @@ plugins:
   - jekyll-include-cache
   - jekyll-remote-theme
   - jekyll-seo-tag
-  - jekyll-paginate
+  # - jekyll-paginate
 
 
 include:
