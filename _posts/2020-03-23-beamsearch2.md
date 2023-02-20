@@ -14,7 +14,7 @@ header:
 ---
 在上一篇文章中我们介绍了基础版的beam search，这篇文章是对它的一个扩展，可以在模型不改的情况下获得更好的生成结果。今天的介绍围绕的也是一篇蛮新的论文，[《The Curious Case of Neural Text Degeneration》](https://arxiv.org/abs/1904.09751 "The Curious Case of Neural Text Degeneration")，根据这篇论文的版面内容，它应该已经被ICLR 2020接收了。
 
-![论文截图](paper.png)
+![论文截图](/assets/beamsearch/paper.png)
 
 ## Beam Search的问题
 
@@ -41,7 +41,7 @@ México/Universidad Nacional Autónoma de ...”
 
 论文认为这种问题是由于这种试图最大化序列条件概率的解码策略从根上就有问题。他对比了给定同样引文的情况下人类续写和机器生成的词用语言模型计算出来的概率。如下图所示，人类选择的词（橙线）的概率并不是像机器选择的（蓝线）那样总是那些条件概率最大的词。从生成的结果也可以看出，机器生成的结果有大量重复。
 
-![概率对比图](probability.png)
+![概率对比图](/assets/beamsearch/probability.png)
 
 ## 解决对策
 人们其实尝试了各种办法对Beam Search进行改进，其实都很好理解，这篇论文总结的也比较到位。
@@ -60,7 +60,7 @@ $$p_i=\frac{\exp(y_i/T)}{\sum \exp(y_i/T)}$$
 
 为啥呢？因为这个概率分布变化比较大，有时候可能很均匀(flat)，有的时候比较集中(peaked)。对于集中的情况还好说，当分布均匀时，一个较小的k容易丢掉很多优质候选词。但如果k定的太大，这个方法又会退化回普通采样。
 
-![两种分布，左边是均匀的，右边是集中的](distribution.png)
+![两种分布，左边是均匀的，右边是集中的](/assets/beamsearch/distribution.png)
 
 ### 核采样（Nucleus sampling)
 首先表示我不确定这个翻译是不是对的。
@@ -73,7 +73,7 @@ $$ \sum_{x \in V}P(x)>p$$
 
 论文有一个图，对比了这几种采样方式的效果。
 
-![效果对比图，红字是前后不符，蓝字是重复。Nucleus效果拔群。](sample.png)
+![效果对比图，红字是前后不符，蓝字是重复。Nucleus效果拔群。](/assets/beamsearch/sample.png)
 
 ### 惩罚重复
 为了解决重复问题，还有可以通过**惩罚因子**将出现过词的概率变小或者**强制不使用重复词**来解决。惩罚因子来自于同样广为流传的[《CTRL: A Conditional Transformer Language Model for Controllable Generation》](https://arxiv.org/abs/1909.05858 "CTRL: A Conditional Transformer Language Model for Controllable Generation")。如果大家感兴趣的话后面可以专门写一期可控文本生成方向的解读。
