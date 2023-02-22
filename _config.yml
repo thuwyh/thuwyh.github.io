@@ -105,6 +105,9 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/thuwyh"
+    - label: "知乎"
+      icon: "fab fa-fw fa-zhihu"
+      url: "https://www.zhihu.com/people/fjshwyh"
     
 sidebar:
   - title: "公众号"
