@@ -95,7 +95,7 @@ defaults:
 
 author:
   name     : "Yuanhao"
-  # avatar   : "/assets/avatar.jpeg"
+  avatar   : "/assets/avatar.jpeg"
   bio      : "技术男，过气Kaggle Grandmaster"
   location : "Shanghai, China"
   links:
@@ -141,3 +141,10 @@ logo: "/assets/logo.png"
 
 # paginate: 10
 # paginate_path: "/page:num/"
+
+footer:
+  links:
+    - label: "Terms of Use"
+      url: "/terms/"
+    - label: "Privacy"
+      url: "/privacy/"
