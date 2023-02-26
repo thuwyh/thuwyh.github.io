@@ -6,7 +6,9 @@ categories:
     - 深度学习
 tags: 
     - 序数回归
-    - Ordinal Regression
+    - "Ordinal Regression"
+    - 分类
+    - 回归
 comments: true
 toc: true
 header:
