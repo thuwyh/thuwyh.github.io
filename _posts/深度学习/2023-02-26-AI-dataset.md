@@ -21,7 +21,7 @@ header:
     teaser: /assets/largelm/common_crawl.png
 ---
 
-最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉最近有很多课需要补一下。恰好昨天[Meta发了新的大模型论文](https://scontent-xsp1-1.xx.fbcdn.net/v/t39.8562-6/333078981_693988129081760_4712707815225756708_n.pdf?_nc_cat=108&ccb=1-7&_nc_sid=ad8a9d&_nc_ohc=ov6yTHfLfNQAX8WM6j3&_nc_ht=scontent-xsp1-1.xx&oh=00_AfDQq_MRNvWE4p7Hz5MrPQzYHuoBvWDmv9LMuPByqlsJCA&oe=63FFCFA2 "LLaMA论文")，浏览了一下发现很适合作为补课的切入点。想必大家最近也都对语言AI比较感兴趣，就发出来和大家交流。
+最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉有很多课需要补。恰好昨天[Meta发了新的大模型论文](https://scontent-xsp1-1.xx.fbcdn.net/v/t39.8562-6/333078981_693988129081760_4712707815225756708_n.pdf?_nc_cat=108&ccb=1-7&_nc_sid=ad8a9d&_nc_ohc=ov6yTHfLfNQAX8WM6j3&_nc_ht=scontent-xsp1-1.xx&oh=00_AfDQq_MRNvWE4p7Hz5MrPQzYHuoBvWDmv9LMuPByqlsJCA&oe=63FFCFA2 "LLaMA论文")，浏览了一下发现很适合作为补课的切入点。
 
 今天这部分是关于预训练使用的**数据集**，是重中之重，说数据是当代AI的基石一点也不为过。GPT3用的数据其实没有公开，Meta这次论文里提到的应该算是开源模型里一个最全的版本。他们使用的数据如下表所示，我们一一来看一下。
 
@@ -54,18 +54,18 @@ CommonCrawl网站截图
 ## C4
 占比第二大的数据集是C4，他的全称是Colossal Clean Crawled Corpus（4个C，所以叫C4）。这个数据集是在CommonCrawl数据集的基础上后处理而来。
 
-根据C4官网的介绍，用500个worker处理CommonCrawl数据集得到C4数据集需要大约16个小时
+根据[C4官网](https://www.tensorflow.org/datasets/catalog/c4)的介绍，用500个worker处理CommonCrawl数据集得到C4数据集需要大约16个小时
 
 > The C4 dataset we created for unsupervised pre-training is available in TensorFlow Datasets, but it requires a significant amount of bandwidth for downloading the raw Common Crawl scrapes (~7 TB) and compute for its preparation (~335 CPU-days). We suggest you take advantage of the Apache Beam support in TFDS, which enables distributed preprocessing of the dataset and can be run on Google Cloud Dataflow. With 500 workers, the job should complete in ~16 hours.
 
 ## Github
-第三占比的事Github数据集，这个在多年以前的预训练语言模型例如BERT、GPT里几乎没有人用。之前似乎看过一种说法是代码数据的加入对语言模型的逻辑推理能力有极大的帮助。这个点后面计划专门花点时间学习。
+第三占比的是Github数据集，这个在多年以前的预训练语言模型例如BERT、GPT里几乎没有人用。之前似乎看过一种说法是代码数据的加入对语言模型的逻辑推理能力有极大的帮助。这个点后面计划专门花点时间学习。
 
 ## Wikipedia
-维基百科数据因为质量高、覆盖面广是预训练语言模型的常用语料了，多年之前大家就爱使用。和Books数据集一道基本是预训练语言模型的标配。不过这里有一个很有趣的数字是整个维基百科的数据量只有不到100GB，甚至比github上的代码还少，这可是人类很大一部分知识啊。
+维基百科数据因为质量高、覆盖面广是预训练语言模型的常用语料了，多年之前大家就爱使用。和Books数据集一道基本是预训练语言模型的标配。这里有一个很有趣的数字是整个维基百科的数据量只有不到100GB，甚至比github上的代码还少，这可是人类很大一部分知识啊。
 
 ![Deberta论文里不同预训练模型使用数据的对比](/assets/largelm/deberta_data.png)
-Deberta论文里不同预训练模型使用数据的对比
+Deberta论文里不同预训练模型使用数据的对比。所有模型和2023年的大模型比数据量都小了一个量级
 {: .align-caption style="text-align:center;font-size:smaller"}
 
 ## Books
