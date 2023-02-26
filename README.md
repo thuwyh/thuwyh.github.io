@@ -1,5 +1,5 @@
 ```
-LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8" JEKYLL_ENV=production bundle exec jekyll serve
+LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8" JEKYLL_ENV=production bundle exec jekyll serve --incremental
 ```
 
 ```

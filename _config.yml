@@ -82,21 +82,13 @@ defaults:
       share: true
       related: true
       comments: true
-      sidebar:
-        - title: ""
-          text: "-"
-        - title: ""
-        - title: ""
-          text: "欢迎关注同名公众号【多头注意力】获得更好的阅读体验"
-        - title: ""
-          image: "/assets/qr.jpeg"
-          image_alt: "QR"
+
           
 
 author:
   name     : "Yuanhao"
   avatar   : "/assets/avatar.jpeg"
-  bio      : "技术男，过气Kaggle Grandmaster"
+  bio      : "技术男，过气Kaggle Grandmaster。欢迎关注同名公众号【多头注意力】"
   location : "Shanghai, China"
   links:
     - label: "Kaggle"
