@@ -17,11 +17,16 @@ header:
 ---
 
 可能是网站slogan：AI算命，朋克养生的关系，最近我看google search console后台总是有很多"Chatgpt算命"这个查询导致的网站展现。
-既然大家有这个需求，我就上网搜索了一下如何使用chatgpt算命。
+既然大家有这个需求，我就实践SEO里面的方法，上网搜索了一下如何使用chatgpt算命，总结在这个文章里。
 
-基本上，这要用到chatgpt的"角色扮演"功能，让它站在算命者的角度回答你的问题。
+![好多chatgpt算命的查询](/assets/ChatGPT/search.png)
+好多chatgpt算命的查询
+{: .align-caption style="text-align:center;font-size:smaller"}
 
-先从英文开始，英文里算命先生叫做fortune teller，那么我们可以这么问chatgpt
+
+基本上，这要用到chatgpt的**"角色扮演"**功能，让它站在算命者的角度回答你的问题。
+
+先从英文开始，英文里算命先生叫做**fortune teller**，那么我们可以这么问chatgpt
 
 > Act like a coffee fortune teller, I can see a cat shape in the corner of the cup, what is its meaning?
 
