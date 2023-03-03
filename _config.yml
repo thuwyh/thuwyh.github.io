@@ -82,6 +82,8 @@ defaults:
       share: true
       related: true
       comments: true
+      layout: "single"
+      toc: false
 
           
 
