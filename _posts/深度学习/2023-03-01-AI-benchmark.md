@@ -12,95 +12,99 @@ tags:
     - LLaMA
     - "zero-shot"
     - "few-shot"
+    - RACE
+    - HumanEval
+    - MMLU
 comments: true
 toc: true
 header:
-    teaser: /assets/largelm/common_crawl.png
+    teaser: /assets/largelm/common_sense.png
 ---
 
-上一篇文章介绍了大模型是用什么数据训练的，这一篇文章重点来看大模型的评价方法。Chatgpt这轮出圈很大原因是对话这种评价方式非常直观，普通大众就可以从对话质量看出来现在的模型比之前的"人工智障"
+上一篇文章介绍了大模型是用什么数据训练的，这一篇文章重点来看大模型的评价方法。Chatgpt这轮出圈很大原因是对话这种评价方式非常直观，普通大众就可以从对话质量看出来现在的模型比之前的"人工智障"要强很多。但真正开发大模型肯定不能用这种方式，不仅效率低、价格高，还存在不小的主观因素。这篇文章就来总结一下大模型的评价方式。
 
-最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉有很多课需要补。恰好昨天[Meta发了新的大模型论文](https://scontent-xsp1-1.xx.fbcdn.net/v/t39.8562-6/333078981_693988129081760_4712707815225756708_n.pdf?_nc_cat=108&ccb=1-7&_nc_sid=ad8a9d&_nc_ohc=ov6yTHfLfNQAX8WM6j3&_nc_ht=scontent-xsp1-1.xx&oh=00_AfDQq_MRNvWE4p7Hz5MrPQzYHuoBvWDmv9LMuPByqlsJCA&oe=63FFCFA2 "LLaMA论文")，浏览了一下发现很适合作为补课的切入点。
+还是先来看LLaMA论文里使用的评价指标。LLaMA里一共使用了**20种数据集（或任务）**来评估和对比模型。这些任务可以分为两大设定：零样本任务和少样本任务，涵盖以下几个大类
 
-今天这部分是关于预训练使用的**数据集**，是重中之重，说数据是当代AI的基石一点也不为过。GPT3用的数据其实没有公开，Meta这次论文里提到的应该算是开源模型里一个最全的版本。他们使用的数据如下表所示，我们一一来看一下。
+- 常识推断
+- 闭卷问答
+- 阅读理解
+- 数学推理
+- 代码生成
+- 大规模多任务语言理解
 
-|Dataset| Sampling prop.| Epochs| Disk size|
-| --- | --- | --- | --- |
-|CommonCrawl| 67.0% |1.10 |3.3 TB|
-|C4| 15.0% |1.06 |783 GB|
-Github| 4.5% |0.64 |328 GB
-Wikipedia| 4.5% |2.45 |83 GB
-Books| 4.5% |2.23 |85 GB
-ArXiv| 2.5% |1.06 |92 GB
-StackExchange| 2.0%| 1.03| 78 GB
+下面一一来看。
 
-## CommonCrawl
-占比最大的数据集，他们的网站是[https://commoncrawl.org/](https://commoncrawl.org/)。我感觉这真是一个伟大的项目，7年时间爬了超多的互联网网页，涵盖了40种语言。
+## 常识推断
+这个任务用了8个数据集，分别是BoolQ、PIQA、SIQA、HellaSwag、WinoGrande、ARC easy, ARC challenge和OpenBookQA。不同数据集有不同的形式，包括填空、威诺格拉德模式挑战（英语：Winograd Schema Challenge，缩写WSC）、多选问答。这些数据集在评价中都属于零样本，就是让模型通过预训练来直接回答问题。
 
-![CommonCrawl](/assets/largelm/common_crawl.png)
-CommonCrawl网站截图
+> 一个威诺格拉德模式的例子为：“	市议会拒绝给示威者颁发许可，因为他们[担心/宣扬]暴力。	”
+当这句陈述中使用“担心”一词时，前面的“他们”指的是市议会。而当使用“宣扬”一词时，“他们”所指的则变成了示威者。人类通过常识可以很简单地看出两种情况下“他们”所指分别为何，但对于机器而言这个问题则十分困难。
+
+![不同模型常识推断结果比较](/assets/largelm/common_sense.png){: .align-center style="width:80%"}
+不同模型常识推断结果比较
 {: .align-caption style="text-align:center;font-size:smaller"}
 
-根据他们[博客](https://commoncrawl.org/connect/blog/)的最新数据，2023年二月版的数据包含了400TB的数据（纯文本的数据是9个多tb），三十多亿个网页。
+## 闭卷问答
+这个任务包括两个数据集[Natural Questions](https://ai.google.com/research/NaturalQuestions)和TriviaQA。所谓闭卷，是相对于数据集原来的设定来说的。已Natural Questions为例，原来的设定是模型可以访问相关维基百科文本，然后根据百科内容回答问题。然而在评价大语言模型的时候，就不给看这个维基页面了。闭卷问答包括zero shot和few shot两种设定。zero shot很好理解，跟上面的常识推断很像，下面是论文附录里few shot的例子，实际上就是列几个问答对作为context。我目前还不太懂这种无关问答对对模型回答问题有什么帮助。
 
-> The crawl archive for January/February 2023 is now available! The data was crawled January 26 – February 9 and contains 3.15 billion web pages or 400 TiB of uncompressed content. Page captures are from 40 million hosts or 33 million registered domains and include 1.3 billion new URLs, not visited in any of our prior crawls.
+>Context → Answer these questions:
+Q: Who sang who wants to be a millionaire in high society? 
+A: Frank Sinatra
+Q: Who wrote the book the origin of species? 
+A:
+Target -> Charles Darwin
 
-而LLaMa里面CommonCrawl的数据只有3个多TB，大概是总数据量的三分之一。可见数据的后处理工作量是相当大的。
+## 阅读理解
+阅读理解和前面提到的开卷问答有一点像。只是常见的阅读理解数据集用于支撑问题回答的背景材料比较短（相比于NQ里的维基页面）。在LLaMA论文里，使用的是[RACE](https://www.cs.cmu.edu/~glai1/data/race/ "RACE")数据集，这个数据集对于做过阅读理解的朋友一定不陌生，是为初高中中文学生设计的英语阅读理解题。
 
-> We preprocess five CommonCrawl dumps, ranging from 2017 to 2020, with the [CCNet](https://github.com/facebookresearch/cc_net) pipeline (Wenzek et al.,2020). This process deduplicates the data at the line level, performs language identification with a fastText linear classifier to remove non-English pages and filters low quality content with an ngram language model.
-
-
-## C4
-占比第二大的数据集是C4，他的全称是Colossal Clean Crawled Corpus（4个C，所以叫C4）。这个数据集是在CommonCrawl数据集的基础上后处理而来。
-
-根据[C4官网](https://www.tensorflow.org/datasets/catalog/c4)的介绍，用500个worker处理CommonCrawl数据集得到C4数据集需要大约16个小时
-
-> The C4 dataset we created for unsupervised pre-training is available in TensorFlow Datasets, but it requires a significant amount of bandwidth for downloading the raw Common Crawl scrapes (~7 TB) and compute for its preparation (~335 CPU-days). We suggest you take advantage of the Apache Beam support in TFDS, which enables distributed preprocessing of the dataset and can be run on Google Cloud Dataflow. With 500 workers, the job should complete in ~16 hours.
-
-## Github
-第三占比的是Github数据集，这个在多年以前的预训练语言模型例如BERT、GPT里几乎没有人用。之前似乎看过一种说法是代码数据的加入对语言模型的逻辑推理能力有极大的帮助。这个点后面计划专门花点时间学习。
-
-## Wikipedia
-维基百科数据因为质量高、覆盖面广是预训练语言模型的常用语料了，多年之前大家就爱使用。和Books数据集一道基本是预训练语言模型的标配。这里有一个很有趣的数字是整个维基百科的数据量只有不到100GB，甚至比github上的代码还少，这可是人类很大一部分知识啊。
-
-![Deberta论文里不同预训练模型使用数据的对比](/assets/largelm/deberta_data.png)
-Deberta论文里不同预训练模型使用数据的对比。所有模型和2023年的大模型比数据量都小了一个量级
+![RACE数据集样例](/assets/largelm/race.png){: .align-center style="width:80%"}
+RACE数据集样例
 {: .align-caption style="text-align:center;font-size:smaller"}
 
-## Books
-论文里的books数据集特指books3，这个数据集没有特别正式的官网，其介绍出现在一个[github issue](https://github.com/soskek/bookcorpus/issues/27#issuecomment-716104208 "Books3")里。根据作者的介绍，它包含了约20万本书籍。
+## 数学推理
+从这里开始都是比较有意思任务，感觉也是这一两年才开始有人搞。这个任务用了两个数据集MATH和[GSM8k](https://github.com/openai/grade-school-math)（OpenAI搞的数据集）。其中MATH数据集包含了一万多条初高中数学题，GSM8k是初衷数学题。特别注意的是MATH是用LaTeX写的，也就是说并不全是自然语言，而有点像代码阅读了。
 
->books3.tar.gz (37GB), aka "all of bibliotik in plain .txt form", aka 197,000 books processed in exactly the same way as I did for bookcorpus here. So basically 11x bigger.
-
-这个数据集也是社区共同努力的结果
-
-> This is possible thanks to two organizations. First and foremost, thank you to the-eye.eu. They have a wonderful community (see discord), and they are extremely interested in archiving data for the benefit of humanity.
-Secondly, thank you to "The Pile", which is the project that has been meticulously gathering and preparing this training data. Join their discord if you're interested in ML: https://www.eleuther.ai/get-involved
-
-略显讽刺的是，以Open命名的OpenAI却没有公开他们在论文里使用的`Books2`数据集。
-
-> books3.tar.gz seems to be similar to OpenAI's mysterious "books2" dataset referenced in their papers. Unfortunately OpenAI will not give details, so we know very little about any differences. People suspect it's "all of libgen", but it's purely conjecture. Nonetheless, books3 is "all of bibliotik", which is possibly useful to anyone doing NLP work.
-
-## ArXiv
-这个数据集感觉也是最近几年才流行加到预训练语言模型里的。学术论文的逻辑性比较强，我估计这也和近年来模型的推理能力提升有密切的关系。
-
-## StackExchange
-StackOverflow各位读者，特别是码农朋友可能更加熟悉，StackExchange可以理解为是它的超集。StackExchange包含有不限于计算机的各种各样不同领域的高质量问答。在LLaMA的训练数据里，Meta只保留了若干个子领域。
-
-> We kept the data from the 28 largest websites, removed the HTML tags from text and sorted the answers by score (from highest to lowest).
-
-## 小结
-我感觉除了Books以外CommonCrawl应该包含了剩下的其他数据集，Meta在训练的时候还显示地加入它们，是否等价于调整了数据的权重让高质量的网络内容出现地更多一些？论文中在C4数据集处有提到一点原因，说是加入不同预处理的数据有助于模型提升。
-
-> During exploratory experiments, we observed that using diverse pre-processed CommonCrawl datasets improves performance.
-
-从这个角度看，要训练一个高质量的基础模型真的是有很多细节需要掌握，不是简单地堆数据、堆算力就能搞定的。
-
-另外，我今天在微博上看到有人嘲讽说Meta一开源，国内的“自主创新”马上就要来了。但其实不难看出这个模型里中文语料的比例应该是很低的。首先最大头CommonCrawl只保留了英文，维基只保留了拉丁语系20种语言的内容，ArXiv和StackExchange上面本来就几乎没有中文。也就是说，中文基本只有可能比较大规模地出现在Books和Github这两块。如此说来，这个模型的中文水平应该不会好到哪里去，这个博主也有点为黑而黑的意思。
-
-![国内模型将迎来共产主义？](/assets/largelm/weibo.jpeg){: .align-center style="width:40%"}
-国内模型将迎来共产主义？
+![GSM8k样例](/assets/largelm/gsm8k.png){: .align-center style="width:80%"}
+GSM8k样例
 {: .align-caption style="text-align:center;font-size:smaller"}
 
-3年前[GPT3的repo](https://github.com/openai/gpt-3/blob/master/dataset_statistics/languages_by_document_count.csv "GPT3 training data by language")里有个按照语言统计的数据量，在文档维度，中文只占到了**0.11631%**。从这个角度，各位家长一定要坚持让孩子学好英文，即使将来人工智能真的到来了，最好的版本一定是用英文交互的。
+## 代码生成
+这是个令码农颤抖的任务，包括两个数据集[HumanEval](https://github.com/openai/human-eval)和MBPP，两个数据集都是2021年才出来的，非常新。两个数据集里模型输入都包含一个功能描述和一些输入输出样例，在HummanEval数据集里，函数的的定义也给出了。模型根据这些信息写一个Python函数，看能否通过测试样例。HumanEval也是OpenAI搞的数据集，看到这里，我感觉真的是被OpenAI的创造性折服了，贡献了这么多数据集真的是引领了行业的发展。下面是HumanEval数据集的一个测试问题。
+
+![HumanEval数据集样例](/assets/largelm/humaneval.png){: .align-center style="width:80%"}
+HumanEval数据集样例
+{: .align-caption style="text-align:center;font-size:smaller"}
+
+模型的评价指标称为pass@x。pass@1就是greedy生成结果的测例通过率。大家一定很好奇模型的水平到底如何，可以看下面这张图。总的来说，通过率还是挺低的，而且从上面的例子看问题也不算复杂。有意思的地方是pass@100是远高于pass@1的，pass@100是概率采样生成100次能通过的概率，这还真有点像我们写程序，多试几次总是能跑通的。。
+
+![Code Generation结果](/assets/largelm/code_generation.png){: .align-center style="width:80%"}
+Code Generation结果
+{: .align-caption style="text-align:center;font-size:smaller"}
+
+## 大规模多任务语言理解
+这是一个2020年推出的数据集，名叫[MMLU](https://arxiv.org/abs/2009.03300)，是选择题的形式，内容包括了科学、社会学等等多个方面。在这个任务数LLaMA落后于Chinchilla-70B和 PaLM-540B，META的作者推测这是因为LLaMA的训练数据里书籍的数量比较少。参考上一篇文章，书籍和ArXiv加起来是177GB，而对标的两个模型使用了足足2TB之多的书籍数据。
+
+![MMLU数据集样例，知识的深度要求比较高，但看上去还是概念性为主](/assets/largelm/mmlu.png){: .align-center style="width:80%"}
+MMLU数据集样例
+{: .align-caption style="text-align:center;font-size:smaller"}
+
+这个数据集的Few-shot形式和前面也类似，就是放几个给出答案的问答对，再跟一个需要模型回答的问题，然后留一个空。
+
+![MMLU Few-shot设定](/assets/largelm/mmlu_few_shot.png){: .align-center style="width:80%"}
+MMLU Few-shot设定
+{: .align-caption style="text-align:center;font-size:smaller"}
+
+
+## 训练对指标的影响
+LLaMA这篇论文还报告了一个比较符合预期的结果，就是随着训练进程的推进，模型在上面这几个数据集上的表现是在提升的。这可以解释为什么这篇论文他们选择用比其他模型更多的数据来训练模型，而没有往更大模型的方向走。
+
+![训练过程中模型水平的提高](/assets/largelm/evolution.png){: .align-center style="width:80%"}
+训练过程中模型水平的提高
+{: .align-caption style="text-align:center;font-size:smaller"}
+
+## 总结
+生成式模型在NLP里面真的统一了原来五花八门的任务，原来做阅读理解都是预测span，现在直接给生成答案了。
+
+回望从2018年GPT2至今，学术界和工业界真是没少搞数据集。之前的文章我也表达过这个观点：数据集是深度学习，或者时髦点说是人工智能这门学科发展的北极星。正是这些数据集的出现，人们可以评估、比较模型的结果，涌现更多的科学发现。在上一篇讲语言模型数据集的文章里我们发现中文在数据中所占比例不大，在今天的benchmark数据集里同样也难见到中文的影子。这方面不得不佩服百度，他们和中国计算机学会一起搞了个[千言数据平台](https://www.luge.ai/#/)，感觉是国内中文数据集比较齐全的地方了，但总体质量和英语数据集还是有一些差距。下周他们的文心一言就要发布了，且看能否打响中文大语言模型的第一枪。
+
 
