@@ -41,7 +41,7 @@ header:
 当这句陈述中使用“担心”一词时，前面的“他们”指的是市议会。而当使用“宣扬”一词时，“他们”所指的则变成了示威者。人类通过常识可以很简单地看出两种情况下“他们”所指分别为何，但对于机器而言这个问题则十分困难。
 
 ![不同模型常识推断结果比较](/assets/largelm/common_sense.png){: .align-center style="width:80%"}
-不同模型常识推断结果比较
+不同模型常识推断结果比较。​这种常识问题现在的模型基本都能对个​六成以上。
 {: .align-caption style="text-align:center;font-size:smaller"}
 
 ## 闭卷问答
