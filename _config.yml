@@ -131,7 +131,7 @@ JEKYLL_ENV: "production"
 #     tracking_id: "G-NWW8ZQMQ6Y"
 #     anonymize_ip: false # default
 
-logo: "/assets/logo.png"
+logo: "/assets/multihead_no_text.png"
 
 # paginate: 10
 # paginate_path: "/page:num/"
