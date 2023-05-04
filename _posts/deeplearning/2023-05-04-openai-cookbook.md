@@ -126,7 +126,7 @@ response = openai.ChatCompletion.create(
 )
 ```
 
-这种玩法是网页版用户没法做到的，网页版提供的例子实际上全是写在了某一个user轮里。
+这种玩法是网页版用户没法做到的，网页版提供的例子做few-shot实际上全是写在了某一个user轮里。
 
 ## 进阶玩法
 
