@@ -33,4 +33,4 @@ header:
 
 ![](/assets/vicuna/compare1.png)
 ![](/assets/vicuna/compare2.png)
-![](/assets/vicuna/knowledge.png)
+![](/assets/vicuna/knowledge.jpeg)
