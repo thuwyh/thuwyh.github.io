@@ -1,0 +1,45 @@
+最近跟不少做电商NLP的朋友们聊天，有不少收获。我之前从来没想过【搜索】在电商里的地位是如此重要，可能GMV的50%以上都是从搜索来的。巨大的经济价值也极大地推动了技术的发展，他们的工作做得很细致，毕竟一个百分点的点击率后购买率提升也许对应的就是几百亿的成交额。
+
+其实之前做的汽车领域NLP工作跟电商有很多相似的地方，场景先验都非常重要。直接使用开放域语料预训练的语言模型效果并不好。我们也尝试过一些方法，例如用本领域语料训练语言模型，结合一些词库词典等等。今天介绍最近看到的一篇针对电商场景调优BERT的论文[《E-BERT: Adapting BERT to E-commerce with Adaptive Hybrid Masking and Neighbor Product Reconstruction》](https://arxiv.org/pdf/2009.02835 "E-BERT: Adapting BERT to E-commerce with Adaptive Hybrid Masking and Neighbor Product Reconstruction")，其中的一些方法应该对细分领域NLP都有一些启发。
+
+# 方法
+论文的创新方法主要有两个：Adaptive Hybrid Masking（AHM，自适应混合掩码）和Neighbor Product Reconstruction（NPR，相似商品重构）。
+
+![E-BERT总览](overview.png)
+
+## AHM
+第一个方法AHM其实是对已有掩码方式的改进。原始版本的BERT采用的是随机mask，这个大家应该都比较清楚。这种mask方式针对的是token，而众所周知token是由单词通过wordpiece tokenizer分割而来。所以这种方式遮盖住的可能是单词的一个部分，学习这种类似看三个字母猜剩下四个字母的任务不是很符合大家的直觉。随后就诞生了更加符合人类认知的`Whole Word Masking`，这个方法就是说要遮就遮整个词。这里用一个网上的例子帮大家理解
+
+```
+Input Text: the man jumped up , put his basket on phil ##am ##mon ' s head
+Original Masked Input: [MASK] man [MASK] up , put his [MASK] on phil [MASK] ##mon ' s head
+Whole Word Masked Input: the man [MASK] up , put his basket on [MASK] [MASK] [MASK] ' s head
+```
+
+philammon是一个词，他会被tokenizer分解成三个token，这时就体现了普通mask和WWM的区别。
+
+怎么继续改进遮盖方法呢，一个比较直观的方向是继续提高遮盖的整体性。前面是从token走到了word，可以继续往前走一步到phrase。这个方向其实之前有人做了，比如[`SpanBert`](http://arxiv.org/abs/1907.10529 "SpanBERT: Improving Pre-training by Representing and Predicting Spans")随机mask一小段，[`ERNIE`](http://arxiv.org/abs/1905.07129 "ERNIE: Enhanced Language Representation with Informative Entities")mask实体等等。这篇论文做了两个工作，一个是进一步提升遮盖phrase的质量，用了一种叫[`AutoPhrase`](https://github.com/shangjingbo1226/AutoPhrase "AutoPhrase")的方法来构建高质量的电商短语集合；第二个是设计了一套自适应机制，让模型训练在词语遮盖和短语遮盖间切换，两个方面合在一起就叫做AHM。
+
+AHM总体的流程如下图所示。对于一句输入，首先用两种方式进行mask，左边是常规word mask，右边是phrase mask，然后输入到BERT，分别得到MLM的loss，Lw和Lp。然后用一个函数f，根据两个loss计算变量$\alpha$，跟预设的超参数$r$进行比较，如果$r<\alpha$就用word masking，反之就用phrase masking。$\alpha$的计算其实可以有很多方法，论文也没有在这块做对比实验，我也就不展开，大家有兴趣可以去看原文。
+
+![AHM总体流程](AHM.png)
+
+## NPR
+NPR是个比较有意思的部分，直观的解释是希望能通过一个商品重建出另一个相似商品的隐空间表示。具体的做法是把两个商品a和b的文本内容送进Bert，得到各自的embedding矩阵；然后对这两个句子做交叉注意力，得到注意力矩阵，然后用注意力矩阵加权a的embedding得到重构后的b的embedding，反过来也从b重构a。得到重构后的embedding后再和原embedding计算距离作为loss，论文采用的是欧氏距离。只做相似商品重构还不够，论文还引入了不相似商品（随机采样）作为负样本，采用triplet loss来计算最终的重构损失。
+
+![NPR示意图](NPR.png)
+
+# 效果
+论文的实验和结果比较部分做的比较全面。
+
+先介绍一下对照实验涉及的模型。baseline是裸BERT（BERT Raw），用电商数据finetune过的Bert外加SpanBERT作为对照组，finetune有两种方法，分别是word masking的Bert和phrase masking的Bert NP。实验组是各种配置的E-Bert，包括只使用phrase masking的E-Bert-DP，使用AHM的E-Bert-AHM和AHM+NPR的E-Bert。
+
+评估效果使用了4个电商场景场景的下游任务，Review-based Question Answering（基于评论的问答），Review Aspect Extraction（评论方面抽取？），Review Aspect Sentiment Classification（评论情感分类）和Product Classification（商品类别分类）。
+
+不同模型在不同任务上的结果如下图
+
+![模型结果](result.png)
+
+从结果可以看出E-BERT在各种任务上都大幅领先裸BERT，甚至也大幅领先基于领域语料预训练过的BERT。文章的方法其实可以在任何的垂直领域中使用，可以说相当的实用。
+
+最近一个讨论比较多的问题是在BERT时代，NLP算法工程师的价值是什么？我想这个结果可以从一个侧面给答案，知道如何在模型中引入行业先验知识是可以大大提高模型在特定场景的表现的，即使如BERT这样自身很强的超级模型也不例外。

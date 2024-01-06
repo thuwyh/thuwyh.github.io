@@ -1,0 +1,64 @@
+baseURL = 'https://www.yuanhao.site'
+languageCode = 'zh-CN'
+title = '多头注意力'
+theme = "PaperMod"
+
+[[menu.main]]
+identifier = "archive"
+name = "Archive"
+url = "archive"
+weight = 10
+
+[[menu.main]]
+identifier = "categories"
+name = "Categories"
+url = "/categories/"
+weight = 10
+
+[[menu.main]]
+identifier = "tags"
+name = "Tags"
+url = "/tags/"
+weight = 20
+
+[[socialIcons]]
+name = "twitter"
+url = "https://twitter.com/"
+
+[[socialIcons]]
+name = "stackoverflow"
+url = "https://stackoverflow.com"
+
+[[socialIcons]]
+name = "github"
+url = "https://github.com/thuwyh"
+
+[params]
+subtitle = "AI算命 朋克养生"
+ShowReadingTime = true
+ShowShareButtons = true
+ShowPostNavLinks = true
+ShowBreadCrumbs = true
+ShowAllPagesInArchive = true
+ShowPageNums = true
+ShowToc = true
+
+
+  [params.assets]
+  favicon = "favicon.ico"
+
+  [params.homeInfoParams]
+  Title = "Hi there 👋"
+  Content = "欢迎关注同名公众号【多头注意力】"
+
+  [[params.socialIcons]]
+  name = "kaggle"
+  url = "https://www.kaggle.com/wuyhbb"
+
+  [[params.socialIcons]]
+  name = "zhihu"
+  url = "https://www.zhihu.com/people/fjshwyh"
+
+  [[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/thuwyh"
