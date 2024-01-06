@@ -4,6 +4,12 @@ title = '多头注意力'
 theme = "PaperMod"
 
 [[menu.main]]
+identifier = "home"
+name = "Home"
+url = "/"
+weight = 1
+
+[[menu.main]]
 identifier = "archive"
 name = "Archive"
 url = "archive"
@@ -46,7 +52,9 @@ comments = true
 
 
   [params.assets]
-  favicon = "favicon.ico"
+  favicon = "/assets/favicon.ico"
+  favicon16x16 = "/assets/favicon.ico"
+  favicon32x32 = "/assets/favicon.ico"
 
   [params.homeInfoParams]
   Title = "Hi there 👋"
