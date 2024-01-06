@@ -42,6 +42,7 @@ ShowBreadCrumbs = true
 ShowAllPagesInArchive = true
 ShowPageNums = true
 ShowToc = true
+comments = true
 
 
   [params.assets]
@@ -62,3 +63,9 @@ ShowToc = true
   [[params.socialIcons]]
   name = "github"
   url = "https://github.com/thuwyh"
+
+[services]
+  [services.disqus]
+    shortname = 'multihead-attention'
+  [services.googleAnalytics]
+    id = 'G-NWW8ZQMQ6Y'
