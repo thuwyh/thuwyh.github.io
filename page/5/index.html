@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.121.2"><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>多头注意力</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="多头注意力" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多头注意力"/>
+<meta name="twitter:description" content=""/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "多头注意力",
+  "url": "https://www.yuanhao.site",
+  "description": "",
+  "thumbnailUrl": "https://www.yuanhao.site/favicon.ico",
+  "sameAs": [
+      "https://www.kaggle.com/wuyhbb", "https://www.zhihu.com/people/fjshwyh", "https://github.com/thuwyh"
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">2021面试总结
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>今年由于各种原因参加了很多面试，面过的候选人可能快一百个了。其中有经验丰富的高P，也有初出茅庐的应届生。面的多了之后不仅能发现候选人的问题，也能发现自己作为面试官的问题。就像古人说的，千里马常有而伯乐不常有，为了以后能更好地评估候选人（主要是工程师）的水平，我做了一些总结，也分享出来跟大家讨论。
+明确要招什么样的人 正所谓看人下菜碟，在面试之前要对候选人有个大致的定位，当然这个不是静态的，可以在面试的过程中调整。总体来说我目前接触过的大概分成三类
+工具人。对应的大概是三年以内工作经验的人，可以完成安排的任务，不需要考虑为什么做这个。 能独立解决问题的人。三年以上经验的候选人我会期待他能够在工具人的基础上具有方案设计能力，如果能有一些业务洞察就更好了。 能带团队做业务的人。带队大佬还聊得不多，这篇就先不谈。 考察什么 目前我认为有以下三个方面需要考察：
+业务能力 专业技能 数理逻辑能力 知识面 三观 软技能 沟通能力 领导力 首先业务能力达标是候选人需要满足的基本要求；然后是三观，跟一个价值取向正确、积极向上、有趣的人一起工作一点会让自己和公司收益；最后是软技能，基本是作为加分项。
+怎么考察 聊项目 这部分对面试官的要求最高，因为候选人做的东西可能超出了自己的知识范围，但我觉得这部分又特别重要。以技术面为例，候选人在项目上花的时间远比花在面试时的代码测试长，所以这部分更能综合地看出候选人的上限。
+聊项目我认为有几个层次：
+第一个层次是聊出候选人在其中的工作量和项目的完成度。一个合格的工具人应该能做到高完成度并讲清楚自己做的事情。 第二个层次是聊价值和动机。为什么做这些事情，技术指标和业务指标怎么对应，为什么按照简历里写的方案做。一个能独立解决问题的人应该能回答出这些问题。 聊项目的时候我觉得应该避免太泛也难量化评估的问题，例如：之前项目里遇到的最大困难是什么，怎么解决的。如果是候选人是大神应该觉得都没啥困难，真的困难大概率也还没有被解决。
+方案设计 这是我目前认为比较好的一种考察方式，刚才聊项目是顺着候选人来，方案设计则是由面试官来主导。这里可以选一个工作里实际遇到且比较开放的问题和候选人进行讨论，几乎可以考察到业务能力里面的各个维度。可以提前准备一些比较细致、刁钻的follow up，不仅能考察候选人，说不定还能对自己的工作产生启发。
+代码测试 代码测试也很重要，但我认为这是用来控制下限的。考LeetCode上的数据结构和算法感觉也不是一个特别好的选择，试问大家工作中用过几次动态规划呢。所以我比较倾向于考一些即使没有见过也能用基本编程思想解决的问题。
+数学题、基础知识 我之前面试的时候也被问过数学题和基础知识，这是考察之前项目不是特别对口的候选人或者应届生的一个好手段。对于比较有经验的候选人可以让总结一下近些年技术的发展脉络，这个对逻辑思维和知识面是个不错的考察。
+聊天 聊天主要是对三观和软技能的考察，最直接的可以聊一下换工作的动机，对年轻候选人可以聊聊人生规划，对老人可以聊聊对领域和行业的看法，有个前辈经常问候选人平常有什么兴趣爱好等等。
+让候选人问问题 从我面试的结果看，不同人问的问题不太一样。不少人会问公司规模、工作节奏相关的问题，有的会问自己面试的岗位定位业务发展相关的问题。有两个候选人的问题我印象比较深刻。一个是说他看了应用商店里的评论后发现不少用户在抱怨一个问题，问为什么会出现这个问题，从这个问题可以看出候选人主动做了功课，还对后面的技术问题有好奇心。另一个问我当时为什么决定加入这家公司，这个问题不仅可以拉近和面试官的距离，也可以给候选人带去很多信息，如果一个新人问这个问题，那ta大概率是比较有探索精神的一类人。
+建立打分表 不管公司的打分表是怎么样的，最好都给自己的考察方案设计一套最合适的打分表，提前确定好各个维度的权重和打分细则，这样不仅能更加公平地做候选人之间的比较，也能让面试更加有针对性。这里也给出我针对3-5年经验工程师的打分表，算是对上面内容的总结。
+维度 分值 细则 备注 项目：工作量和完成度 6 工作量正常、完成良好4分，能回答各种问题2分 项目：价值和动机 5 抓住对业务的价值重点2.5分，技术方案综合考虑效果、成本、可行性2.5分 方案设计 5 方案能满足功能3分，方案体现优秀的技术深度、广度2分 代码测试 6 正确、完整实现功能4分，速度快、代码风格好2分 三观 2 正常人1分，特别正2分 不正常人直接淘汰 软技能 1 沟通、表达特别好1分 总和 25 </p>
+  </div>
+  <footer class="entry-footer"><span title='2021-12-20 10:25:03 +0000 UTC'>December 20, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 2021面试总结" href="https://www.yuanhao.site/post/2021-12-20-2021%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">多模态对比学习预训练模型CLIP
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的
+CLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。
+方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.
+正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。
+用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。
+更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。
+it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet
+更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。
+图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。
+更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。
+This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset....</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-12-13 10:25:03 +0000 UTC'>December 13, 2021</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 多模态对比学习预训练模型CLIP" href="https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">对比学习学习笔记
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>对比学习已经火了一阵了，之前看过一下SimCLR和SimCSE的论文，但走马观花也没有实践。这两天仔细学习了一下，大概明白了是怎么回事。
+首先对比学习通常是在自监督的设定下进行表征学习，也就是不依赖标注数据获得一个编码器（Encoder），大致的环节如下
+通过一些方式构造人工正样本对 在一个Batch内构造负样本对 设计一个loss，拉近正样本对表征（Embedding）间的距离，扩大负样本对表征间的距离 构造正样本对 对比学习一开始是在计算机视觉领域兴起的，CV论文里最初是通过对一张图片进行两次不同的数据增强来构造正样本对的。
+SimCLR里用到的图像增强方法，可以看出来强度是比较高的，模型要学会图像间的关系不是那么容易
+后来这把火烧到了NLP领域，最开始也是模仿CV的做法，通过例如删字词、换同义词等数据增强来构造。直到大名鼎鼎的SimCSE横空出世，提出了用两次不同的dropout来构造正样本对的方法，而且效果还特别好。这个方法的前提是在transformers里面每层都有dropout，但常见的卷积神经网络里面dropout往往都只在最后才有，所以并不能迁移到CV界；但最近ViT大火，应该也有人会试着使用这种方法。
+SimCSE除了有自监督的版本，还有通过数据集特点构造的有监督版本
+损失函数构造 SimCLR里面用的是NT-Xent Loss，它是the normalized temperature-scaled cross entropy loss的缩写，我来翻译的话会叫他“归一化的带温度交叉熵”。其公式如下
+$$l(i,j)=-\text{log}\frac{e^{\text{sim}(z_i,z_j)/\tau}}{\sum_{k=1}^{2N}1_{k\ne i}e^{\text{sim}(z_i, z_k)/\tau}}$$
+$$L=\frac{1}{2N}\sum_{k=1}^N[l(2k-1,2k)&#43;l(2k,2k-1)]$$
+SimCLR中一个batch是由N张图片通过两组不同的增强变成2N张并且穿插排列，即2k-1 和 2k 是由同一张图构造的一对人造正样本。从第二个式子可以发现，一个Batch的Loss是其中N对loss的均值。跟cross entropy相比，首先是指数项从模型预测的概率变成了样本对间的相似度。分子与正样本对的相似度相关，分母则与第i张图与其余图的相似度有关。注意分母中只有2N-1项，因为自己与自己天然组成正样本，不去除的话这个分式的极限值（完美模型的loss值）将变成0.5，总loss也就不是0了。
+SimCSE里使用的loss是上面的变种，或者说是个简化版本。$z_i$是原始第i个样本的表征，$z’_i$是对应的人造正样本的表征。与上面不同的是原始样本表征之间的相似度、变换样本表征之间的相似度都没有参与loss计算。
+$$l(i)=-\text{log}\frac{e^{\text{sim}(z_i, z’i)}}{\sum^N{j=1}e^{\text{sim}(z_i, z’_j)}}$$
+代码实现 下面是我实现的SimCSE版本的对比学习loss，供大家参考
+class NTXentLoss(nn.Module): def __init__(self): super().__init__() def forward(self, rep1, rep2, temperature=0.5): normalized_rep1 = F.normalize(rep1) normalized_rep2 = F.normalize(rep2) dis_matrix = torch.mm(normalized_rep1, normalized_rep2.T)/temperature pos = torch.diag(dis_matrix) dedominator = torch.sum(torch.exp(dis_matrix), dim=1) loss = (torch.log(dedominator)-pos).mean() return loss 实验心得 我还是在之前提到的Pawpularity数据集上进行的实验，并且和论文里的表征学习不同，我是将对比学习作为一个辅助任务来帮助主任务的训练。经过一天的实验，有以下一些发现
+在参数合理的情况下，加入对比学习作为辅助任务确实可以提升主任务的表现。 加入对比学习作为辅助任务看上去可以让模型收敛更加稳健，从而可以使用更大的学习率、更高强度的数据增强。 Loss中的温度是很重要的参数，在SimCLR论文中最好的温度是0.1，在SimCSE论文中最好的温度是0.05，但在我的实验里最好的值跟这俩差的很多。熟悉蒸馏的朋友应该知道，温度越高会让样本间的差异越小，loss趋近常数；温度越低则反之。SimCSE论文的消融实验尝试了不同数量级的温度，大家在用的时候也可以大胆地多尝试一下。 将对比学习作为辅助任务额外增加的时间代价不明显。 今天先到这里，上班去辽。</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-12-06 10:25:03 +0000 UTC'>December 6, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 对比学习学习笔记" href="https://www.yuanhao.site/post/2021-12-06-%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Swin Transformer (v2)学习笔记
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上篇总结了一下最初的ViT模型，它有几个明显的问题：
+建模能力方面，强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性 复杂度方面，之前的ViT是在每层都做全局(global)自注意力。如果保持每个Patch的大小不变，随着图片尺寸的变大，Patch的个数会增加，而Patch的个数等于进入Transformer的Token个数，且Transformer的时间复杂度是O(n^2)。 易用性方面，由于Embedding（结构是全连接）和图片大小是绑定的，所以预训练、精调和推理使用的图片必须是完全同等的尺寸。 Swin Transformer提出了一种称为shifted window的方法来解决（缓解）以上问题。
+Swin Transformer的结构如下图所示
+{: .align-caption style=“text-align:center;font-size:smaller”}
+Embedding Stage（stage1）。将图片划分为若干4*4的patch，使用线性变换来将patch变为Embedding向量，这一步和ViT是一样的。但是注意，这里的patch比ViT的14*14小了很多。 若干个使用Swin Transformer 的Stage（stage2-4）。这里模仿了经典卷积网络backbone的结构，在每个Stage都将feature map（对应到Vit就是Patch或Token的个数）变成原来的四分之一。这是通过简单地将2*2patch合并成一个来完成的。同时，用Swin Transformer替代了原来的标准Transformer，主要变化如下 用M*M大小的窗口自注意力代替全局自注意力。因为自注意力机制时间复杂度是O(n^2)，通过减少参加自注意力的元素，将原来关于patch数平方复杂度的计算变为关于patch数线性复杂度 用对角线方向的shift来使Swin Transformer里的每一层窗口都是不同的，这样一个patch有机会和不同的patch交互。这里还使用了一个mask trick来使得这种shift的自注意力计算更高效。 添加了相对位置偏置(relative position bias)，对比发现这比添加绝对位置embedding效果好很多 shifted window示意图，l&#43;1层的窗口是从l层往右下角平移2个patch得到的 {: .align-caption style=“text-align:center;font-size:smaller”}
+从结果来看，SwinT相比于ViT有了很大的提升
+Swin Transformer实验结果，可以看出来比ViT已经有了很大的提升 {: .align-caption style=“text-align:center;font-size:smaller”}
+综合消融实验的结果可以对比三种不同的attention方式: fixed window、sliding window和shifted window的性能。他们的imagenet top1 acc分别是80.2， 81.4和81.3。从中可以看出类似于卷积的sliding window性能是最好的，无奈太慢了。fixed window丢失了很多有用的窗口间交互，性能最差。shifted window性能相比sliding window下降微弱，但速度提升了好几倍。同样可视为fixed window的ViT只能得到0.78的top1 acc，我想这是小patch带来的差别，因为现在的线性变换embedding实在太弱了，patch越大带来的信息丢失就越多。
+前不久原班人马又发布了V2版的Swin Transformer，主要是解决模型上规模的问题，有几个主要的改动：
+把每个Block里的LN从前面换到了后面，来解决深度增加之后训练不稳定的问题 把原来的scaled dot attention换成了scaled cosine attention，也是为了解决训练不稳定的问题（否则可能被某些像素对的相似度主导）。 改进相对位置偏置。V1版里这个模块是用一个规模跟窗口大小M相关可学习参数矩阵来处理的，如果预训练和finetune时M大小改变，就用插值来生成原来不存在的值。V2版首先是引入了一个小网络来取代参数矩阵，其次是将相对位置从线性空间换到了对数空间，通过取对数压缩空间差距来让M变化时的过渡更加顺滑 通过取对数，让finetune时增大窗口和图片的性能损失大为减小。但其实这里还是跟卷积神经网络有差距。通常卷积神经网络在finetune时使用更大的图片可以提升性能。 {: .align-caption style=“text-align:center;font-size:smaller”}
+从结果来看，更大的网络确实带来了更好的性能，30亿参数版的SwinV2-G比8800万参数版的SwinV2-B性能提升了不少。同样参数量的V2版也比V1版提升了一些。
+不同模型Imagenet结果 {: .align-caption style=“text-align:center;font-size:smaller”}
+消融实验也比较清晰地反映出了V2版加入的新技术带来的技术提升...</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-11-28 00:00:00 +0000 UTC'>November 28, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Swin Transformer (v2)学习笔记" href="https://www.yuanhao.site/post/2021-11-28-swin_transformerv2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Vision Transformer学习笔记1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近Transformer结构在计算机视觉领域的应用非常火，时不时都有新的文章出来。作为一个已经使用了两三年Transformer结构的NLPer，一直很想了解一下它在视觉领域是怎么工作的，最近借着一个Kaggle比赛的数据集学习了一下，稍作总结分享给大家。
+首先是学习了一下Vision Transformer，ViT的原理。看的论文是谷歌名作《An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale》，本文初稿发布于2020年10月，今年投了ICLR 2021，应该算是ViT的奠基论文之一。要用Transformer来处理图像，首先（也可能是唯一）要解决的是输入问题，原先的Transformer处理的是token序列，而图像是HWC的像素矩阵。这里做法也很暴力，第一步是将一张图拆成了N个PP个小块(patch)，每个patch看做是一个token。一个patch里有PP个像素，每个像素C个通道，这里直接就给拍平了进一个全连接（线性变换）得到patch的D维Embedding表示。所以ViT里的Embedding层不再是一个lookup table了，而是一个可以学习的线性变换。
+ViT结构图 {: .align-caption style=“text-align:center;font-size:smaller”}
+通过这个方法，就把Transformer结构套在了图像上，虽然这不是唯一的方法，但这么做在参数量的角度和时间复杂度的角度都是比较合理的。首先是时间复杂度角度，Transformer的关于序列长度的时间复杂度是O(n^2)，所以输入序列不宜过长。如文题所说，如果我们把图分成1616个patch，那transformer处理的序列长度将会是256，比BERT的默认长度521还短了一半。参数量上，尺寸正常的Transformer很大比例参数在embedding层上，例如BERT-base的30k个token768维的Embedding层有23M参数大约占了其110M总参数量的五分之一。ViT里Embedding层的参数量是正比于图像尺寸的，以224224图像为例，单patch像素点数为196，所以总参数量是196C*D，C是输入通道数，D是Embedding维数，以3和768记的话为0.45M，远小于BERT-base。从下表可以看到同样尺寸的ViT参数量都小于对应的BERT。
+按论文的这种处理方式也有几个比较明显的问题，例如强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性。在中等规模数据集上用这种方法得到的结果还是比卷积要差，但是当把预训练数据变多用更大的数据集训练时，模型性能显著提升了（第二列比第三列），接近甚至超过了SOTA。
+上面的结果都是针对有监督训练的，这篇文章还做了些无监督训练的初步实验，发现加入无监督预训练在下游任务比没有预训练强一2%，但是比有监督预训练差4%，总之一句话，没有实现BERT的效果。
+实验的部分用Pytorch Lightning简单做了一下Kaggle的Pawpularity数据集。这是一个值域0-100的回归问题，评价指标是RMSE。模型部分没什么花头，直接backbone接了个回归头，代码如下
+class Pawpularity(pl.LightningModule): def __init__(self, config): super().__init__() self.config = config self.backbone = timm.create_model(config.backbone_name, pretrained=not config.predict, num_classes=0) self.head = nn.Sequential( nn.Linear(self.backbone.num_features, 128), nn.GELU(), nn.Linear(128, 1) ) self.save_hyperparameters(config) 实验的运行环境是在我的HP Z4工作站上，它搭载了两个RTX 6000 GPU，因为显存是24GB版本，所以batchsize设的比较大。实验结果如下
+模型 模型参数 lr batch size 单轮耗时 早停轮次 RMSE vit_base_patch16_224 85.9M 1e-3 128 36s 10 20.514 vit_base_patch16_224_in21k 85....</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-11-17 00:00:00 +0000 UTC'>November 17, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Vision Transformer学习笔记1" href="https://www.yuanhao.site/post/2021-11-17-vision_transformer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">试用Notion
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上周看到Notion估值100亿美元的消息，有点受震撼。一来是因为它好像在国内都还没什么名气，身边除了青南老师还没见过第二个用户，怎么突然就炸了；二来是他们团队真的好小，据报道2019年才3个人，目前才180多人；最后，他们的增长是非常漂亮的指数曲线，在这个看似做不出什么花头的领域实数难能可贵。
+2019年-2021年，公司披露的用户数分别为100万、400万和超2000万，今年的收入则大涨70%。
+笔记真的是一个很重要的应用，之前我也曾经多方对比都没有找到特别满意的产品，于是先入为主用了好几年印象笔记。作为一个印象笔记的老付费用户，心中对它早已有诸多不满，功能乏善可陈不说，不知从什么时候开始给已付费用户疯狂发广告。
+{: .align-center style=“width:80%”} 作死的印象笔记，不思进取，疯狂发续费广告 {: .align-caption style=“text-align:center;font-size:smaller”}
+于是今天决定试用一下Notion，看下能不能替换掉印象笔记。
+强大 我是在浏览器进行体验的，不得不说Notion的前端工程师有两把刷子，输入体验特别好（远好于Confluence），公式、图片、超链接都没啥问题，除了用自带的/进行功能呼出，还支持Markdown语法自动映射。除了浏览器版本，Notion还提供了各种系统的客户端，跨平台使用一点都没问题。
+为了帮大家用好这个软件，开发者还提供了海量的模板，从个人用途的阅读清单、旅行规划，到团队用的看板、文档一应俱全。虽说都是几个核心组件的有机组合，但对于一个泛笔记类应用确实足够了。特别是对于一个小团队来说，完全可以用Notion达到Confluence&#43;Jira的功能效果。
+{: .align-center style=“width:80%”} Notion给Startups提供的模板，涵盖了日常工作的几乎所有环节 {: .align-caption style=“text-align:center;font-size:smaller”}
+简洁 我是使用邮件注册的账号。和其他软件一样，当你输入邮箱并提交，Notion会给你发送一个激活码，填入激活码后需要设置用户名和密码，这里它没有按照常规做法让你输入两次密码来进行确认。虽然只输入一次密码会有可能会因为误操作填入不同于你设想的密码，但实际情况是：
+这个比例应该很低 如果用户使用一个现代化浏览器例如Chrome，又有谁会真的自己去记忆密码呢，像我自己很多时候就是使用浏览器生成的随机密码。此时让用户输入两次就成了一个错误的设计 由于我对设置密码的期望是输入两次，他这个小心思一下就带来了眼前一亮的感觉。
+Notion在浏览器端没有保存键，估计是随时都update到最新状态，这也更像是用笔写作状态，不知道为什么Office应用还要保留保存键。
+精美 漂亮的东西无疑会增加用户使用的兴致，这方面Notion做的很棒，它内置了很多制作精良的模板，让你有兴趣继续探索它。就拿博客模板为例，里面不是简单地填充上文字和图片，还展现了丰富的样式如加粗、超链接甚至图文混排。这里选择的图片美观度也很高，颜色丰富且红、绿对比明显。
+{: .align-center style=“width:80%”} 博客模板页面，样式丰富，图片精致 {: .align-caption style=“text-align:center;font-size:smaller”}
+它还给每个类目都加上了一个小图标，对比一下印象笔记的界面，Notion显得活泼很多。
+一些不成熟的想法 作为一个公司，想清楚怎么赚钱真的很重要。这里再次为印象笔记感到惋惜，作为笔记类应用的先行者没有快速进入到企业服务领域，一年两百的个人付费很难支撑起特别大的业务规模。从Notion的定价策略可以看出，它压根没想在个人用户身上赚多少钱，企业版单月价格是个人版的五倍。
+{: .align-center style=“width:80%”} 从定价策略可以看出，企业用户能带来更多的利润 {: .align-caption style=“text-align:center;font-size:smaller”}
+跟这个产品竞争最强的应该是Confluence，作为老牌企业知识平台产品，Confluence的售价贵的不是一星半点。Confluence的记录体验我认为远没有Notion强，跟外部的打通也更弱。其母公司Atlassian15年上市后股价涨了十多倍，目前市值一千多亿美元，从这个角度看，Notion还有很大的空间。
+{: .align-center style=“width:80%”} 相比于Notion，Confluence昂贵得多 {: .align-caption style=“text-align:center;font-size:smaller”}
+从生产力的角度看，Notion这样的应用确实补充了office系列的一些空白。Office主要针对长文档、幻灯片这种非常正式的文档类型。而笔记类应用则擅长帮助用户做一些即兴、随机、格式要求不严格的内容梳理。而Notion预置的模板也体现了近几年团队管理领域沉淀下的一些最佳实践，如果一个团队能用好这些工具，应该生产力不会太差。
+{: .align-center style=“width:80%”} Office365，其实不贵 {: .align-caption style=“text-align:center;font-size:smaller”}
+最后，想聊一下对国内工具或者企业服务类产品的看法。飞书看上去不错，功能全面，文档的体验跟Notion很像，但觉得它比较封闭，想在手机日历导入飞书日程都要费点劲，而且对个人用户不友好。钉钉之前用过，它更像一个管理工具而非生产力工具，已读状态也注定了它无法营造一个舒适的沟通环境，比较适合执行团队，例如销售来使用，而非创意团队。还有一个问题我一直没搞懂，为什么国内工具类应用都不收钱？zoom敢收2000块每人每月，腾讯会议到现在还免费，即使飞书这样号称”下一代工作方式“的产品都不敢收钱，企业应用不收钱给人的感觉就是不靠谱，更要命的是收了钱国内应用给人的感觉还是不靠谱，引人深思。
+这篇文章就是在Notion上写的，写到这我感觉可以跟印象笔记说再见了。</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-11-07 10:25:03 +0000 UTC'>November 7, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 试用Notion" href="https://www.yuanhao.site/post/2021-11-07-%E8%AF%95%E7%94%A8notion/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">《增长黑客》阅读笔记
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>《增长黑客》阅读笔记 最近一年算是在做一个从0开始的项目，用户量看上去涨了不少，但也遇到了很多问题。有时候对问题的原因会有些模糊的猜测，也会想想怎么去解决，但大多不成体系也没有机会验证。
+看这本书的时候感觉很亲切，因为写到了很多遇到过的问题；同时又学到了很多东西，因为它不仅很有体系，还引申到一些心理学、行为学的东西去解释现象背后的原因。它像一面镜子，没有镜子你也知道自己长什么样子，但多照镜子还是能发现自己的很多问题。这篇文章记录一些阅读之后的收获和思考。
+数据驱动 这本书很强调ab实验和深挖数据，这两个概念在过去几年随处可见，甚至有种被奉为圭臬的感觉。之前看到一个说法，只要ab的速度足够快，就不需要产品经理了。但最近我看到不少关于数据驱动的反思，亲身经历后也更深刻地认识到要做好，特别是在产品的增长期（初期）做好数据驱动是很难的。不仅样本少、变量多，很多团队甚至连像样的ab工具都没有。
+在做数据分析的时候我认为有两个大的gap，一个是主观预期和用户实际行为的gap，另一个是当前用户群和目标用户群的gap。 前一个像是一个症状明显的感冒，相对好解决。第二个却像一个难以发现的慢性病，很难搞。 因为第二个gap的存在，数据驱动像是在迎合用户，而产品驱动是在寻找“对味”用户。数据驱动可能带来短期的成功，但长期结果也许是一个没有灵魂的平庸产品。而有个性的产品一旦找到能发生共振的用户，应该能产生更紧密的链接。说到底这是一个选择问题，并不存在silver bullet。
+我个人比较倾向于把数据作为工具，而不是驱动力。或者换一个角度，两种平庸的方案进行ab，并不会让你选到一个牛逼的方案。必须有一个不依赖结果的驱动力让产品不断提升，团队必须自己为送入ab的方案质量负责。
+啊哈时刻 “啊哈时刻”就是产品使用户眼前一亮的时刻，是用户真正发现产品核心价值——产品为何存在、他们为何需要它以及他们能从中得到什么——的时刻
+找到或定义产品的啊哈时刻，然后引导用户到达啊哈时刻应该是这本书里最重要的目标之一。我觉得这是一个很有效的思维模型，但好像在我们的产品里没有被很好地执行。
+因为多线作战、语言不通、缺少用户研究团队，我们对产品在市场的反馈一直没有全面的了解。前几天问同事什么是我们的啊哈时刻，大家答案的方向差不多，但也没有完全达成共识。
+而在引导用户到达啊哈时刻这方面我们也不够努力。例如用户的地点对我们至关重要，但目前的设计只会在ta第一次onboard的时候询问一次，后面就放任自流了。而且之前版本的第一次询问我觉得也不是很好。
+这里有一个我一直没想明白的问题：不同渠道来的用户在提供地点的比例上有很大的差别。虽然之前产品同事给过一个解释，但我不是很能理解。同理心真的是对产品经理一个重要且难得的能力，根据产品猜测不同渠道、不同步骤的流失率可能是一个不错的考察办法。
+储值 大体上讲，用户往产品放入的个人信息或财物被称为储值，储值的形式有很多，例如用户在印象笔记写的笔记，在微信的联系人，在亚马逊购买prime会员的年费等等。储值能很有效地增加用户的粘性。
+比较可惜的是我们的产品几乎没有提供储值的途径（似乎只有收藏夹一个），就像前面说的，我们对用户信息的询问非常保守；用户没有办法花钱来获得增值体验；也没有在产品里设计任何回报和奖励。当用户过了蜜月期，基本上可以毫无负担地离开我们的产品。
+要构建出储值体系对于我们现在的产品其实是比较困难的，但这个真的蛮重要，毕竟我们不具备什么不可替代性，需要多一些和用户建立物质和情感连接的渠道。
+产品雕琢 这个话题散落在本书的很多地方，例如
+找到语言语市场的匹配点，优化广告语 根据三个根本任务：传达相关性，展示产品价值和提供明确的行为召唤来设计landing page。 少并不总是多，便宜的价格不总是能带来更多的用户，因为面人们可能将价格视作质量的信号 根据“相对论”来设计烟幕弹套餐优化定价，例如《经济学人》网络版杂志全年订阅价是59美元，纸质版杂志全年是125美元（烟幕弹），而纸质版加网络版的合订价也是125美元。这一设置可以大大降低用户选59美元套餐的比例而增加用户选购第三种套餐的比例。 我是在微信读书上读的这本书，不得不说微信免费提供这些书籍真的很赞，后面准备再读一下书里提到的《怪诞行为学》和《设计心理学》，读完了再跟大家交流。
+微信读书显示我3小时22分读完的这本书，感觉比我实际花的时间短一些。这种夸大用户单位时间收益的方式也许是他们的一个增长策略？
+团队和工作流 书的第一部分叫“方法”，确实相对比较抽象。首先谈到的是如何构建增长团队，
+大方向是要打破筒仓结构，构建职能齐备的复合型增长团队
+增长团队里应当有对企业战略和目标有深刻了解的人，有能够进行数据分析的人，也要有能够对产品的设计、功能或营销方式进行改动并通过编程测试这些改动的工程师
+对于这一点其实对于创业小团队问题不大，因为还没有像大公司那样的部门墙。</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-09-21 10:25:03 +0000 UTC'>September 21, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 《增长黑客》阅读笔记" href="https://www.yuanhao.site/post/2021-09-21-%E5%A2%9E%E9%95%BF%E9%BB%91%E5%AE%A2%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Impvove Inference Efficiency with Batch Inference
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>As an algorithm engineer, it is inevitable that you will encounter the problem of bringing models online in your daily work. For some less demanding scenarios, you can handle this by utilizing a web framework: for each user request, call the model to infer and return the result. However, this straightforward implementation often fails to maximize the use of the GPU, and is slightly overwhelming for scenarios with high performance requirements....</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-06-20 10:25:03 +0000 UTC'>June 20, 2021</span>&nbsp;·&nbsp;7 min</footer>
+  <a class="entry-link" aria-label="post link to Impvove Inference Efficiency with Batch Inference" href="https://www.yuanhao.site/post/2021-06-20-inferlight/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">模型上线不用愁，批量推理来加油.
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>作为一个算法工程师，在日常工作中难免会碰到模型上线的问题。对于一些要求不高的场合，简单找一个web框架实现一下接口就能搞定：对于每个用户请求，调用模型得到结果再返回。但这种朴素的实现往往无法最大化利用GPU，对于性能要求比较高的场景应付起来就略显吃力。
+优化的方法有很多，一个增益很大的措施就是把一个请求推理一次改成多个请求一起推理。去年大概也是这个时候我写了一个小工具来实现这个功能，还取了个蛮霸气的名字InferLight，但当时写得并不太好；最近参考香侬科技的Service-Streamer又重构了一版。这个功能看似简单，但是在实现的过程中可以了解很多Python异步编程的知识，感觉收获颇丰，于是写篇短文总结一下。
+首先，要提高模型的线上推理吞吐量，应该把推理服务做成异步的。对于web服务来说，异步的意思是当模型在计算的时候它可以处理别的请求。对于Python来说，异步服务可以通过很多优秀的基于Asyncio的框架来实现，例如我常用的Sanic。而推理是计算密集的，也没有什么同步异步的说法，我们的目标就是能够汇聚多个推理请求，高效利用GPU的并行计算能力，并且能将批量推理的结果正确地返回给对应的请求者。
+要实现上面的目标，需要以下几个模块
+前端服务：用于接收请求、返回结果。可以是Http、PRC等各种协议。是一个独立进程。 推理Worker：负责模型的初始化、批量推理数据构建、推理计算。是一个独立进程。 任务队列：前端服务收到请求之后把计算任务送入任务队列；推理Worker监听该队列，每次取出一个小批量由模型推理 结果队列：推理服务推理完成后将结果送入结果队列；前端服务监听该队列，获得推理结果 结果分发：在将任务送入任务队列前需要生成任务的唯一标识，从结果队列取回结果后根据标识获取到任务对应的结果 其中两个任务队列的实现方式很多，可以通过一些成熟的中间件例如Kafka、Redis等，但为了避免外部依赖，这次我选择使用Python原生的多进程队列。结果队列监听和分发通过前端服务进程的一个子线程来完成。
+实现细节 推理服务相对简单，由于各种模型的加载、数据处理步骤千奇百怪，所以我将推理Worker设计成了一个基类，使用时继承它并实现特定方法。
+import logging import multiprocessing as mp import time from queue import Empty class BaseInferLightWorker: def __init__(self, data_queue:mp.Queue, result_queue:mp.Queue, model_args:dict, batch_size=16, max_delay=0.1, ready_event=None) -&gt; None: self.data_queue = data_queue self.result_queue = result_queue self.batch_size = batch_size self.max_delay = max_delay self.logger = logging.getLogger(&#39;InferLight-Worker&#39;) self.logger.setLevel(logging.DEBUG) self.load_model(model_args) # 由于模型载入时间较长 # 加载完成后使用一个event来通知主进程 if ready_event: ready_event.set() def run(self): self.logger.info(&#39;Worker started!&#39;) while True: data, task_ids = [], [] since = time....</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-06-20 10:25:03 +0000 UTC'>June 20, 2021</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 模型上线不用愁，批量推理来加油." href="https://www.yuanhao.site/post/2021-06-20-%E6%A8%A1%E5%9E%8B%E4%B8%8A%E7%BA%BF%E4%B8%8D%E7%94%A8%E6%84%81%E6%89%B9%E9%87%8F%E6%8E%A8%E7%90%86%E6%9D%A5%E5%8A%A0%E6%B2%B9/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Tricks of Semantic Segmentation
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>{: .align-center style=“width:80%”} HuBMAP - Hacking the Kidney {: .align-caption style=“text-align:center;font-size:smaller”}
+Last month, I spent some time doing the “HuBMAP - Hacking the Kidney” competition on Kaggle. The goal of this competition is the implementation of a successful and robust glomeruli FTU detector. It is a classical binary semantic segmentation problem. This is my second semantic segmentation competition, and our team ended up in 43rd place and won a silver medal....</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-05-30 10:25:03 +0000 UTC'>May 30, 2021</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to Tricks of Semantic Segmentation" href="https://www.yuanhao.site/post/2021-05-30-segmentation-tricks/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://www.yuanhao.site/page/4/">
+      «&nbsp;Prev&nbsp;4/8
+    </a>
+    <a class="next" href="https://www.yuanhao.site/page/6/">Next&nbsp;6/8&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

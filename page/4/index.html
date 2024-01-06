@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.121.2"><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>多头注意力</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="多头注意力" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多头注意力"/>
+<meta name="twitter:description" content=""/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "多头注意力",
+  "url": "https://www.yuanhao.site",
+  "description": "",
+  "thumbnailUrl": "https://www.yuanhao.site/favicon.ico",
+  "sameAs": [
+      "https://www.kaggle.com/wuyhbb", "https://www.zhihu.com/people/fjshwyh", "https://github.com/thuwyh"
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">现在的开源深度学习模型真的太强了
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>为了迎接宝宝的诞生，前段时间收集了一些中英文故事，做了一个讲故事小程序。
+在收集故事的过程中遇到不少问题，比较典型的情况是只有音频，或者只有文字，或者没有配图。在深度学习模型日新月异的2022，我决定尝试用最新的开源模型来解决一下这些问题。
+[TOC]
+插图生成（text2img） 这是目前大火的领域，每天各种营销号都有大量文章狂轰滥炸。不论是生成梵高画作还是生成性感waifu，似乎AI画师现在已经无所不能。
+但我实际使用下来感觉要让AI直接给故事画插图还是蛮困难的。我使用的是最近红的发紫、大名鼎鼎的Stable Diffusion，短短几个月已经发展到第四版了。我的做法也比较简单，直接把故事标题嵌入在一段prompt里面，例如a story illustration for children of the story about The crow and the water bottle 。这个prompt模板是参考了一些prompt编写指南结合尝试之后得到。
+在尝试的过程中发现几个比较明显的现象
+通过art by xxx控制风格非常灵敏，试了梵高和莫奈，得到图片的风格都很强 细节效果都比较差，不管是脸还是手，只要有这种部位的图都不太能用 AI产生的图片有时给人感觉阴森森的，给小朋友做故事书插画估计真会吓死宝宝 下面是几个我生成出来的例子
+这个乌鸦喝水的图是我比较满意的，两个东西都画的比较正常，水瓶子里还有点石头，估计是模型训练时有见过这个phrase和相应图片，直接给记住了。
+这个图不知所云，没看到有奶牛，青蛙也怪怪的。
+这张丑小鸭算是平均水平，虽然鸭头有点怪，但是在可以接受的范围内。
+后来我又调研了下，有的朋友为了给故事生成插图做得还是比较fancy的。例如这个小姐姐的repo，大家感兴趣可以看一下，也是开源模型攒的pipeline。
+更多生成图片的例子，可以参考这个故事集。
+语音转文字（ASR） 虽然各种有声故事大大减轻了讲故事的负担，但给婴儿或者胎儿讲故事最好还是由爸爸妈妈亲自来。毕竟这个时期故事内容肯定是听不懂的，更重要的是让宝宝听到父母的声音。为了能亲自讲故事，我需要把之前找到的一些故事音频（主要是英文的）转换成文本。
+经过一番调研，目前比较好的ASR模型是最近openAI开源的来源于论文《Robust Speech Recognition via Large-Scale Weak Supervision》的Whisper。 这个模型是个transformer seq2seq model，从插图来看multi task这块比较复杂。
+待转写的故事听起来都比较清晰，我直接搞了个base.en单语模型试了一下。跑出来的效果简直惊艳，几乎没有错误的单词，甚至连时态都识别得很准确。唯一美中不足的是有些文章转写出来没有标点符号，也几乎没法识别出段落，给阅读带来一些障碍。为了解决这个问题，我又找了个punctuation restore模型后处理了一下。现代化的语言模型做这个事情简直是易如反掌，效果也相当好。
+大家可以看这个故事集里面的内容，都是ASR转写出来的。
+文字转语音（TTS） 亲自讲故事虽好，但英语内容不是所有家长都能驾驭的。对于只有文本的英语故事，我也希望能生成相对应的音频。
+目前开源模型里面SOTA水平的应该是来自Facebook（Model Card里是叫fastspeech2，但正文里又写是S^2，微软也有一个叫fastspeech的模型，我还没搞懂他们之间关系）的FastSpeech2，这个模型是用faiseq来实现的，但也在huggingface的hub上托管。
+样例代码有点bug，按照讨论区的指导可以跑通。给一段文字的话生成很快，但句与句之间有点黏连太紧，听感不佳。我稍微做了点小后处理，让文章听起来自然了一些。大家可以参考这个故事集的内容。
+在做TTS和扫论文的过程中隐约感觉TTS是一个很有意思的领域，后面有时间可以多学习一下。
+总之，经过这些有趣尝试，我基本上解决了我遇到的内容问题。虽然这些模型都还有一些问题，但确实已经可以很大得提升生产力。原来需要特别专业团队才能做的事情现在只要几行代码就可以搞定。内容类、工具类产品的玩法也更多了，可以用这些模型和人相互激发促进来产生更多有趣的创意。
+本文就先写到这，如果你也需要经常给宝宝讲故事，欢迎使用这个简单的小程序！后面我还会写一两篇关于这个小程序工程和算法方面的心得，如果你感兴趣，欢迎关注公众号，及时获取更新。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-10-17 10:25:03 +0000 UTC'>October 17, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 现在的开源深度学习模型真的太强了" href="https://www.yuanhao.site/post/2022-10-17-multimodal/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">文本生成专题2：常见的摘要生成方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>按照第一篇的计划，这篇文章梳理一下常见的摘要生成方法。大部分方法并不复杂，更多的内容其实包含在seq2seq框架、语言模型、self/cross attention这些模块里。
+[TOC]
+抽取式摘要 所谓抽取式摘要，有点像之前写过的关键词抽取，就是把原文里重要的部分抽出来作为摘要。
+前Transformer时代的方法 有好多基于统计的抽取式摘要生成方法，例如jieba里都集成的TextRank。这方面资料很多，大家搜搜就有。
+Transformers-based方法 比较典型的工作是BERTSum，其结构如下图。相比原始BERT，几个主要的变化是
+在每个句子前面增加[CLS]token，后续用他们对应的隐向量作为句子表征； 把BERT原有的token type改变成了0/1相间的形式； 在得到句子表征后，又增加了一个称为Summarization Layers的Transformer/LSTM模块，用户在句子表征间做交互。 最后对于每句话输出一个应该包含进摘要的概率，最终结果由得分top3句子产生。 来看一下BERTSum的表现，如下图，总体还是不错的。可以发现加上所谓的Summarization Layers模块并没有很明显的提升，预训练语言模型大部分时候确实很强，光魔改结构往往收效不大。这篇文章的结构我感觉很工整，句子前加[CLS]的操作给人一种细腻的感觉。
+生成式摘要 生成式摘要的大体框架很久都没有变过了，大概就是下面这张图。左边是一个encoder，用来编码原文，右边是个decoder，用来生成摘要。
+前Transformer时代的方法 在RNN之后，Transformer出来之前，主要的改进是加入各种各样的attention，原文间，摘要间，原文和摘要间等等。大家可以看出来上面那张图已经是有attention的了。
+我个人认为前Transformers时代最特别的一个问题是OOV。有不少工作是针对这个问题展开的，其中比较有名的是Google的Pointer Generator。对比和上图的区别可以发现，对于next token的预测，概率分布里出现了&#34;2-0&#34;这个从原文copy出来的词（也是不属于词典的词，是没有copy mechanism之前不可能被生成的词）。真的是要感谢subword tokenizer的广泛使用，让大家省去了很多类似的dirty work。
+目前主流的方法 目前的encoder-decoder transformer早已把各种attention玩到登封造极的程度，原文、生成结果间相互的联系已经大大加强。这几年的提升很多都是来自于非结构方面，例如BART用一种新颖的预训练方法来提高，GPT用超大语言模型来提高等。摘要生成逐渐成为了一个跟随语言模型水涨船高的领域（调参调结构当然也有用，但至少大的提升我认为是这样）。
+近期刷榜方法 如果大家有关心今年的ACL，会发现摘要相关的论文很多，前段时间还看到丕子老师发微博感叹。不仅数量多，今年在CNN/Dailymail数据集上还有个不小的涨幅，在本文的最后一起来看下是什么神奇的方法。
+近几年的刷榜方法我认为可以总结为更加充分地挖掘数据集提供的信号，同时在模型上结合生成模型和判别模型。
+我们先从一篇直白的论文Abstractive Summarization with Combination of Pre-trained Sequence-to-Sequence and Saliency Models讲起。这篇论文把原文和摘要中都出现的token认为是重要token，用这个作为监督信号，训练了一个重要性模型(saliency models)。然后尝试了多种组合方式来在解码器上使用重要性模型产生的辅助信号。
+这里解释一下里面出现的几种方式：
+SE，Selective Encoding：用重要性得分来控制编码器输出 SA，Selective Attention：用重要性得分来控制解码器cross attention SEG, Sentence Extraction then Generation：相当于精简原文输入 CIT, Conditional Summarization Model with Important Tokens：把重要的Token选出来跟原文一起输入编码器 来看一下各种方式的表现，只是单独增加一个siliency model训练任务（MT）就提高了1个点的R1，CIT表现也不错，提升接近两个点。
+有了上面这篇文章作为基础，我们来看下目前的SOTA，BRIO: Bringing Order to Abstractive Summarization，他们组其实工作是一脉相承的，感兴趣可以看下他们之前的论文GSum: A General Framework for Guided Neural Abstractive Summarization和SimCLS: A Simple Framework for Contrastive Learning of Abstractive Summarization。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-07-03 10:25:03 +0000 UTC'>July 3, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 文本生成专题2：常见的摘要生成方法" href="https://www.yuanhao.site/post/2022-07-03-summary2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">文本生成专题1：基础知识
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>大家好，好久不见，疫情封控在家两个月写文章都不利索了😂。
+在这段时间我反思了一下之前写的东西，基本是最近用了什么、看到什么就写什么，感觉系统性比较差。后面我打算少写一些零散话题，多总结一些更有体系的内容。第一个小专题我想总结一下我最近关注比较多的领域，文本生成。文本生成领域很广泛，我主要会聚焦在文本摘要（Text Summarization）和数据驱动生成（Data2Text）。
+这篇文章是专题第一篇，将介绍以下的内容：
+[TOC]
+除了第二部分外都比较像科普文，没有相关技术背景的朋友也可以看懂。
+问题定义和数据集 摘要 摘要这个问题比较好理解，就是把长的文章，例如学术论文、新闻等等缩写成更短的文本，并且保留重要的信息。
+摘要领域常见的典型数据集CNN/DailyMail, arXiv, Pubmed, XSUM等。其中CNN/DailyMail的原始文本是大约几百个词的新闻，摘要（ground truth）是人写的，大概五六十个词。中间两个都是来自学术论文的数据集，原始文本比新闻长不少。学术论文通常都需要作者提供摘要，一般一百来个词，天然适合拿来做摘要的数据集。X-SUM是里面摘要长度最短的数据集，基本是一句话的长度。还有一些数据集，大家可以参考papwerswithcode。
+数据驱动生成 数据驱动生成则是给定一些结构化的数据，例如餐馆信息、实体间的关系等，生成一段自然语言。
+这个领域典型的数据集有WebNLG和E2E。WebNLG的每条样本会提供一系列用三元组描述的实体及关系，以及一段陈述三元组表达事实的自然语言文本作为标签。
+E2E数据集则提供了成对的餐馆结构化信息和自然语言描述。自然语言描述相比于WebNLG数据集更简短一些。更多数据集大家参考这个页面。
+常用的评价指标 除了数据集，要理解一个技术的发展水平，另一个很重要的方面是理解评价指标。评价机器生成的文本，最常用的指标是ROUGE和BLEU。
+ROUGE 摘要里最常用的指标是ROUGE，它的全称是Recall-Oriented Understudy for Gisting Evaluation，是在2004年的论文ROUGE: A Package for Automatic Evaluation of Summaries里提出的。从名字可以看出来它比较关注recall。它有很多形式，在论文里比较常看到的有ROUGE-N(N=1,2,3…)和ROUGE-L两种。
+对于ROUGE-N，计算方式就是生成结果和参考文本中都出现的ngram占参考文本ngram的比例。ROUGE-L比较麻烦，需要考虑最长公共子串，但相比于预设ngram大小的ROUGE-N有一定的优势。单句的ROUGE-L是最长子串长度除以参考句的长度，举一个论文里的例子
+S1. police killed the gunman S2. police kill the gunman S3. the gunman kill police 假设S1是参考句，那S2和S3的ROUGE-2都是1/3(匹配上了the gunman)，但S2的ROUGE-L是3/4比S3的2/4大，实际情况确实是S2更好一些。
+可以看出ROUGE，特别是ROUGE-N是比较考察和参考文本用词的一致性的，理论上不是个语义上的评价，这也和后面会写到的一些trick有直接的关联。
+ROUGE指标的python实现可以参考这个repo，看代码应该是是最清楚的。
+BLEU 在Data2Text领域常用的指标是BLEU，全称是bilingual evaluation understudy，从名字也能看出来，最开始是在机器翻译的评价里被广泛使用。BLEU像是一个precision指标，基本是在算生成结果和参考文本都出现的词和参考文本长度的比值。主要考虑的问题是多次匹配，例如
+candidate：ha ha ha reference: only saying ha is not good candidate只有一种词，且在标签中出现了，但若BLEU是100分，显然是不合理的。因为ha在reference中只出现一次，所以只能匹配一次，所以BLEU是1/3。
+另一个要解决的问题是防止candidate过短而导致的高分。因为precision的分母是自己ngram的数目，只输出有把握的词是可以提高分数的。这里引入了一个叫brevity penalty的参数。这个参数的计算公式如下：...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-05-25 10:25:03 +0000 UTC'>May 25, 2022</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 文本生成专题1：基础知识" href="https://www.yuanhao.site/post/2022-05-25-summary1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">面向Meta全公司工程师的AI优化平台解析
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>原作者：Igor Markov, Norm Zhou
+人工智能是使现代软件系统和产品尽良好运行的一个重要部分，从改善用户体验到使计算基础设施更有效率都能看见AI的影子。无论是减少延迟，提高视频流的质量，还是精简界面以满足特定人的需求，今天的人工智能往往比人类精心构建的启发式策略更有效。但是，为了在我们的产品中更有效地利用人工智能，我们需要解决几个挑战：系统必须适应没有机器学习背景的软件工程师；它必须提供机制，为许多不同的产品目标进行优化，这可能不同于封闭形式的机器学习损失函数；它必须区分数据中的因果关系；它必须有效地扩展，以训练、托管和监测大量的人工智能模型。
+为了满足Meta公司的这些需求，我们建立了一个端到端的人工智能平台，名为Looper，具有易于使用的优化、个性化和反馈收集的API。Looper支持整个机器学习的生命周期，从模型训练、部署和推理一直到产品的评估和调整。与其围绕人工智能模型重建我们现有的产品，Looper使我们能够升级它们，使用人工智能进行个性化优化。Looper平台目前承载了700个AI模型，每秒产生400万个AI输出。
+让智能策略为应用程序所用 Meta的不同服务每天有数十亿人在使用，每个人都有不同的兴趣和偏好。Looper使我们能够以前所未有的规模定制其中的许多 “开箱即用 “的服务，而不需要复杂的专业代码。
+让使用产品的人在用户界面菜单上有几十个选择，会使产品失去吸引力，无论它提供多少价值。但不同的人对菜单的偏好是不同的。同样，适时地将可能被用户浏览的内容预取到移动设备上，可能会极大地改善我们产品的用户体验，但要做到这一点而不使设备的硬件资源不堪重负，需要准确地预测什么会是最感兴趣的。
+为了以可扩展的方式支持实时智能策略，Looper提供了几个功能。
+Looper的目标是为具有适度数据规模和模型复杂性的用例提供易用性和快速部署模型。 它支持各种模型类型，托管和训练众多模型和决策策略。 它通过使用监督学习或强化学习，支持广泛的机器学习任务（分类、估计、价值和序列预测、排序、planning）。结合模型管理基础设施，我们的自动化工具（AutoML）选择模型和超参数以平衡模型质量、大小、推理时间等。Looper涵盖了从数据源到产品影响的范围，通过因果实验进行评估和优化。 它是一个声明式的人工智能系统，这意味着产品工程师只需要声明他们想要的功能，系统就会根据声明来填充软件的实现。在内部，Looper依赖于我们的策略蓝图抽象，它将特征、标签、模型和决策策略的配置合二为一，并维护这种联合配置的多个版本。这支持更全面的优化，捕捉不同版本之间的兼容性，并实现智能策略的整个生命周期的免编码管理。蓝图能够使用强大的实验优化系统对黑盒产品指标进行垂直优化。 其他人工智能平台通常以批处理模式进行离线推理，而Looper则是实时操作。 许多人工智能系统使用统一的数据工作，如像素或文本，但不同的产品往往有非常不同的元数据，往往来自不同的来源。此外，元数据的模式变化很快，需要定期在新数据上重新训练人工智能模型。 A/B测试，以评估许多不同类型的模型和决策规则，包括那些由上下文bandit使用的模型，以模拟一个或多个目标的预测的不确定性；或强化学习，以优化长期、累积的目标。 与传统的端到端人工智能系统不同，Looper使Meta公司的工程师和其他人能够跟踪一个模型在软件栈中的实际使用情况，并对建模框架的所有方面进行实验–从指标选择到策略优化的所有过程。为了做到这一点，Looper将常见的端到端定义扩展到软件层，这样，模型架构、特征选择参数可以在模型质量和计算资源之间进行多目标权衡优化。为了优化长期的产品目标，工程师可以调整在做实时决策时对不同输入的重视程度。我们的平台使得使用应用于整个管道的AutoML技术来优化这些和其他参数成为可能。 用于部署智能策略的Looper平台 与用于视觉、语音和自然语言处理的重量级人工智能模型不同的是，Looper使用的是可以重新训练并在共享基础设施上快速大量部署的模型，这些模型有利于离线推理和批量处理。我们的平台将用户互动和系统互动的元数据解释为监督学习的标签或强化学习的奖励。
+Looper追求的是快速上线、稳健部署和低能耗的多种智能策略的维护，其中的积极影响是直接在应用方面进行测量和优化。应用程序代码与平台代码分离，Looper利用现有的水平AI平台，如PyTorch和Ax，为机器学习任务提供可互换的模型。
+为了使智能策略获得成功，我们需要一种方法来评估它们，并在结果不够好时加以改进。这种评估是基于产品指标进行的。在某些情况下，每个决策都可以被检查，因此，好的和差的决策可以作为智能策略学习的例子（通过监督学习）。然而，有些产品指标追踪的是长期目标（如每日活跃用户），无法追踪到具体的决策。这两种情况都可以由Looper来处理，而使用实时数据则尤为重要。访问Meta的监控基础设施有助于发现不可预见的副作用。在我们的平台上，产品开发者定义决策空间，允许平台自动选择模型类型和超参数设置。在不影响用户的情况下，对模型进行训练和评估，并对其进行改进，直至可以部署。在产品使用前，新训练的模型会被关起来（部署在影子流量上）–这种模型在记录的特征和观测值的抽样子集上进行评估，并计算出离线质量指标（例如回归任务的MSE）。这有助于避免在部署较新的模型时降低模型质量。
+智能策略的应用和影响 我们的垂直机器学习平台承载了来自水平平台的中等规模的模型，以便改善软件系统的各个方面。这些模型的部署只需很少的工程努力，并且不需要特定模型的基础设施来维护。Looper目前被Meta公司的90多个产品团队使用，这些团队部署了690个模型，每秒进行400万次预测。
+应用案例可分为五类，按频率递减排列：
+个性化体验是根据用户的参与历史而定制的。例如，一个产品可能只向那些可能使用它的人突出显示与购物有关的内容（但这种内容所有用户都可以通过菜单访问）。 排名对项目进行排序，以提高用户的效用，例如，为浏览者提供个性化的候选项目。 根据预测的使用可能性，预取/预计算数据/资源（4.1节）。 通知/提示可以只发送给认为有帮助的用户。 值估计预测回归任务，例如，数据查询的延迟或内存使用。 下图按资源类别对活跃的Looper用例的资源消耗（Y轴上的服务器数量）进行了比较。
+各个产品团队的人工智能专业知识各不相同，从初学者到经验丰富的人工智能工程师都有。而使用Looper平台的团队中只有15%为人工智能工程师。对于没有生产人工智能经验的团队来说，一个易于使用的人工智能平台往往是采用的决定性因素，而人工智能的投资在证明有用后继续进行。我们的平台在高级服务背后处理关于软件升级、日志、监控等问题，并释放出巨大的生产力改进。对于有经验的人工智能工程师来说，智能策略平台通过自动化重复性的耗时工作来提高生产力：编写数据库查询，实施数据管道，设置监控和警报。与专精型的系统相比，它可以帮助产品开发人员推出更多的AI用例。无论之前是否有人工智能经验，成功的平台采用者在短短几天内就配置了最初的机器学习模型，迅速开始收集训练数据，然后在短短几个月内完善他们的模型并推出新产品。
+让工程师和产品开发人员更容易实现规模化的人工智能 将产品决策的自我优化智能策略嵌入到软件系统中，从而提高用户体验，优化资源利用，并支持新的功能，这其中存在巨大的机会。我们的人工智能平台Looper解决了产品驱动的端到端机器学习系统的复杂性，促进了智能策略的大规模部署。它在数据可用性、简易配置、明智地使用可用资源、减少工程努力和确保产品影响方面提供了直接、切实的好处。平台采用者尤其被通过因果推理和资源开销测量对产品影响评估的广泛支持所吸引。
+Looper使软件工程师更容易获得智能策略，并使产品团队能够以自我服务的方式建立、部署和改进人工智能驱动的能力，而无需人工智能专业知识。我们将继续开发这个平台，以便我们能够以新的方式利用人工智能来改善Meta的产品和服务。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-04-24 10:25:03 +0000 UTC'>April 24, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 面向Meta全公司工程师的AI优化平台解析" href="https://www.yuanhao.site/post/2022-04-24-looper/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">做NLP？Don&#39;t stop pretraining!
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>应该很多朋友知道，在训练下游任务之前先在任务的语料上做一下非监督的masked language model任务预训练可提高目标任务的性能。特别是当下游任务的标注数据少，相关语料多的情况下这个小技巧带来的提升更大。举个例子，假设你要做一个恶意评论分类器，但由于时间和成本关系，只标注了几万条评论，但系统里的评论已经有几百万条，这时候先在所有评论上做个MLM训练，再finetune恶意评论分类任务就是个比较好的选择。
+这个问题多年前论文Don’t Stop Pretraining: Adapt Language Models to Domains and Tasks做了比较详细的探讨。
+首先是个很好理解的现象，如下图所示，虽然现代化的Transformer语言模型都是由海量数据训练的，但难免跟我们目标任务的语料领域无法完全重叠
+论文还做了定量的分析，它们选了几个领域，然后抽样了每个领域最高频的一万个token，看下重合度，发现确实不高。重合度最高的是新闻，那是因为Roberta训练的语料里其实就有新闻。
+那既然如此，就在目标任务所在领域语料上继续做一把预训练（DAPT），然后再finetune目标任务。同样是上面几种领域的任务，发现经过DAPT之后都有明显提高，上面重合度最低的CS领域提升最明显。最后一列是个比较有意思的实验，它是为了排除单纯增加了训练数据带来的性能提升，选了一个非目标任务所在领域来进行预训练（数据同样变多，但领域和目标任务无关）。结果大多没提升，有些还下降了。这就说明在目标任务领域做预训练确实有效果！
+这个论文后面还有不少内容，但我感觉对一般场景有些overkill，就不写了，有兴趣的朋友可以自己看。下面来给大家演示一下怎么用目前主流的transformers库来做MLM，相当简单，可以说是开箱即用。
+首先你需要安装Transformers库，然后在transformers/examples/pytorch/language-modeling/目录下面找到run_mlm.py文件，把这个文件复制一份到你的工程目录。
+为了做MLM训练，你需要准备好一些文本数据，将他们以一行一个样本的格式写在一个文本文件里，为了可以监控训练的进程，最好是像平常做其他机器学习任务一样准备一个训练集，一个验证集。但由于是MLM，验证集不需要太多。
+准备好代码和数据之后就可以来运行这个脚本了，有三部分参数需要指定
+模型参数
+必须的模型参数只有一个，即model_name_or_path，即你要使用的基础模型。给这个参数是最方便的，tokenizer等组件会配套使用。你也可以参考代码来精细控制每个组件。
+数据参数
+train_file，即训练数据路径 validation_file，即验证数据路径 max_seq_length，最长的序列长度，不给的话会使用tokenizer的默认最大长度 mlm_probability遮蔽比例，默认是15%，之前陈丹琦组的论文说增大比例可以提高性能，但目前似乎还有争议 line_by_line，因为我们的数据是line by line的，所以这个要设置为True 训练参数。这部分参数有很多，可以参考这个文件。比较推荐设置的有以下几个
+output_dir，这个必填，训练后模型保存的地址 do_train，这个必填 do_eval，如果有验证集必填 num_train_epochs，默认为3 fp16，如果你的显卡支持tensor core，那一定要把这个打开 weight_decay，MLM的时候可以给点衰减防止过拟合，常用0.01 per_device_train_batch_size，batch size 最后的成品可能像这样
+python run_mlm.py \ --model_name_or_path roberta-base \ --train_file training_corpus.txt \ --validation_file validation_corpus.txt \ --per_device_train_batch_size 8 \ --per_device_eval_batch_size 8 \ --do_train \ --do_eval \ --fp16 \ --weight_decay 0.01 \ --line_by_line \ --output_dir ....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-04-20 10:25:03 +0000 UTC'>April 20, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 做NLP？Don&#39;t stop pretraining!" href="https://www.yuanhao.site/post/2022-04-20-mlm/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">还在用RoBERTa？快来看看DeBERTa吧！
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>如果你现在不知道DeBERTa，那相当于你在2018年不知道BERT ——多头注意力
+DeBERTa模型是微软在2021年提出的，首发在ICLR 2021上，到现在其实已经迭代了三个版本。第一版发布的时候在SuperGLUE排行榜上就已经获得了超越人类的水平，如今也成为了Kaggle上非常重要的NLP Backbone（BERT感觉已经没什么人用了）。比较奇怪的是，似乎这个模型被大家讨论并不多，于是最近看了两篇相关论文DeBERTa: Decoding-enhanced BERT with Disentangled Attention和DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing学习了一下。
+DeBERTa 1.0 1.0版本在BERT的基础上有三个主要的改进点：
+更加解耦的self attention，上图中右边黄色部分； 考虑绝对位置的MLM任务，上图中Enhanced Mask Decoder； 预训练时引入对抗训练 我认为其中1应该是最重要的，然后是3，2最不重要，因为在后面的3.0版本已经不再使用MLM作为预训练任务了。
+Disentangled Attention 第一个改进其实有点“复古”，这里的解耦是将位置信息和内容信息分别/交叉做attention。想当年BERT横空出世时大家都津津乐道地讨论为什么可以把word embedding，position embedding加起来做注意力，没想到没过几年却又被分开了。当然，DeBERTa的相对位置编码不同于BERT的绝对位置编码，似乎也不好直接比较。
+论文里定义了一个相对位置embedding P，和一个相对距离函数$\delta(i,j)$，除了和标准transformers一样的内容QKV，计算了相对位置QK，分别为$Q_r=PW_{q,r}$，$K_r=PW_{k,r}$。注意力矩阵的计算变成了
+$$A_{i,j}={H_i,P_{i|j}}\times{ H_j,P_{j|i}}^T=H_iH_j^T&#43;H_iP_{j|i}^T&#43;P_{i|j}H_j^T&#43;P_{i|j}P_{j|i}$$
+第一项是常规的内容自注意力（content-to-content)，第二第三项分别是content-to-position和position-to-content，第四项论文里认为不重要，直接省略了。具体看是下面这个公式
+$$A_{i,j}=Q^c_i{K^c_j}^T&#43;Q^c_i{K_{r,\delta(i,j)}}^T&#43;K_j^c{Q_{r,\delta(j,i)}}^T$$
+这一部分其实看一下代码也比较清晰。
+SiFT 对抗训练也是NLPer经常使用的技术了，在做比赛或者公司业务的时候我一般都会使用FGM对抗训练来提升模型的性能。DeBERTa预训练里面引入的对抗训练叫SiFT，比FGM复杂一些，他攻击的对象不是word embedding，而是embedding之后的layer norm。整个过程需要forward 3次，亲测比FGM慢一些。微软已经把代码放出，大家可以参考，在自己的任务里试一试。
+DeBERTa 2.0 2012年2月放出的2.0版本在1.0版本的基础上又做了一些改进：
+更换tokenizer，将词典扩大了。从1.0版的50k扩成了128k。这个扩大无疑大大增加了模型的capacity。 在第一个transformer block后加入卷积。这个技巧在token classification、span prediction任务里经常用到。 共享位置和内容的变换矩阵 把相对位置编码换成了log bucket，各个尺寸模型的bucket数都是256 这些变化里1和2是把模型变大，3和4是把模型变小。总的效果是V2版本模型比V1版本变大了。
+2.0版几个变更对模型的影响，增大词典效果最显著
+DeBERTa 3.0 2021年11月微软又放出了3.0版本。这次的版本在模型层面并没有修改，而是将预训练任务由掩码语言模型（MLM）换成了ELECTRA一样类似GAN的Replaced token detect任务。因为多了个生成器，DeBERTa 3.0的论文中也更多的是对不同的embedding sharing的探讨，下面这种图是对文中对比的三种方式的简介。
+3.0论文探讨的集中参数更新方式
+根据下图所示论文的结果，3.0的改进进一步提升了DeBERTa模型的性能（实际并不是所有任务都有提升）。DeBERTa-v3也确实成为了Kaggle上最常见的DeBERTa版本。
+DeBERTa 3....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-04-16 10:25:03 +0000 UTC'>April 16, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 还在用RoBERTa？快来看看DeBERTa吧！" href="https://www.yuanhao.site/post/2022-04-16-deberta/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Key Phrase Extraction
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>做了一段时间的新闻NLP，越来越感受到抓重点对长文本理解的重要性。类别、话题、关键词句这种离散标签对下游的推荐、搜索业务以及产品的形态都有很重大的影响。最近读了两篇关键短语抽取（Key Phrase Extraction，KPE）相关的论文，感觉挺有意思，跟大家分享一下。
+问题定义和数据集 首先，对于一篇文章来说什么是其中的关键短语就没有一个统一的标准，标注的时候也比较主观，而且标注难度很大。常见的类别体系可能包含几百个类别，话题体系包含成千上万个话题，而对于关键短语来说，连个确定的候选集都没有。
+目前主流的KPE任务benchmark数据集有好几个，这里列两个比较有名的
+KP20k：2017年论文Deep Keyphrase Generation贡献的数据集，由科学论文组成。文本包括标题和摘要。发过论文的都知道，作者需要给文章提供几个关键词，确实是很好的数据来源。 KPTimes：2019年论文****KPTimes: A Large-Scale Dataset for Keyphrase Generation on News Documents****贡献的数据集，文章都是新闻，下面是一个例子。 KPTimes数据样例
+这两个数据集规模应该都挺大了，KPTimes的论文里有一张主流数据集规格对照表，一目了然，大家可以参考。从统计上看KP20k和KPTimes篇均5个KP的确实比较实用，但它们的问题是测试集里很大比例的标签并没有在文本中出现，对于模型来说难度可能太大了
+主流数据集对比
+监督方法 KP20k数据集其实是那篇论文的副产品，那篇论文的主要贡献其实是一个叫CopyRNN的方法，看名字大概就知道是个seq2seq&#43;copy机制的生成式方法。这里引入copy机制也是有比较明确的动机的，因为在RNN时代生成式方法会受限于字典，decoder输出层没有的词是无法被预测出来的。
+RNN&#43;copy机制可以在KP20k上获得0.255的F1@10
+到了2020年，BERT等Transformers模型已经成了NLP领域的标配，那自然也会想到用来做KPE。Joint Keyphrase Chunking and Salience Ranking with BERT 就是里面简单且有效的一个方法。题目里的Salience是个显著的意思，这篇文章的方法也非常直接，就是把最可能是KP的文本段落（n-gram）用排序的方法找出来。那怎么得到一个n-gram的表示呢，这篇文章的办法就是在Transformer上面再套一个一维CNN，n和卷积核的大小相对应。
+论文里用了两个任务来训练这个网络，一个任务是二分类，即n-gram是否是KP；另一个是排序任务，这个任务是对于文档中的每个unique n-gram，获得最大的预测值（文中称为max pooling），然后用hinge loss来使得KP的概率值大于非KP。
+JointKPE的成绩大大提高
+感兴趣的朋友们可以参考他们的代码实现。
+非监督方法 一开始我是想找一些靠谱的非监督方法的，毕竟像KP20k这样优质的的训练数据集一般只有英语。然后就在paperswithcode上看到了目前的榜一，UCPhrase。这个方法比较有意思，它的流程如下面这张图所示
+分为几个核心步骤：
+找到所谓的Core Phrase。这其实是通过一些规则找到文本中反复出现的片段，并且把它们当做KP，以及后续网络训练的Silver Labels。 用Transformers语言模型生成特征。这里的特征不是大家常用的embedding，而是attention map。 训练一个图像分类器，对于一个attention map进行是否KP的二分类。 一个attention map样例，从中可以发现：1. attention map把句子分成了比较明显的几块 2.attention map可以可以作为图像输入来进行KP分类
+这个论文的结果如下，在KP20k上的F1@10是19.7，和2017年的RNN&#43;copy差了6个百分点，但和同样使用Transformers的监督方法相比差了16个百分点。
+非监督方法比起监督方法来确实逊色不少
+这个工作的代码也开源了：https://github.com/xgeric/UCPhrase-exp。
+写在最后 提到KPE，可能大家第一个想到的方法是SpanBert那样的span prediction方法，亦或是序列标注里常用的BIO分类法，但JointBert论文里对比下来还是这种接一个CNN的方法更好。相比于单纯序列标注或片段预测，这个方法确实可以更直接地利用附近的邻域信息，在Kaggle中其实也常有在序列标注前先加一层CNN或RNN来强化邻域信息的做法。
+UCPhrase的方法让人眼前一亮，有一种学术美，但与JointBert 16个百分点的性能差异又实际上让它的实用价值大打折扣。所以在业务明确的前提下，搞漂亮方法确实不如扎扎实实搞点标注数据啊。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-03-26 10:25:03 +0000 UTC'>March 26, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Key Phrase Extraction" href="https://www.yuanhao.site/post/2022-03-26-key-phrase-extraction/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">围观特斯拉总监把玩MNIST
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近大名鼎鼎的特斯拉AI总监Andrej Karpathy发了篇博客（看来写博客是个好习惯），叫Deep Neural Nets: 33 years ago and 33 years from now。饭后花了点时间围观了一下，写得确实挺有意思。
+他先尝试复现了一下深度学习开山模型LeNet，然后尝试利用这33年人类的新知识去改进模型的效果。他干了这么几个事情：
+Baseline. eval: split train. loss 4.073383e-03. error 0.62%. misses: 45 eval: split test . loss 2.838382e-02. error 4.09%. misses: 82 把原文的MSE loss换成如今多分类的标配Cross Entropy Loss eval: split train. loss 9.536698e-06. error 0.00%. misses: 0 eval: split test . loss 9.536698e-06. error 4.38%. misses: 87 首战失败，怀疑SGD优化器不给力，换成了AdamW，并使用“大家都知道”的最优学习率3e-4，还加了点weight decay eval: split train. loss 0.000000e&#43;00. error 0.00%. misses: 0 eval: split test ....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-03-09 10:25:03 +0000 UTC'>March 9, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 围观特斯拉总监把玩MNIST" href="https://www.yuanhao.site/post/2022-03-09-%E5%9B%B4%E8%A7%82%E7%89%B9%E6%96%AF%E6%8B%89%E6%80%BB%E7%9B%91%E6%8A%8A%E7%8E%A9mnist/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">心流
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>断断续续读完了《心流》这本书，感觉不错，特别是序言和前几章，大家都可以读读看，应该会有些启发（序二的作者说自己在推荐这本书时也总加上一句“读前三章就行了”）。我也把我的一些收获分享给大家。
+管理好你的注意力 体验过心流的人都知道，那份深沉的快乐是严格的自律、集中注意力换来的。
+书里有一个很有意思的观点，关于享乐和乐趣的区别，其中有一个差别就是乐趣是需要投入注意力的，而享受是无需耗费精神能量的。投入注意力也是体验心流的重要条件，因此不花力气的享乐只能体会到低级的“刺激”。
+现代人的注意力其实是个稀缺的资源，无数的人和公司在为之竞争。而这种相对“自我”来说外部的激烈竞争甚至是侵入式的，它们把“自我”对注意力的控制权也削弱了——好多人把自己的注意力交给抖音、b站、小红书去打理。这其实是比较遗憾的。
+心流较强的那组人能关闭其他资讯的管道，只把注意力集中在接收闪光的刺激上。
+我我感觉注意力是可以管理和训练的，有一些简单的方法例如不带手机进卧室，把搜索作为主要的信息获取起点，多读书，多看长视频少看短视频等等。
+学会自得其乐 这一点听上去有点阿Q，但我感觉确实很重要，我也挺庆幸自己对这一点掌握的还可以。之前跟总哥探讨过这个问题，我们是本科同学，他比我多金且光鲜，但他觉得我一直比他快乐。后来我们总结了几点原因，记得其中一个是我的好奇心比较强，对啥都感兴趣，所以兴趣爱好比较多，例如打游戏、弹吉他，从而可以获取乐趣的渠道比较多。
+对弹吉他这点近来体验尤其强烈。之前弹吉他是下载个谱子照着弹，最近更多是就着一个backing自己即兴乱弹。虽然知道弹得很烂，但确实能体验心流。书里也提到孔子说的“立于礼，成于乐”，古人诚不欺我。
+现在都说内卷，为什么卷？因为大家的差异小了，或者说是大家都不差了。如果此时再强调竞争，边际收益是很低的。特别是对个人而言，结果可能是多赚了几块钱，但身心俱疲。既然已经不差了，而且从竞争获胜获得的乐趣已经变淡，为什么不转而直接去获取快乐呢？
+克服现代生活的焦虑与沮丧，必须先从社会环境中独立出来，不再孜孜以求，只以社会赋予的赏罚为念
+塑造乐趣 书里有一段话描述乐趣出现的八项元素
+首先，这种体验出现在我们面临一份可完成的工作时。其次，我们必须能够全神贯注于这件事情。第三和第四，这项任务有明确的目标和即时的反馈。第五，我们能深入而毫不牵强地投入到行动之中，日常生活的忧虑和沮丧都因此一扫而空。第六，充满乐趣的体验使人觉得能自由控制自己的行动。第七，进入“忘我”状态，但心流体验告一段落后，自我感觉又会变得强烈。第八，时间感会改变——几小时犹如几分钟，几分钟也可能变得像几小时那么漫长
+前四项可谓是塑造乐趣的方法，比较实用。回到刚才弹吉他的例子，我感觉即兴弹比练谱有乐趣的原因就是难度比较容易匹配我的水平，也就是在做“可完成的工作”，但相比练谱也缺少“明确的目标”。
+书中还有一个塑造乐趣的方法是竞争。当然这里是指良性的竞争，例如体育活动里的对抗，而不是内卷里的低效竞争。这点我也很认同，就像是我之前做Kaggle比赛的时候，竞争让我进步非常快。
+英文的“竞争”（compete）一词，源自拉丁文的“con petire”，意为“共同追寻”。每个人追求的都是实现自己的潜能，在别人逼迫我们全力以赴时，这份差使就变得容易些。
+以上就是所有内容，如果觉得自己最近日子过得没啥意思，不妨读读这本书。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-03-09 10:25:03 +0000 UTC'>March 9, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 心流" href="https://www.yuanhao.site/post/2022-03-09-%E5%BF%83%E6%B5%81/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">分级利器：序数回归
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>之前面试的时候遇到过好几个候选人在做”评级“相关的项目，例如针对图片、视频的色情程度，评论的粗鲁程度分级等等。绝大部分的人在面对这种问题时通常想到的都是用回归或分类来解决。这两种方法都是有效的，但都有一些问题：
+常规的分类无法很好地建模类别间的关系。例如你要对评论的不文明程度分5档，但对于分类常用的交叉熵损失函数来说，把一个最高档的评论分成了最低档还是中间档对它来说损失是一样的。但对于实际的业务，前者显然比后者是更难接受的。 回归算法需要比较多的超参调试。在之前的文章里聊过，回归对标签的尺度是敏感的，把细粒度，例如100档（标签为1-100）的评级问题直接交给MSE Loss往往得不到好的结果。回归对标签中的最大值和最小值也天然会有一些抗拒。 在Pawpularity比赛结束后CPMP说他使用了一种叫Ordinal Regression（中文名没找到，姑且称它为序数回归）的方法，我在一些评级问题上尝试之后发现这个方法确实行之有效，而且非常简单优美。
+数学解释 说是序数“回归”，但我它认为本质上是一个考虑了类别间关系的分类算法。 大家一定都很熟悉sigmoid函数$σ$，它的定义域是(-∞,&#43;∞)，而值域是(0,1)，且是单调增函数，连续可导。我们可以把$σ(x)$看做是随机变量小于x的概率，即某个(-∞,&#43;∞)上随机变量的累积分布函数（CDF）。
+假设我要处理一个5档的分类问题，而上面说的随机变量就是模型的输出，那么问题可以转化为找到四个切分点$\theta_1, \theta_2, \theta_3, \theta_4$，并用$P(x&lt;\theta_1)$, $P(\theta_1&lt; x&lt;\theta_2)$, $P(\theta_2&lt; x&lt;\theta_3)$, $P(\theta_3&lt; x&lt;\theta_4)$, $P(\theta_4&lt; x&lt;&#43;\infty)$这五个概率来表示$x$分别属于五个等级的概率。进一步结合前面的sigmoid函数做CDF的方法，可以把五个概率转化为$σ(\theta_1-x)$, $σ(\theta_2-x)-σ(\theta_1-x)$, $σ(\theta_3-x)-σ(\theta_2-x)$, $σ(\theta_4-x)-σ(\theta_3-x)$, $1-σ(\theta_4-x)$。
+这样我们就把一个模型输出的实数logit转化成了属于五个等级的概率，进而可以使用负对数似然损失函数来优化这个分类问题。在这样的设定下既可以使用一组固定的切分点来优化模型，又可以把切分点也作为可学习的权重和模型一起优化。
+代码 一开始我在网上找到了一个pytorch的Ordinal Regression实现spacecutter，但经过一番实验之后我发现它写的并不完美，于是自己又修改了一下，在这里分享给大家
+class OrdinalRegressionLoss(nn.Module): def __init__(self, num_class, train_cutpoints=False, scale=20.0): super().__init__() self.num_classes = num_class num_cutpoints = self.num_classes - 1 self.cutpoints = torch.arange(num_cutpoints).float()*scale/(num_class-2) - scale / 2 self.cutpoints = nn.Parameter(self.cutpoints) if not train_cutpoints: self.cutpoints.requires_grad_(False) def forward(self, pred, label): sigmoids = torch.sigmoid(self.cutpoints - pred) link_mat = sigmoids[:, 1:] - sigmoids[:, :-1] link_mat = torch....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-03-02 10:25:03 +0000 UTC'>March 2, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 分级利器：序数回归" href="https://www.yuanhao.site/post/2022-03-02-ordinal-regression/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://www.yuanhao.site/page/3/">
+      «&nbsp;Prev&nbsp;3/8
+    </a>
+    <a class="next" href="https://www.yuanhao.site/page/5/">Next&nbsp;5/8&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

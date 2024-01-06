@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>文本生成 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="文本生成" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="文本生成"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    文本生成
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">文本生成专题2：常见的摘要生成方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>按照第一篇的计划，这篇文章梳理一下常见的摘要生成方法。大部分方法并不复杂，更多的内容其实包含在seq2seq框架、语言模型、self/cross attention这些模块里。
+[TOC]
+抽取式摘要 所谓抽取式摘要，有点像之前写过的关键词抽取，就是把原文里重要的部分抽出来作为摘要。
+前Transformer时代的方法 有好多基于统计的抽取式摘要生成方法，例如jieba里都集成的TextRank。这方面资料很多，大家搜搜就有。
+Transformers-based方法 比较典型的工作是BERTSum，其结构如下图。相比原始BERT，几个主要的变化是
+在每个句子前面增加[CLS]token，后续用他们对应的隐向量作为句子表征； 把BERT原有的token type改变成了0/1相间的形式； 在得到句子表征后，又增加了一个称为Summarization Layers的Transformer/LSTM模块，用户在句子表征间做交互。 最后对于每句话输出一个应该包含进摘要的概率，最终结果由得分top3句子产生。 来看一下BERTSum的表现，如下图，总体还是不错的。可以发现加上所谓的Summarization Layers模块并没有很明显的提升，预训练语言模型大部分时候确实很强，光魔改结构往往收效不大。这篇文章的结构我感觉很工整，句子前加[CLS]的操作给人一种细腻的感觉。
+生成式摘要 生成式摘要的大体框架很久都没有变过了，大概就是下面这张图。左边是一个encoder，用来编码原文，右边是个decoder，用来生成摘要。
+前Transformer时代的方法 在RNN之后，Transformer出来之前，主要的改进是加入各种各样的attention，原文间，摘要间，原文和摘要间等等。大家可以看出来上面那张图已经是有attention的了。
+我个人认为前Transformers时代最特别的一个问题是OOV。有不少工作是针对这个问题展开的，其中比较有名的是Google的Pointer Generator。对比和上图的区别可以发现，对于next token的预测，概率分布里出现了&#34;2-0&#34;这个从原文copy出来的词（也是不属于词典的词，是没有copy mechanism之前不可能被生成的词）。真的是要感谢subword tokenizer的广泛使用，让大家省去了很多类似的dirty work。
+目前主流的方法 目前的encoder-decoder transformer早已把各种attention玩到登封造极的程度，原文、生成结果间相互的联系已经大大加强。这几年的提升很多都是来自于非结构方面，例如BART用一种新颖的预训练方法来提高，GPT用超大语言模型来提高等。摘要生成逐渐成为了一个跟随语言模型水涨船高的领域（调参调结构当然也有用，但至少大的提升我认为是这样）。
+近期刷榜方法 如果大家有关心今年的ACL，会发现摘要相关的论文很多，前段时间还看到丕子老师发微博感叹。不仅数量多，今年在CNN/Dailymail数据集上还有个不小的涨幅，在本文的最后一起来看下是什么神奇的方法。
+近几年的刷榜方法我认为可以总结为更加充分地挖掘数据集提供的信号，同时在模型上结合生成模型和判别模型。
+我们先从一篇直白的论文Abstractive Summarization with Combination of Pre-trained Sequence-to-Sequence and Saliency Models讲起。这篇论文把原文和摘要中都出现的token认为是重要token，用这个作为监督信号，训练了一个重要性模型(saliency models)。然后尝试了多种组合方式来在解码器上使用重要性模型产生的辅助信号。
+这里解释一下里面出现的几种方式：
+SE，Selective Encoding：用重要性得分来控制编码器输出 SA，Selective Attention：用重要性得分来控制解码器cross attention SEG, Sentence Extraction then Generation：相当于精简原文输入 CIT, Conditional Summarization Model with Important Tokens：把重要的Token选出来跟原文一起输入编码器 来看一下各种方式的表现，只是单独增加一个siliency model训练任务（MT）就提高了1个点的R1，CIT表现也不错，提升接近两个点。
+有了上面这篇文章作为基础，我们来看下目前的SOTA，BRIO: Bringing Order to Abstractive Summarization，他们组其实工作是一脉相承的，感兴趣可以看下他们之前的论文GSum: A General Framework for Guided Neural Abstractive Summarization和SimCLS: A Simple Framework for Contrastive Learning of Abstractive Summarization。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-07-03 10:25:03 +0000 UTC'>July 3, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 文本生成专题2：常见的摘要生成方法" href="https://www.yuanhao.site/post/2022-07-03-summary2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">文本生成专题1：基础知识
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>大家好，好久不见，疫情封控在家两个月写文章都不利索了😂。
+在这段时间我反思了一下之前写的东西，基本是最近用了什么、看到什么就写什么，感觉系统性比较差。后面我打算少写一些零散话题，多总结一些更有体系的内容。第一个小专题我想总结一下我最近关注比较多的领域，文本生成。文本生成领域很广泛，我主要会聚焦在文本摘要（Text Summarization）和数据驱动生成（Data2Text）。
+这篇文章是专题第一篇，将介绍以下的内容：
+[TOC]
+除了第二部分外都比较像科普文，没有相关技术背景的朋友也可以看懂。
+问题定义和数据集 摘要 摘要这个问题比较好理解，就是把长的文章，例如学术论文、新闻等等缩写成更短的文本，并且保留重要的信息。
+摘要领域常见的典型数据集CNN/DailyMail, arXiv, Pubmed, XSUM等。其中CNN/DailyMail的原始文本是大约几百个词的新闻，摘要（ground truth）是人写的，大概五六十个词。中间两个都是来自学术论文的数据集，原始文本比新闻长不少。学术论文通常都需要作者提供摘要，一般一百来个词，天然适合拿来做摘要的数据集。X-SUM是里面摘要长度最短的数据集，基本是一句话的长度。还有一些数据集，大家可以参考papwerswithcode。
+数据驱动生成 数据驱动生成则是给定一些结构化的数据，例如餐馆信息、实体间的关系等，生成一段自然语言。
+这个领域典型的数据集有WebNLG和E2E。WebNLG的每条样本会提供一系列用三元组描述的实体及关系，以及一段陈述三元组表达事实的自然语言文本作为标签。
+E2E数据集则提供了成对的餐馆结构化信息和自然语言描述。自然语言描述相比于WebNLG数据集更简短一些。更多数据集大家参考这个页面。
+常用的评价指标 除了数据集，要理解一个技术的发展水平，另一个很重要的方面是理解评价指标。评价机器生成的文本，最常用的指标是ROUGE和BLEU。
+ROUGE 摘要里最常用的指标是ROUGE，它的全称是Recall-Oriented Understudy for Gisting Evaluation，是在2004年的论文ROUGE: A Package for Automatic Evaluation of Summaries里提出的。从名字可以看出来它比较关注recall。它有很多形式，在论文里比较常看到的有ROUGE-N(N=1,2,3…)和ROUGE-L两种。
+对于ROUGE-N，计算方式就是生成结果和参考文本中都出现的ngram占参考文本ngram的比例。ROUGE-L比较麻烦，需要考虑最长公共子串，但相比于预设ngram大小的ROUGE-N有一定的优势。单句的ROUGE-L是最长子串长度除以参考句的长度，举一个论文里的例子
+S1. police killed the gunman S2. police kill the gunman S3. the gunman kill police 假设S1是参考句，那S2和S3的ROUGE-2都是1/3(匹配上了the gunman)，但S2的ROUGE-L是3/4比S3的2/4大，实际情况确实是S2更好一些。
+可以看出ROUGE，特别是ROUGE-N是比较考察和参考文本用词的一致性的，理论上不是个语义上的评价，这也和后面会写到的一些trick有直接的关联。
+ROUGE指标的python实现可以参考这个repo，看代码应该是是最清楚的。
+BLEU 在Data2Text领域常用的指标是BLEU，全称是bilingual evaluation understudy，从名字也能看出来，最开始是在机器翻译的评价里被广泛使用。BLEU像是一个precision指标，基本是在算生成结果和参考文本都出现的词和参考文本长度的比值。主要考虑的问题是多次匹配，例如
+candidate：ha ha ha reference: only saying ha is not good candidate只有一种词，且在标签中出现了，但若BLEU是100分，显然是不合理的。因为ha在reference中只出现一次，所以只能匹配一次，所以BLEU是1/3。
+另一个要解决的问题是防止candidate过短而导致的高分。因为precision的分母是自己ngram的数目，只输出有把握的词是可以提高分数的。这里引入了一个叫brevity penalty的参数。这个参数的计算公式如下：...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-05-25 10:25:03 +0000 UTC'>May 25, 2022</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 文本生成专题1：基础知识" href="https://www.yuanhao.site/post/2022-05-25-summary1/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">十分钟读懂beam search-2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在上一篇文章中我们介绍了基础版的beam search，这篇文章是对它的一个扩展，可以在模型不改的情况下获得更好的生成结果。今天的介绍围绕的也是一篇蛮新的论文，《The Curious Case of Neural Text Degeneration》，根据这篇论文的版面内容，它应该已经被ICLR 2020接收了。
+Beam Search的问题 先解释以下什么要对Beam Search进行改进。因为Beam Search虽然比贪心有所改进，但还是会生成出空洞、重复、前后矛盾的文本。如果你有文本生成经验，一定对这些现象并不陌生。在语言模型还不像如今的BERT、GPT这么厉害的时候，这种现象更加明显。
+没有经验也没关系，我们来看一个论文里面的例子。输入模型的引文（context)
+“The study, published in the Proceedings of the They were cattle called Bolivian Cavalleros; they live in a National Academy of Sciences of the United States of remote desert uninterrupted by town, and they speak huge, America (PNAS), was conducted by researchers from the beautiful, paradisiacal Bolivian linguistic thing. They say, Universidad Nacional Autónoma de México (UNAM) and...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-03-23 00:00:00 +0000 UTC'>March 23, 2020</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 十分钟读懂beam search-2" href="https://www.yuanhao.site/post/2020-03-23-beamsearch2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">十分钟读懂beam search-1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近研究了一下用基于BERT的encoder-decoder结构做文本生成任务，碰巧管老师昨天的文章也介绍了以生成任务见长的GPT模型，于是决定用两篇文章大家介绍一下在文本生成任务中常用的解码策略Beam Search（集束搜索）。
+解码及贪心搜索 生成式任务相比普通的分类、tagging等NLP任务会复杂不少。在生成的时候，模型的输出是一个时间步一个时间步依次获得的，而且前面时间步的结果还会影响后面时间步的结果。也就是说，每一个时间步，模型给出的都是基于历史生成结果的条件概率。为了生成完整的句子，需要一个称为解码的额外动作来融合模型多个时间步的输出，而且使得最终得到的序列的每一步条件概率连乘起来最大。
+在文本生成任务中，每一个时间步可能的输出种类称为字典大小(vocabulary size，我们用$v$表示)，进行T步随机的生成可能获得的结果总共有$v^T$种。拿中文文本生成来说，$v$的值大约是5000-6000，即常用汉字的个数。在如此大的基数下，遍历整个生成空间是不现实的。
+最容易想到的策略是贪心搜索，即每一个时间步都取出一个条件概率最大的输出，再将从开始到当前步的结果作为输入去获得下一个时间步的输出，直到模型给出生成结束的标志。例如下图，每一个时间步都取出了条件概率最大一个结果，生成了序列[A,B,C]。
+很明显，这样做将原来指数级别的求解空间直接压缩到了与长度线性相关的大小。由于丢弃了绝大多数的可能解，这种关注当下的策略无法保证最终得到的序列概率是最优的。
+Beam Search 而beam search是对贪心策略一个改进。思路也很简单，就是稍微放宽一些考察的范围。在每一个时间步，不再只保留当前分数最高的1个输出，而是保留num_beams个。当num_beams=1时集束搜索就退化成了贪心搜索。
+下图是一个实际的例子，每个时间步有ABCDE共5种可能的输出，即$v=5$，图中的num_beams=2，也就是说每个时间步都会保留到当前步为止条件概率最优的2个序列。
+在第一个时间步，A和C是最优的两个，因此得到了两个结果[A],[C]，其他三个就被抛弃了； 第二步会基于这两个结果继续进行生成，在A这个分支可以得到5个候选人，[AA],[AB],[AC],[AD],[AE]，C也同理得到5个，此时会对这10个进行统一排名，再保留最优的两个，即图中的[AB]和[CE]； 第三步同理，也会从新的10个候选人里再保留最好的两个，最后得到了[ABD],[CED]两个结果。 可以发现，beam search在每一步需要考察的候选人数量是贪心搜索的num_beams倍，因此是一种牺牲时间换性能的方法。
+以上就是Beam Search的基本概念，下面我们解析一种高效率实现方式。
+Beam Search代码解析 Beam Search的原理虽然简单，但实际实现的时候却有很多细节要考虑。下面要解析这个实现出自于NLP界著名Python包Transformers，我为了说明方便做了一些改动。
+一个正确且高效的算法需要处理的问题大概有两个：
+充分利用硬件，可以处理批量数据，且尽量使用并行计算少用循环 处理好长短不同的生成结果 下面是基础版的beam search函数定义。其中context是编码器编码获得的向量，batch_size是每批数据中包含的样本量，bos_token_id是句子开头标志的token id，pad_token_id是用于填充的token id，eos_token_id是句子结束标志的token id。这里给参数填上的默认值和我们后面讲解时使用的例子是一致的。
+def beam_search_generate(context, batch_size=3, max_length=20, min_length=2, num_beams=2, bos_token_id=101, pad_token_id=0, eos_token_id=102, ): pass 在函数中主要执行以下三个步骤：
+准备初始输入 在当前生成的序列长度未达到max_length时扩展生成序列 准备最终输出的序列 下面我们分别解析。
+准备初始输入 # 建立beam容器，每个样本一个 generated_hyps = [ BeamHypotheses(num_beams, max_length, length_penalty, early_stopping=early_stopping) for _ in range(batch_size) ] # 每个beam容器的得分，共batch_size*num_beams个 beam_scores = torch.zeros((batch_size, num_beams), dtype=torch.float, device=encoder_input_ids....</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-03-20 00:00:00 +0000 UTC'>March 20, 2020</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 十分钟读懂beam search-1" href="https://www.yuanhao.site/post/2020-03-20-beamsearch1/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

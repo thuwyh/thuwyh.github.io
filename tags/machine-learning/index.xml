@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Machine Learning on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/machine-learning/</link>
+    <description>Recent content in Machine Learning on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 24 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Logistic Regression: A Beginner&#39;s Guide</title>
+      <link>https://www.yuanhao.site/post/ml101/2023-03-24-logistic-regression/</link>
+      <pubDate>Fri, 24 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/ml101/2023-03-24-logistic-regression/</guid>
+      <description>Logistic Regression is a statistical method used to analyze the relationship between a categorical dependent variable and one or more independent variables. It is widely used in machine learning and predictive modeling for binary classification problems. In this article, we will discuss the basics of logistic regression and its mathematical formulation.
+Binary Classification Binary classification is a type of classification problem in which the output variable can take only two possible values, usually represented as 0 or 1.</description>
+    </item>
+    <item>
+      <title>Linear Regression: Understanding the Basics</title>
+      <link>https://www.yuanhao.site/post/ml101/2023-03-23-lr/</link>
+      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/ml101/2023-03-23-lr/</guid>
+      <description>Linear regression is a widely-used statistical method for modeling and predicting the relationship between two variables. In essence, it is a technique for finding the best-fitting line through a set of data points. This article provides a beginner-friendly introduction to linear regression and its underlying concepts.
+What is Linear Regression? Linear regression is a statistical method that models the relationship between a dependent variable (also known as the response variable) and one or more independent variables (also known as predictors).</description>
+    </item>
+  </channel>
+</rss>

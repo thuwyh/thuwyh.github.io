@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>面试 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/%E9%9D%A2%E8%AF%95/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/%E9%9D%A2%E8%AF%95/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="面试" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/%E9%9D%A2%E8%AF%95/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="面试"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    面试
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">2021面试总结
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>今年由于各种原因参加了很多面试，面过的候选人可能快一百个了。其中有经验丰富的高P，也有初出茅庐的应届生。面的多了之后不仅能发现候选人的问题，也能发现自己作为面试官的问题。就像古人说的，千里马常有而伯乐不常有，为了以后能更好地评估候选人（主要是工程师）的水平，我做了一些总结，也分享出来跟大家讨论。
+明确要招什么样的人 正所谓看人下菜碟，在面试之前要对候选人有个大致的定位，当然这个不是静态的，可以在面试的过程中调整。总体来说我目前接触过的大概分成三类
+工具人。对应的大概是三年以内工作经验的人，可以完成安排的任务，不需要考虑为什么做这个。 能独立解决问题的人。三年以上经验的候选人我会期待他能够在工具人的基础上具有方案设计能力，如果能有一些业务洞察就更好了。 能带团队做业务的人。带队大佬还聊得不多，这篇就先不谈。 考察什么 目前我认为有以下三个方面需要考察：
+业务能力 专业技能 数理逻辑能力 知识面 三观 软技能 沟通能力 领导力 首先业务能力达标是候选人需要满足的基本要求；然后是三观，跟一个价值取向正确、积极向上、有趣的人一起工作一点会让自己和公司收益；最后是软技能，基本是作为加分项。
+怎么考察 聊项目 这部分对面试官的要求最高，因为候选人做的东西可能超出了自己的知识范围，但我觉得这部分又特别重要。以技术面为例，候选人在项目上花的时间远比花在面试时的代码测试长，所以这部分更能综合地看出候选人的上限。
+聊项目我认为有几个层次：
+第一个层次是聊出候选人在其中的工作量和项目的完成度。一个合格的工具人应该能做到高完成度并讲清楚自己做的事情。 第二个层次是聊价值和动机。为什么做这些事情，技术指标和业务指标怎么对应，为什么按照简历里写的方案做。一个能独立解决问题的人应该能回答出这些问题。 聊项目的时候我觉得应该避免太泛也难量化评估的问题，例如：之前项目里遇到的最大困难是什么，怎么解决的。如果是候选人是大神应该觉得都没啥困难，真的困难大概率也还没有被解决。
+方案设计 这是我目前认为比较好的一种考察方式，刚才聊项目是顺着候选人来，方案设计则是由面试官来主导。这里可以选一个工作里实际遇到且比较开放的问题和候选人进行讨论，几乎可以考察到业务能力里面的各个维度。可以提前准备一些比较细致、刁钻的follow up，不仅能考察候选人，说不定还能对自己的工作产生启发。
+代码测试 代码测试也很重要，但我认为这是用来控制下限的。考LeetCode上的数据结构和算法感觉也不是一个特别好的选择，试问大家工作中用过几次动态规划呢。所以我比较倾向于考一些即使没有见过也能用基本编程思想解决的问题。
+数学题、基础知识 我之前面试的时候也被问过数学题和基础知识，这是考察之前项目不是特别对口的候选人或者应届生的一个好手段。对于比较有经验的候选人可以让总结一下近些年技术的发展脉络，这个对逻辑思维和知识面是个不错的考察。
+聊天 聊天主要是对三观和软技能的考察，最直接的可以聊一下换工作的动机，对年轻候选人可以聊聊人生规划，对老人可以聊聊对领域和行业的看法，有个前辈经常问候选人平常有什么兴趣爱好等等。
+让候选人问问题 从我面试的结果看，不同人问的问题不太一样。不少人会问公司规模、工作节奏相关的问题，有的会问自己面试的岗位定位业务发展相关的问题。有两个候选人的问题我印象比较深刻。一个是说他看了应用商店里的评论后发现不少用户在抱怨一个问题，问为什么会出现这个问题，从这个问题可以看出候选人主动做了功课，还对后面的技术问题有好奇心。另一个问我当时为什么决定加入这家公司，这个问题不仅可以拉近和面试官的距离，也可以给候选人带去很多信息，如果一个新人问这个问题，那ta大概率是比较有探索精神的一类人。
+建立打分表 不管公司的打分表是怎么样的，最好都给自己的考察方案设计一套最合适的打分表，提前确定好各个维度的权重和打分细则，这样不仅能更加公平地做候选人之间的比较，也能让面试更加有针对性。这里也给出我针对3-5年经验工程师的打分表，算是对上面内容的总结。
+维度 分值 细则 备注 项目：工作量和完成度 6 工作量正常、完成良好4分，能回答各种问题2分 项目：价值和动机 5 抓住对业务的价值重点2.5分，技术方案综合考虑效果、成本、可行性2.5分 方案设计 5 方案能满足功能3分，方案体现优秀的技术深度、广度2分 代码测试 6 正确、完整实现功能4分，速度快、代码风格好2分 三观 2 正常人1分，特别正2分 不正常人直接淘汰 软技能 1 沟通、表达特别好1分 总和 25 </p>
+  </div>
+  <footer class="entry-footer"><span title='2021-12-20 10:25:03 +0000 UTC'>December 20, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 2021面试总结" href="https://www.yuanhao.site/post/2021-12-20-2021%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

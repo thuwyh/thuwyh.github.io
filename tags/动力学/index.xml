@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>动力学 on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/%E5%8A%A8%E5%8A%9B%E5%AD%A6/</link>
+    <description>Recent content in 动力学 on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 04 Jun 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/%E5%8A%A8%E5%8A%9B%E5%AD%A6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>动力学一：约束，虚位移和虚功</title>
+      <link>https://www.yuanhao.site/post/robotics/2015-06-04-dynamics/</link>
+      <pubDate>Thu, 04 Jun 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/robotics/2015-06-04-dynamics/</guid>
+      <description>与运动学研究轨迹、速度不同，动力学是研究力和运动关系的学问，主要的对象是力和加速度。在高中我们都学过的牛顿第二定律就是典型的动力学定律，但是当运动复杂之后，这种方法就比较麻烦且容易出错了。所以，在机器人这种典型的多刚体运动领域，常用分析力学的方法，核心自然就是拉格朗日方程了。
+这篇文章算是一个分析力学入门读物吧，讲一讲里面的约束，虚位移和虚功。
+约束的字面意思大家都懂的，在分析力学里是指对质点位置、速度的限制，用数学的话说就是
+[ f_s(r_1,r_2,&amp;hellip;,v_1,v_2,&amp;hellip;,t)=0 ]
+其中r表示质点的位置，v表示质点的速度。这里用等于号表示双面约束，其实只考虑这种情况就够了。
+更特别的，如果这个函数里不含v了，那就是说只限制了位置，这种情况称为几何约束。对于几何约束和积分后可以写成几何约束的其他约束（微分约束），称他们为完整约束。
+再来说虚位移，虚位移就是在某一瞬时，在不破坏约束的情况下质点的任意可能位移。比如一个平面上放着一个木块，假设他们始终接触（这就是约束），那么在特定时刻木块是可以沿着板做任何运动的，然而真实的运动肯定只能是众多虚位移中的一个。质点$P_s$的虚位移通常用$\delta r_s$表示。
+力在虚位移上做的功就叫做虚功。如果作用在质点$P_s$上的约束反力$N_s$在任意虚位移上做的虚功之和为0，即
+[ \sum_{s=1}^{n}N_s\cdot \delta r_s=0 ]
+则称次约束为理想约束。我们其实基本上只考虑理想双面完整约束。
+最后讲两个重要的原理。第一个是虚位移原理，讲的是手主动力$F_s$作用的质点的可能平衡位置是真实平衡位置的判据，其充要条件是
+[ \sum_{s=1}^{n}F_s\cdot \delta r_s=0 ]
+即主动力在任一组虚位移上所做虚功为0。
+另一个是达朗贝尔原理，说的是质点系的每一个质点所受主动力、约束反力、惯性力构成平衡力系。即
+[ F_s+N_s-m_s\ddot{r_s}=0 ]</description>
+    </item>
+  </channel>
+</rss>

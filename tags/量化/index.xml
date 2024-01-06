@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>量化 on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/%E9%87%8F%E5%8C%96/</link>
+    <description>Recent content in 量化 on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 22 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/%E9%87%8F%E5%8C%96/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>基础量化策略</title>
+      <link>https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-22-basic-qi/</link>
+      <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-22-basic-qi/</guid>
+      <description>以下是一些基本的量化投资策略，它们使用数学模型和算法分析数据并做出投资决策：
+价值投资：该策略涉及寻找低市盈率（P/E）或低市净率（P/B）的被低估股票。价值投资者相信市场有时会低估好公司，以折扣购买这些股票可能会带来长期收益。 成长投资：该策略涉及投资于具有高增长潜力的公司，其收益增长率或其他指标证明。成长投资者相信这些公司将继续以比整个市场更快的速度增长，从而在长期内导致股价上涨。 动量投资：该策略涉及购买最近表现良好的股票，出售最近表现差的股票。动量投资者相信股票价格的趋势在短期内将继续，从而导致盈利交易。 统计套利：该策略涉及使用统计模型来识别相关证券的错误定价，然后在这些错误定价上进行交易。例如，统计套利者可能寻找两个价格高度相关的股票在价格上暂时发生分歧的情况，然后打赌价格最终会再次收敛。 风险平价：该策略涉及将投资资本分配到不同的资产类别中，以平衡风险。风险平价投资者相信在不同风险档案的资产类别之间进行分散投资（如股票、债券和商品）可以带来比仅投资于股票或债券更好的风险调整回报。 品质投资：该策略涉及投资于拥有强大资产负债表、稳定收益和低负债股本比率的高品质公司。品质投资者相信这些公司更有可能经受住经济衰退并在长期内产生稳定的回报。 这些只是一些量化投资策略的例子。每种策略都有其优点和缺点，投资者在选择要跟随的策略之前应仔细考虑其投资目标和风险承受能力。</description>
+    </item>
+  </channel>
+</rss>

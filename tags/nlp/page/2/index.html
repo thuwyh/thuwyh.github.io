@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>NLP | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/nlp/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/nlp/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="NLP" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/nlp/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="NLP"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    NLP
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ChatGPT渗入到内容行业后，是否会造成剽窃、作弊成灾？会扼杀人类的内容创造力吗？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我的想法是剽窃、作弊成灾是会的，但扼杀人类的内容创造力是不会的。
+首先人工智能模型造成剽窃、作弊的现象是近几年才出现的新情况，这也是模型水平进步的一个表现。而且，这种模型导致的剽窃和作弊相比于原来的形式还有比较明显的差别。要理解这件事情，还需要稍微了解一下这些模型的训练方法。
+以ChatGPT为例，它最重要的一个环节是语言模型的预训练。它所依赖的语言模型是来自OpenAI的GPT-3.5。以他的前身GPT3来说，训练这个模型的数据来源如下
+来自https://en.wikipedia.org/wiki/GPT-3#GPT-3.5
+从表里可以看到，即使是让普通人觉得已经无所不包的维基百科只占到了训练数据的3%，可见训练一个顶级的语言模型需要多少数据。训练的过程有点像填字游戏，让模型看一小段文本，让它猜测后面接着的文本是什么。是不是有点像人类的背诵？
+而这么巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。它看过的这些文本，最终是形成了一个巨大的概率分布，例如看到“世界”，它会知道后面也许会跟着“杯”或者“地图”，它们有着不同的概率。
+所以这种模型的剽窃和作弊是隐性且抽象的，需要人类用问题把模型的知识“钩”出来。虽然稍微不一样的钩子就有可能从模型钩出很不一样的结果，但由于这写结果本质上都符合模型训练时语料的概率分布，所以很有可能就会触发剽窃和抄袭。这确实是一个两难的问题，如果没有这海量的训练数据，就没有令人惊艳的模型，但这么大量的数据要把版权问题搞得清清爽爽也绝不是一件易事。
+但对人类创造力的扼杀的担心我觉得大可不必。首先，模型暂时还没有实时进化的能力，ChatGPT的训练数据停留在2021年，它并不知道2022年底中国会突然放开防疫政策，那以此为题材的创作显然与他无缘。
+其次，真正的创造欲望和创造力哪会因为创作之后会有人剽窃就减弱？那是一种使命感，是不吐不快的感觉。
+大家都知道保护知识产权有利于激发社会创新创造，但近几十年来的开源运动也证明了这不是唯一的路径。在人人为我我为人人的开源软件世界，这种开放反而极大地促进了技术的进步和传播。说不定以后在AI模型领域也会有这样的运动，人们贡献出自己产生的语料供模型学习，然后用适当的license系统保证产出的模型可以被合理、公平地被使用。
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-01-31 10:25:03 +0000 UTC'>January 31, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to ChatGPT渗入到内容行业后，是否会造成剽窃、作弊成灾？会扼杀人类的内容创造力吗？" href="https://www.yuanhao.site/post/2023-01-31-chatgpt4/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">以 ChatGPT 为代表的「大模型」会是多大的技术革命？如果要发生技术革命需要具备哪些条件？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>作为一个近几年语言模型大潮的经历者谈一谈自己的看法。
+ChatGPT is ’not particularly innovative,’ and ’nothing revolutionary’, says Meta’s chief AI scientist
+上面一句话是Yann Lecun说的，虽然被网友群嘲柠檬精，但我是比较认同的。我感觉”大模型“确实是一个革命，但ChatGPT更适合作为这场革命阶段性胜利的一个里程碑。而其实这场革命的火种早就已经播下了。
+这场革命如果往早了说，我觉得可以追溯到连接主义的诞生。
+连接主义(connectionism)，又称为仿生学派或生理学派，其主要原理为神经网络及神经网络间的连接机制与学习算法。
+这一学派相信神经网络是实现人工智能的方式，上世纪40年代就出现了。但它的发展历程很曲折，经历过很多高光时刻，也多次陷入低谷
+我们先来看一组数据：
+人脑是一个极其复杂的器官，由大约1000亿个神经元、大致相同数量的非神经元细胞和数万亿个神经连接组成。
+如果你希望要用神经网络来实现人工智能，自然的想法就是神经网络的规模要跟人类大脑相当。也就是说足够”大“会是一个非常朴素的需求，他并不是最近才出现的。
+前几天横空出世的AI 爆款产品ChatGPT，可以聊天、写代码、解答难题、写小说，其技术底座正是GPT3.5 大模型，参数量多达1750 亿个。
+从上面的数据可以看出，目前牛逼的神经网络参数量已经跟人脑的神经元数量相当了。但了解神经网络的朋友应该会知道，上面所说的GPT3.5的参数量实际上是要跟人脑中的神经连接数进行类比，而不是神经元个数。也就是说目前最牛逼的神经网络容量和我们的脑容量还有数量级的差距。
+在当下，大部分人都会相信我们堆更大的模型用更多的数据还能够提高神经网络的能力。于是短短几年间，从BERT的1M参数已经进步到GPT3.5的175B参数。
+但在若干年前，这个事情还不是这样，人们想大也大不起来。因为没有找到合适的结构，也没有合适的训练方法，可能硬件也不够给力来让神经网络越大越好这件事成为现实。直到Transformers模型和基于掩码的非监督训练方式出现，事情才发生转机。所以往近了说，这场革命应该归功于这两件事，ChatGPT的祖宗GPT在2018年就出现了。
+要说这革命有多大，我感觉目前的结果还是不如前面第一和第二次工业革命大。那两次都是极大地改变了人类的生产方式，丰富了人类的物质生活，实现了例如探索宇宙这样之前无法办到的事情。现在的ChatGPT相比起来还差一些。但是AI4Science领域也有很多激动人心的结果，未来还有很大的潜力。
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-01-30 10:25:03 +0000 UTC'>January 30, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 以 ChatGPT 为代表的「大模型」会是多大的技术革命？如果要发生技术革命需要具备哪些条件？" href="https://www.yuanhao.site/post/2023-01-30-chatgpt3/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">目前ChatGPT 已应用到论文写作、剧本创作、媒体内容生产，是解放生产力的机会还是被AI支配的开始？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我感觉问题中的两个选项并不是互斥的，而且所谓被AI支配的开始甚至都不是一个合格的选项，为什么这个开始是ChatGPT，不是计算机的发明，甚至是二极管的发明呢？但是我认为说ChatGPT是“解放生产力的机会”还是比较靠谱的。
+它解放生产力的能力已经被大量的报道了，以剧本创作为例，假如你有一个绝妙的故事创意，你可以让ChatGPT快速地帮你产生好几个版本的剧本。这种机器辅助的模式可以极大地增加内容生产的效率。
+但ChatGPT并不是一个可以自主创作的人工智能，它是一个以对话机器人的形式呈现的算法模型。就像是一个从不主动说话，但几乎有问必答，且学富五车的人。要把它的知识或者创造力激发出来，需要有适合它的问题。而我一直觉得提问题是一个比回答问题更有难度、更体现创意的事情。还是以前面的剧本创作为例，正是因为你有了一个绝妙的故事创意，ChatGPT才能在此基础上写出一个好的剧本，你在这个创作中的贡献是无可替代的。
+以此展开，人类创作者还有很多能力是ChatGPT目前不具有的，例如ChatGPT没有情绪。他不会因失恋而难过，也没法因为看到一个漂亮的风景而开心。但很多时候，情绪才是创作的源头。
+也就是说，ChatGPT是一个次时代的工具，但创作的主动权，仍然在使用它的人类手上。或者可以说，ChatGPT只会作，而不会创。在内容生产领域如果说真的会被AI支配，我认为应该是被善于使用这种次时代工具的人支配。这也是我们大家可以在其中寻找的机会。如果一个人能够快速获取大量优质的prompt（也就是给ChatGPT的问题），那确实可以在内容生产这个行当里获得远高于一般人的经济回报。但我认为，在内容或者说创意行业，几乎不可能有个体或组织可以达到“支配”行业的程度。这是一个非常分散、个性化的行当，受众的喜好五花八门，萝卜青菜都有人爱。即使好莱坞再强，世界上的其他地方还是可以拍出叫好叫座的电影。
+反过来看，今天ChatGPT可以做的事情有多少是真正的创作呢？回答一些答案明确的问题？完成一些格式相对固定的文案？写一个常见功能代码？AI是面镜子，可以让人类反思到底哪些工作是真正的创意工作。当基于统计的模型（ChatGPT也是基于统计的模型）可以把一个问题解决得差不离，那它的创意属性基本上就消失殆尽了。
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-01-30 10:25:03 +0000 UTC'>January 30, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 目前ChatGPT 已应用到论文写作、剧本创作、媒体内容生产，是解放生产力的机会还是被AI支配的开始？" href="https://www.yuanhao.site/post/2023-01-30-chatgpt2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">也聊一下ChatGPT
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近ChatGPT火了，而且火出圈了。好多不是做技术的朋友都开始关注甚至转发相关文章。从广为流传的一些例子看，ChatGPT确实做出了让大家眼前一亮的效果。聊天机器人搞了这么些年，也终于有了一个让大家都比较认可的产品。
+{: .align-center style=“width:80%”} ChatGPT的结果令人惊艳 {: .align-caption style=“text-align:center;font-size:smaller”}
+小迷思 前几天几个小伙伴聊天，说起ChatGPT和OpenAI，纷纷感叹为什么国内没有这样的创新公司和突破性产品涌现。几个大厂的研究院，比如阿里达摩院、字节AI Lab虽然成果也很多，但跟deepmind、OpenAI比起来差距还是很大。其实ChatGPT背后的东西并不是有多难，但为什么做出来的是他们？
+今天在知乎上发现也有类似的问题，还挺火的。不少回答都从大环境的角度分析，有说我们还穷的，有说国内资源和人才不匹配的。这些固然对，但作为个体我们也可以从自己身上找找原因。前几天看到一个做AI架构的大佬在朋友圈感叹，18年就在某大厂实现了500块GPU并行训练transformer，但大家都不知道这东西能干嘛。所以有的时候并不全是资源不到位的问题。我不禁想起了马老师“因为相信，所以看见”的观点，我感觉就是差在这个境界上。从学校毕业五年多了，我感觉这也是自己目前比较大的一个问题，我们有把事情做好的能力，但却缺少真正相信且原意长期坚持的东西。
+ChatGPT背后的技术 还是聊回技术。ChatGPT还没有公开的论文，根据OpenAI的博客，基本上使用的技术和他们在今年早些时候公布的InstructGPT差不多。
+We trained this model using Reinforcement Learning from Human Feedback (RLHF), using the same methods as InstructGPT, but with slight differences in the data collection setup.
+{: .align-center style=“width:80%”} ChatGPT训练流程 {: .align-caption style=“text-align:center;font-size:smaller”}
+上面是ChatGPT博客上的训练流程图，下面是早先InstructGPT论文里的训练流程图，嗯，可以说是一模一样，比较大的差别是基础语言模型从GPT3升级到了GPT3.5。
+{: .align-center style=“width:80%”} InstructGPT训练流程 {: .align-caption style=“text-align:center;font-size:smaller”}
+InstructGPT的介绍还有图例，更容易讲清楚ChatGPT是如何训练的。这个模型的训练分为3个步骤：
+从预训练语言模型出发，用标注者产生的数据fine tune一个根据提示（prompt）生成答案的模型，这一步称为SFT 用上一步训练的模型生成大量的答案，每一个prompt都生成多组，并让标注者对这些答案进行排序。用这样获得的数据训练一个奖励模型（Reward Model，RM）。这个模型会作为后续强化学习环节的世界模型。 强化学习训练。这一步有点左右互搏的意思，用RM模型作为世界模型，SFT之后的生成模型做agent，进行训练，让生成模型尽可能地在RM模型那里拿到高分。这一步使用的算法也来自OpenAI，为2017年发布的PPO算法。 {: .align-center style=“width:80%”} 强化学习基本流程 {: .align-caption style=“text-align:center;font-size:smaller”}
+我对强化学习并不熟悉，只是稍微看了下PPO的介绍，这个算法的目标函数可以用下面的公式来概括，这个目标函数包含了三个部分，第一部分是标准的强化学习目标，即在reward model那得高分；第二部分是PPO的创新点，即KL惩罚，目的是让强化学习的每一步都不要更新太多（新模型和老模型的KL散度要小）；第三部分是针对语言模型精调新加的，为了防止语言模型在精调的时候退化，他们在精调时把语言模型loss也加了进来。三个部分通过两个超参数β和γ进行调节。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-10 10:25:03 +0000 UTC'>December 10, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 也聊一下ChatGPT" href="https://www.yuanhao.site/post/2022-12-10-chatgpt/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">现在的开源深度学习模型真的太强了
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>为了迎接宝宝的诞生，前段时间收集了一些中英文故事，做了一个讲故事小程序。
+在收集故事的过程中遇到不少问题，比较典型的情况是只有音频，或者只有文字，或者没有配图。在深度学习模型日新月异的2022，我决定尝试用最新的开源模型来解决一下这些问题。
+[TOC]
+插图生成（text2img） 这是目前大火的领域，每天各种营销号都有大量文章狂轰滥炸。不论是生成梵高画作还是生成性感waifu，似乎AI画师现在已经无所不能。
+但我实际使用下来感觉要让AI直接给故事画插图还是蛮困难的。我使用的是最近红的发紫、大名鼎鼎的Stable Diffusion，短短几个月已经发展到第四版了。我的做法也比较简单，直接把故事标题嵌入在一段prompt里面，例如a story illustration for children of the story about The crow and the water bottle 。这个prompt模板是参考了一些prompt编写指南结合尝试之后得到。
+在尝试的过程中发现几个比较明显的现象
+通过art by xxx控制风格非常灵敏，试了梵高和莫奈，得到图片的风格都很强 细节效果都比较差，不管是脸还是手，只要有这种部位的图都不太能用 AI产生的图片有时给人感觉阴森森的，给小朋友做故事书插画估计真会吓死宝宝 下面是几个我生成出来的例子
+这个乌鸦喝水的图是我比较满意的，两个东西都画的比较正常，水瓶子里还有点石头，估计是模型训练时有见过这个phrase和相应图片，直接给记住了。
+这个图不知所云，没看到有奶牛，青蛙也怪怪的。
+这张丑小鸭算是平均水平，虽然鸭头有点怪，但是在可以接受的范围内。
+后来我又调研了下，有的朋友为了给故事生成插图做得还是比较fancy的。例如这个小姐姐的repo，大家感兴趣可以看一下，也是开源模型攒的pipeline。
+更多生成图片的例子，可以参考这个故事集。
+语音转文字（ASR） 虽然各种有声故事大大减轻了讲故事的负担，但给婴儿或者胎儿讲故事最好还是由爸爸妈妈亲自来。毕竟这个时期故事内容肯定是听不懂的，更重要的是让宝宝听到父母的声音。为了能亲自讲故事，我需要把之前找到的一些故事音频（主要是英文的）转换成文本。
+经过一番调研，目前比较好的ASR模型是最近openAI开源的来源于论文《Robust Speech Recognition via Large-Scale Weak Supervision》的Whisper。 这个模型是个transformer seq2seq model，从插图来看multi task这块比较复杂。
+待转写的故事听起来都比较清晰，我直接搞了个base.en单语模型试了一下。跑出来的效果简直惊艳，几乎没有错误的单词，甚至连时态都识别得很准确。唯一美中不足的是有些文章转写出来没有标点符号，也几乎没法识别出段落，给阅读带来一些障碍。为了解决这个问题，我又找了个punctuation restore模型后处理了一下。现代化的语言模型做这个事情简直是易如反掌，效果也相当好。
+大家可以看这个故事集里面的内容，都是ASR转写出来的。
+文字转语音（TTS） 亲自讲故事虽好，但英语内容不是所有家长都能驾驭的。对于只有文本的英语故事，我也希望能生成相对应的音频。
+目前开源模型里面SOTA水平的应该是来自Facebook（Model Card里是叫fastspeech2，但正文里又写是S^2，微软也有一个叫fastspeech的模型，我还没搞懂他们之间关系）的FastSpeech2，这个模型是用faiseq来实现的，但也在huggingface的hub上托管。
+样例代码有点bug，按照讨论区的指导可以跑通。给一段文字的话生成很快，但句与句之间有点黏连太紧，听感不佳。我稍微做了点小后处理，让文章听起来自然了一些。大家可以参考这个故事集的内容。
+在做TTS和扫论文的过程中隐约感觉TTS是一个很有意思的领域，后面有时间可以多学习一下。
+总之，经过这些有趣尝试，我基本上解决了我遇到的内容问题。虽然这些模型都还有一些问题，但确实已经可以很大得提升生产力。原来需要特别专业团队才能做的事情现在只要几行代码就可以搞定。内容类、工具类产品的玩法也更多了，可以用这些模型和人相互激发促进来产生更多有趣的创意。
+本文就先写到这，如果你也需要经常给宝宝讲故事，欢迎使用这个简单的小程序！后面我还会写一两篇关于这个小程序工程和算法方面的心得，如果你感兴趣，欢迎关注公众号，及时获取更新。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-10-17 10:25:03 +0000 UTC'>October 17, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 现在的开源深度学习模型真的太强了" href="https://www.yuanhao.site/post/2022-10-17-multimodal/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">文本生成专题2：常见的摘要生成方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>按照第一篇的计划，这篇文章梳理一下常见的摘要生成方法。大部分方法并不复杂，更多的内容其实包含在seq2seq框架、语言模型、self/cross attention这些模块里。
+[TOC]
+抽取式摘要 所谓抽取式摘要，有点像之前写过的关键词抽取，就是把原文里重要的部分抽出来作为摘要。
+前Transformer时代的方法 有好多基于统计的抽取式摘要生成方法，例如jieba里都集成的TextRank。这方面资料很多，大家搜搜就有。
+Transformers-based方法 比较典型的工作是BERTSum，其结构如下图。相比原始BERT，几个主要的变化是
+在每个句子前面增加[CLS]token，后续用他们对应的隐向量作为句子表征； 把BERT原有的token type改变成了0/1相间的形式； 在得到句子表征后，又增加了一个称为Summarization Layers的Transformer/LSTM模块，用户在句子表征间做交互。 最后对于每句话输出一个应该包含进摘要的概率，最终结果由得分top3句子产生。 来看一下BERTSum的表现，如下图，总体还是不错的。可以发现加上所谓的Summarization Layers模块并没有很明显的提升，预训练语言模型大部分时候确实很强，光魔改结构往往收效不大。这篇文章的结构我感觉很工整，句子前加[CLS]的操作给人一种细腻的感觉。
+生成式摘要 生成式摘要的大体框架很久都没有变过了，大概就是下面这张图。左边是一个encoder，用来编码原文，右边是个decoder，用来生成摘要。
+前Transformer时代的方法 在RNN之后，Transformer出来之前，主要的改进是加入各种各样的attention，原文间，摘要间，原文和摘要间等等。大家可以看出来上面那张图已经是有attention的了。
+我个人认为前Transformers时代最特别的一个问题是OOV。有不少工作是针对这个问题展开的，其中比较有名的是Google的Pointer Generator。对比和上图的区别可以发现，对于next token的预测，概率分布里出现了&#34;2-0&#34;这个从原文copy出来的词（也是不属于词典的词，是没有copy mechanism之前不可能被生成的词）。真的是要感谢subword tokenizer的广泛使用，让大家省去了很多类似的dirty work。
+目前主流的方法 目前的encoder-decoder transformer早已把各种attention玩到登封造极的程度，原文、生成结果间相互的联系已经大大加强。这几年的提升很多都是来自于非结构方面，例如BART用一种新颖的预训练方法来提高，GPT用超大语言模型来提高等。摘要生成逐渐成为了一个跟随语言模型水涨船高的领域（调参调结构当然也有用，但至少大的提升我认为是这样）。
+近期刷榜方法 如果大家有关心今年的ACL，会发现摘要相关的论文很多，前段时间还看到丕子老师发微博感叹。不仅数量多，今年在CNN/Dailymail数据集上还有个不小的涨幅，在本文的最后一起来看下是什么神奇的方法。
+近几年的刷榜方法我认为可以总结为更加充分地挖掘数据集提供的信号，同时在模型上结合生成模型和判别模型。
+我们先从一篇直白的论文Abstractive Summarization with Combination of Pre-trained Sequence-to-Sequence and Saliency Models讲起。这篇论文把原文和摘要中都出现的token认为是重要token，用这个作为监督信号，训练了一个重要性模型(saliency models)。然后尝试了多种组合方式来在解码器上使用重要性模型产生的辅助信号。
+这里解释一下里面出现的几种方式：
+SE，Selective Encoding：用重要性得分来控制编码器输出 SA，Selective Attention：用重要性得分来控制解码器cross attention SEG, Sentence Extraction then Generation：相当于精简原文输入 CIT, Conditional Summarization Model with Important Tokens：把重要的Token选出来跟原文一起输入编码器 来看一下各种方式的表现，只是单独增加一个siliency model训练任务（MT）就提高了1个点的R1，CIT表现也不错，提升接近两个点。
+有了上面这篇文章作为基础，我们来看下目前的SOTA，BRIO: Bringing Order to Abstractive Summarization，他们组其实工作是一脉相承的，感兴趣可以看下他们之前的论文GSum: A General Framework for Guided Neural Abstractive Summarization和SimCLS: A Simple Framework for Contrastive Learning of Abstractive Summarization。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-07-03 10:25:03 +0000 UTC'>July 3, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 文本生成专题2：常见的摘要生成方法" href="https://www.yuanhao.site/post/2022-07-03-summary2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">文本生成专题1：基础知识
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>大家好，好久不见，疫情封控在家两个月写文章都不利索了😂。
+在这段时间我反思了一下之前写的东西，基本是最近用了什么、看到什么就写什么，感觉系统性比较差。后面我打算少写一些零散话题，多总结一些更有体系的内容。第一个小专题我想总结一下我最近关注比较多的领域，文本生成。文本生成领域很广泛，我主要会聚焦在文本摘要（Text Summarization）和数据驱动生成（Data2Text）。
+这篇文章是专题第一篇，将介绍以下的内容：
+[TOC]
+除了第二部分外都比较像科普文，没有相关技术背景的朋友也可以看懂。
+问题定义和数据集 摘要 摘要这个问题比较好理解，就是把长的文章，例如学术论文、新闻等等缩写成更短的文本，并且保留重要的信息。
+摘要领域常见的典型数据集CNN/DailyMail, arXiv, Pubmed, XSUM等。其中CNN/DailyMail的原始文本是大约几百个词的新闻，摘要（ground truth）是人写的，大概五六十个词。中间两个都是来自学术论文的数据集，原始文本比新闻长不少。学术论文通常都需要作者提供摘要，一般一百来个词，天然适合拿来做摘要的数据集。X-SUM是里面摘要长度最短的数据集，基本是一句话的长度。还有一些数据集，大家可以参考papwerswithcode。
+数据驱动生成 数据驱动生成则是给定一些结构化的数据，例如餐馆信息、实体间的关系等，生成一段自然语言。
+这个领域典型的数据集有WebNLG和E2E。WebNLG的每条样本会提供一系列用三元组描述的实体及关系，以及一段陈述三元组表达事实的自然语言文本作为标签。
+E2E数据集则提供了成对的餐馆结构化信息和自然语言描述。自然语言描述相比于WebNLG数据集更简短一些。更多数据集大家参考这个页面。
+常用的评价指标 除了数据集，要理解一个技术的发展水平，另一个很重要的方面是理解评价指标。评价机器生成的文本，最常用的指标是ROUGE和BLEU。
+ROUGE 摘要里最常用的指标是ROUGE，它的全称是Recall-Oriented Understudy for Gisting Evaluation，是在2004年的论文ROUGE: A Package for Automatic Evaluation of Summaries里提出的。从名字可以看出来它比较关注recall。它有很多形式，在论文里比较常看到的有ROUGE-N(N=1,2,3…)和ROUGE-L两种。
+对于ROUGE-N，计算方式就是生成结果和参考文本中都出现的ngram占参考文本ngram的比例。ROUGE-L比较麻烦，需要考虑最长公共子串，但相比于预设ngram大小的ROUGE-N有一定的优势。单句的ROUGE-L是最长子串长度除以参考句的长度，举一个论文里的例子
+S1. police killed the gunman S2. police kill the gunman S3. the gunman kill police 假设S1是参考句，那S2和S3的ROUGE-2都是1/3(匹配上了the gunman)，但S2的ROUGE-L是3/4比S3的2/4大，实际情况确实是S2更好一些。
+可以看出ROUGE，特别是ROUGE-N是比较考察和参考文本用词的一致性的，理论上不是个语义上的评价，这也和后面会写到的一些trick有直接的关联。
+ROUGE指标的python实现可以参考这个repo，看代码应该是是最清楚的。
+BLEU 在Data2Text领域常用的指标是BLEU，全称是bilingual evaluation understudy，从名字也能看出来，最开始是在机器翻译的评价里被广泛使用。BLEU像是一个precision指标，基本是在算生成结果和参考文本都出现的词和参考文本长度的比值。主要考虑的问题是多次匹配，例如
+candidate：ha ha ha reference: only saying ha is not good candidate只有一种词，且在标签中出现了，但若BLEU是100分，显然是不合理的。因为ha在reference中只出现一次，所以只能匹配一次，所以BLEU是1/3。
+另一个要解决的问题是防止candidate过短而导致的高分。因为precision的分母是自己ngram的数目，只输出有把握的词是可以提高分数的。这里引入了一个叫brevity penalty的参数。这个参数的计算公式如下：...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-05-25 10:25:03 +0000 UTC'>May 25, 2022</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 文本生成专题1：基础知识" href="https://www.yuanhao.site/post/2022-05-25-summary1/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">做NLP？Don&#39;t stop pretraining!
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>应该很多朋友知道，在训练下游任务之前先在任务的语料上做一下非监督的masked language model任务预训练可提高目标任务的性能。特别是当下游任务的标注数据少，相关语料多的情况下这个小技巧带来的提升更大。举个例子，假设你要做一个恶意评论分类器，但由于时间和成本关系，只标注了几万条评论，但系统里的评论已经有几百万条，这时候先在所有评论上做个MLM训练，再finetune恶意评论分类任务就是个比较好的选择。
+这个问题多年前论文Don’t Stop Pretraining: Adapt Language Models to Domains and Tasks做了比较详细的探讨。
+首先是个很好理解的现象，如下图所示，虽然现代化的Transformer语言模型都是由海量数据训练的，但难免跟我们目标任务的语料领域无法完全重叠
+论文还做了定量的分析，它们选了几个领域，然后抽样了每个领域最高频的一万个token，看下重合度，发现确实不高。重合度最高的是新闻，那是因为Roberta训练的语料里其实就有新闻。
+那既然如此，就在目标任务所在领域语料上继续做一把预训练（DAPT），然后再finetune目标任务。同样是上面几种领域的任务，发现经过DAPT之后都有明显提高，上面重合度最低的CS领域提升最明显。最后一列是个比较有意思的实验，它是为了排除单纯增加了训练数据带来的性能提升，选了一个非目标任务所在领域来进行预训练（数据同样变多，但领域和目标任务无关）。结果大多没提升，有些还下降了。这就说明在目标任务领域做预训练确实有效果！
+这个论文后面还有不少内容，但我感觉对一般场景有些overkill，就不写了，有兴趣的朋友可以自己看。下面来给大家演示一下怎么用目前主流的transformers库来做MLM，相当简单，可以说是开箱即用。
+首先你需要安装Transformers库，然后在transformers/examples/pytorch/language-modeling/目录下面找到run_mlm.py文件，把这个文件复制一份到你的工程目录。
+为了做MLM训练，你需要准备好一些文本数据，将他们以一行一个样本的格式写在一个文本文件里，为了可以监控训练的进程，最好是像平常做其他机器学习任务一样准备一个训练集，一个验证集。但由于是MLM，验证集不需要太多。
+准备好代码和数据之后就可以来运行这个脚本了，有三部分参数需要指定
+模型参数
+必须的模型参数只有一个，即model_name_or_path，即你要使用的基础模型。给这个参数是最方便的，tokenizer等组件会配套使用。你也可以参考代码来精细控制每个组件。
+数据参数
+train_file，即训练数据路径 validation_file，即验证数据路径 max_seq_length，最长的序列长度，不给的话会使用tokenizer的默认最大长度 mlm_probability遮蔽比例，默认是15%，之前陈丹琦组的论文说增大比例可以提高性能，但目前似乎还有争议 line_by_line，因为我们的数据是line by line的，所以这个要设置为True 训练参数。这部分参数有很多，可以参考这个文件。比较推荐设置的有以下几个
+output_dir，这个必填，训练后模型保存的地址 do_train，这个必填 do_eval，如果有验证集必填 num_train_epochs，默认为3 fp16，如果你的显卡支持tensor core，那一定要把这个打开 weight_decay，MLM的时候可以给点衰减防止过拟合，常用0.01 per_device_train_batch_size，batch size 最后的成品可能像这样
+python run_mlm.py \ --model_name_or_path roberta-base \ --train_file training_corpus.txt \ --validation_file validation_corpus.txt \ --per_device_train_batch_size 8 \ --per_device_eval_batch_size 8 \ --do_train \ --do_eval \ --fp16 \ --weight_decay 0.01 \ --line_by_line \ --output_dir ....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-04-20 10:25:03 +0000 UTC'>April 20, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 做NLP？Don&#39;t stop pretraining!" href="https://www.yuanhao.site/post/2022-04-20-mlm/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">还在用RoBERTa？快来看看DeBERTa吧！
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>如果你现在不知道DeBERTa，那相当于你在2018年不知道BERT ——多头注意力
+DeBERTa模型是微软在2021年提出的，首发在ICLR 2021上，到现在其实已经迭代了三个版本。第一版发布的时候在SuperGLUE排行榜上就已经获得了超越人类的水平，如今也成为了Kaggle上非常重要的NLP Backbone（BERT感觉已经没什么人用了）。比较奇怪的是，似乎这个模型被大家讨论并不多，于是最近看了两篇相关论文DeBERTa: Decoding-enhanced BERT with Disentangled Attention和DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing学习了一下。
+DeBERTa 1.0 1.0版本在BERT的基础上有三个主要的改进点：
+更加解耦的self attention，上图中右边黄色部分； 考虑绝对位置的MLM任务，上图中Enhanced Mask Decoder； 预训练时引入对抗训练 我认为其中1应该是最重要的，然后是3，2最不重要，因为在后面的3.0版本已经不再使用MLM作为预训练任务了。
+Disentangled Attention 第一个改进其实有点“复古”，这里的解耦是将位置信息和内容信息分别/交叉做attention。想当年BERT横空出世时大家都津津乐道地讨论为什么可以把word embedding，position embedding加起来做注意力，没想到没过几年却又被分开了。当然，DeBERTa的相对位置编码不同于BERT的绝对位置编码，似乎也不好直接比较。
+论文里定义了一个相对位置embedding P，和一个相对距离函数$\delta(i,j)$，除了和标准transformers一样的内容QKV，计算了相对位置QK，分别为$Q_r=PW_{q,r}$，$K_r=PW_{k,r}$。注意力矩阵的计算变成了
+$$A_{i,j}={H_i,P_{i|j}}\times{ H_j,P_{j|i}}^T=H_iH_j^T&#43;H_iP_{j|i}^T&#43;P_{i|j}H_j^T&#43;P_{i|j}P_{j|i}$$
+第一项是常规的内容自注意力（content-to-content)，第二第三项分别是content-to-position和position-to-content，第四项论文里认为不重要，直接省略了。具体看是下面这个公式
+$$A_{i,j}=Q^c_i{K^c_j}^T&#43;Q^c_i{K_{r,\delta(i,j)}}^T&#43;K_j^c{Q_{r,\delta(j,i)}}^T$$
+这一部分其实看一下代码也比较清晰。
+SiFT 对抗训练也是NLPer经常使用的技术了，在做比赛或者公司业务的时候我一般都会使用FGM对抗训练来提升模型的性能。DeBERTa预训练里面引入的对抗训练叫SiFT，比FGM复杂一些，他攻击的对象不是word embedding，而是embedding之后的layer norm。整个过程需要forward 3次，亲测比FGM慢一些。微软已经把代码放出，大家可以参考，在自己的任务里试一试。
+DeBERTa 2.0 2012年2月放出的2.0版本在1.0版本的基础上又做了一些改进：
+更换tokenizer，将词典扩大了。从1.0版的50k扩成了128k。这个扩大无疑大大增加了模型的capacity。 在第一个transformer block后加入卷积。这个技巧在token classification、span prediction任务里经常用到。 共享位置和内容的变换矩阵 把相对位置编码换成了log bucket，各个尺寸模型的bucket数都是256 这些变化里1和2是把模型变大，3和4是把模型变小。总的效果是V2版本模型比V1版本变大了。
+2.0版几个变更对模型的影响，增大词典效果最显著
+DeBERTa 3.0 2021年11月微软又放出了3.0版本。这次的版本在模型层面并没有修改，而是将预训练任务由掩码语言模型（MLM）换成了ELECTRA一样类似GAN的Replaced token detect任务。因为多了个生成器，DeBERTa 3.0的论文中也更多的是对不同的embedding sharing的探讨，下面这种图是对文中对比的三种方式的简介。
+3.0论文探讨的集中参数更新方式
+根据下图所示论文的结果，3.0的改进进一步提升了DeBERTa模型的性能（实际并不是所有任务都有提升）。DeBERTa-v3也确实成为了Kaggle上最常见的DeBERTa版本。
+DeBERTa 3....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-04-16 10:25:03 +0000 UTC'>April 16, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 还在用RoBERTa？快来看看DeBERTa吧！" href="https://www.yuanhao.site/post/2022-04-16-deberta/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Key Phrase Extraction
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>做了一段时间的新闻NLP，越来越感受到抓重点对长文本理解的重要性。类别、话题、关键词句这种离散标签对下游的推荐、搜索业务以及产品的形态都有很重大的影响。最近读了两篇关键短语抽取（Key Phrase Extraction，KPE）相关的论文，感觉挺有意思，跟大家分享一下。
+问题定义和数据集 首先，对于一篇文章来说什么是其中的关键短语就没有一个统一的标准，标注的时候也比较主观，而且标注难度很大。常见的类别体系可能包含几百个类别，话题体系包含成千上万个话题，而对于关键短语来说，连个确定的候选集都没有。
+目前主流的KPE任务benchmark数据集有好几个，这里列两个比较有名的
+KP20k：2017年论文Deep Keyphrase Generation贡献的数据集，由科学论文组成。文本包括标题和摘要。发过论文的都知道，作者需要给文章提供几个关键词，确实是很好的数据来源。 KPTimes：2019年论文****KPTimes: A Large-Scale Dataset for Keyphrase Generation on News Documents****贡献的数据集，文章都是新闻，下面是一个例子。 KPTimes数据样例
+这两个数据集规模应该都挺大了，KPTimes的论文里有一张主流数据集规格对照表，一目了然，大家可以参考。从统计上看KP20k和KPTimes篇均5个KP的确实比较实用，但它们的问题是测试集里很大比例的标签并没有在文本中出现，对于模型来说难度可能太大了
+主流数据集对比
+监督方法 KP20k数据集其实是那篇论文的副产品，那篇论文的主要贡献其实是一个叫CopyRNN的方法，看名字大概就知道是个seq2seq&#43;copy机制的生成式方法。这里引入copy机制也是有比较明确的动机的，因为在RNN时代生成式方法会受限于字典，decoder输出层没有的词是无法被预测出来的。
+RNN&#43;copy机制可以在KP20k上获得0.255的F1@10
+到了2020年，BERT等Transformers模型已经成了NLP领域的标配，那自然也会想到用来做KPE。Joint Keyphrase Chunking and Salience Ranking with BERT 就是里面简单且有效的一个方法。题目里的Salience是个显著的意思，这篇文章的方法也非常直接，就是把最可能是KP的文本段落（n-gram）用排序的方法找出来。那怎么得到一个n-gram的表示呢，这篇文章的办法就是在Transformer上面再套一个一维CNN，n和卷积核的大小相对应。
+论文里用了两个任务来训练这个网络，一个任务是二分类，即n-gram是否是KP；另一个是排序任务，这个任务是对于文档中的每个unique n-gram，获得最大的预测值（文中称为max pooling），然后用hinge loss来使得KP的概率值大于非KP。
+JointKPE的成绩大大提高
+感兴趣的朋友们可以参考他们的代码实现。
+非监督方法 一开始我是想找一些靠谱的非监督方法的，毕竟像KP20k这样优质的的训练数据集一般只有英语。然后就在paperswithcode上看到了目前的榜一，UCPhrase。这个方法比较有意思，它的流程如下面这张图所示
+分为几个核心步骤：
+找到所谓的Core Phrase。这其实是通过一些规则找到文本中反复出现的片段，并且把它们当做KP，以及后续网络训练的Silver Labels。 用Transformers语言模型生成特征。这里的特征不是大家常用的embedding，而是attention map。 训练一个图像分类器，对于一个attention map进行是否KP的二分类。 一个attention map样例，从中可以发现：1. attention map把句子分成了比较明显的几块 2.attention map可以可以作为图像输入来进行KP分类
+这个论文的结果如下，在KP20k上的F1@10是19.7，和2017年的RNN&#43;copy差了6个百分点，但和同样使用Transformers的监督方法相比差了16个百分点。
+非监督方法比起监督方法来确实逊色不少
+这个工作的代码也开源了：https://github.com/xgeric/UCPhrase-exp。
+写在最后 提到KPE，可能大家第一个想到的方法是SpanBert那样的span prediction方法，亦或是序列标注里常用的BIO分类法，但JointBert论文里对比下来还是这种接一个CNN的方法更好。相比于单纯序列标注或片段预测，这个方法确实可以更直接地利用附近的邻域信息，在Kaggle中其实也常有在序列标注前先加一层CNN或RNN来强化邻域信息的做法。
+UCPhrase的方法让人眼前一亮，有一种学术美，但与JointBert 16个百分点的性能差异又实际上让它的实用价值大打折扣。所以在业务明确的前提下，搞漂亮方法确实不如扎扎实实搞点标注数据啊。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-03-26 10:25:03 +0000 UTC'>March 26, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Key Phrase Extraction" href="https://www.yuanhao.site/post/2022-03-26-key-phrase-extraction/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://www.yuanhao.site/tags/nlp/">
+      «&nbsp;Prev&nbsp;1/3
+    </a>
+    <a class="next" href="https://www.yuanhao.site/tags/nlp/page/3/">Next&nbsp;3/3&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>语音识别 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="语音识别" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="语音识别"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    语音识别
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">现在的开源深度学习模型真的太强了
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>为了迎接宝宝的诞生，前段时间收集了一些中英文故事，做了一个讲故事小程序。
+在收集故事的过程中遇到不少问题，比较典型的情况是只有音频，或者只有文字，或者没有配图。在深度学习模型日新月异的2022，我决定尝试用最新的开源模型来解决一下这些问题。
+[TOC]
+插图生成（text2img） 这是目前大火的领域，每天各种营销号都有大量文章狂轰滥炸。不论是生成梵高画作还是生成性感waifu，似乎AI画师现在已经无所不能。
+但我实际使用下来感觉要让AI直接给故事画插图还是蛮困难的。我使用的是最近红的发紫、大名鼎鼎的Stable Diffusion，短短几个月已经发展到第四版了。我的做法也比较简单，直接把故事标题嵌入在一段prompt里面，例如a story illustration for children of the story about The crow and the water bottle 。这个prompt模板是参考了一些prompt编写指南结合尝试之后得到。
+在尝试的过程中发现几个比较明显的现象
+通过art by xxx控制风格非常灵敏，试了梵高和莫奈，得到图片的风格都很强 细节效果都比较差，不管是脸还是手，只要有这种部位的图都不太能用 AI产生的图片有时给人感觉阴森森的，给小朋友做故事书插画估计真会吓死宝宝 下面是几个我生成出来的例子
+这个乌鸦喝水的图是我比较满意的，两个东西都画的比较正常，水瓶子里还有点石头，估计是模型训练时有见过这个phrase和相应图片，直接给记住了。
+这个图不知所云，没看到有奶牛，青蛙也怪怪的。
+这张丑小鸭算是平均水平，虽然鸭头有点怪，但是在可以接受的范围内。
+后来我又调研了下，有的朋友为了给故事生成插图做得还是比较fancy的。例如这个小姐姐的repo，大家感兴趣可以看一下，也是开源模型攒的pipeline。
+更多生成图片的例子，可以参考这个故事集。
+语音转文字（ASR） 虽然各种有声故事大大减轻了讲故事的负担，但给婴儿或者胎儿讲故事最好还是由爸爸妈妈亲自来。毕竟这个时期故事内容肯定是听不懂的，更重要的是让宝宝听到父母的声音。为了能亲自讲故事，我需要把之前找到的一些故事音频（主要是英文的）转换成文本。
+经过一番调研，目前比较好的ASR模型是最近openAI开源的来源于论文《Robust Speech Recognition via Large-Scale Weak Supervision》的Whisper。 这个模型是个transformer seq2seq model，从插图来看multi task这块比较复杂。
+待转写的故事听起来都比较清晰，我直接搞了个base.en单语模型试了一下。跑出来的效果简直惊艳，几乎没有错误的单词，甚至连时态都识别得很准确。唯一美中不足的是有些文章转写出来没有标点符号，也几乎没法识别出段落，给阅读带来一些障碍。为了解决这个问题，我又找了个punctuation restore模型后处理了一下。现代化的语言模型做这个事情简直是易如反掌，效果也相当好。
+大家可以看这个故事集里面的内容，都是ASR转写出来的。
+文字转语音（TTS） 亲自讲故事虽好，但英语内容不是所有家长都能驾驭的。对于只有文本的英语故事，我也希望能生成相对应的音频。
+目前开源模型里面SOTA水平的应该是来自Facebook（Model Card里是叫fastspeech2，但正文里又写是S^2，微软也有一个叫fastspeech的模型，我还没搞懂他们之间关系）的FastSpeech2，这个模型是用faiseq来实现的，但也在huggingface的hub上托管。
+样例代码有点bug，按照讨论区的指导可以跑通。给一段文字的话生成很快，但句与句之间有点黏连太紧，听感不佳。我稍微做了点小后处理，让文章听起来自然了一些。大家可以参考这个故事集的内容。
+在做TTS和扫论文的过程中隐约感觉TTS是一个很有意思的领域，后面有时间可以多学习一下。
+总之，经过这些有趣尝试，我基本上解决了我遇到的内容问题。虽然这些模型都还有一些问题，但确实已经可以很大得提升生产力。原来需要特别专业团队才能做的事情现在只要几行代码就可以搞定。内容类、工具类产品的玩法也更多了，可以用这些模型和人相互激发促进来产生更多有趣的创意。
+本文就先写到这，如果你也需要经常给宝宝讲故事，欢迎使用这个简单的小程序！后面我还会写一两篇关于这个小程序工程和算法方面的心得，如果你感兴趣，欢迎关注公众号，及时获取更新。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-10-17 10:25:03 +0000 UTC'>October 17, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 现在的开源深度学习模型真的太强了" href="https://www.yuanhao.site/post/2022-10-17-multimodal/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,1372 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>多头注意力</title>
+    <link>https://www.yuanhao.site/</link>
+    <description>Recent content on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 25 Jun 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>填志愿真难</title>
+      <link>https://www.yuanhao.site/post/thoughts/2023-06-25-major-selection/</link>
+      <pubDate>Sun, 25 Jun 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/thoughts/2023-06-25-major-selection/</guid>
+      <description>这两天各省的高考成绩陆续发布，考生和家长马上该为怎么填志愿伤脑筋了。
+今年小舅子高考，考得不错，虽然清北上不了，但其他学校应该都有机会。作为一名负责任的好姐夫，自然也发动身边资源给小舅子出谋划策。 不搞不知道，现在填志愿还真是不容易。
+首先是现在的大学都很会蹭热点、造概念。人工智能相关的各种学院、实验班就有好几个，比如浙大的图领班，人大的高瓴学院，复旦的计算机科学拔尖班。 还有些近年来火热的产业比如新能源，也有像上交的博渊未来学院这种新兴院系。 近年来各种软硬件的热点确实多，AI、半导体、新能源都火过一把，给了这些院系或者项目很好的土壤。 家长和考生也很吃这套，愿意为此买单。 遥想十几年前我填志愿那会其实也有热门专业，当时的显学是金融、建筑、土木，现在好像也都比较冷清了。 所以大家填志愿的时候也不要过分追逐当下的热点。
+第二个现象是所谓大类招生，或者更实际的说法是各种“实验班”很多。这种实验班往往是相关专业搭在一起，但里面的专业强弱是有差别的。 例如复旦的“技术科学实验班”里面包含的专业有信息类也有航空航天。这种大类专业往往进去之后还要按成绩分流。 上海交大这方面就比较离谱，分流时80%看的是高考的成绩。感觉有点给考生画大饼的意思，用大类招生里的好专业把你吸（哄）引（骗）进来，入学后可能会和期望有偏差。 不管怎么样，我认为大类招生的本意应该是好的，但是对于这种大类招生，考生和家长们务必要调查清楚，做好预期管理。
+今天看到一个我关注的大V写现在专业之间的差别没有学校之间差别大了，我感觉是有道理的。随着社会和国家对硬科技的关注越来越多，原来的一些天坑专业比如生化环材也开始支棱起来了。 计算机类虽然在收入上目前还有一定的优势，但优势也在衰减。在这种情况下，他建议大家可以多考虑下自己的兴趣和特长，我也比较认同。
+不过遗憾的是，像我们这种在小县城长大的小孩可能很难有机会在上大学之前就搞清楚自己的兴趣到底是啥，很多东西可能都没有机会接触到。 作为一个过来人，我本来是想写点东西来给大家科普一下，但也一直没时间。这里把我的一些想法分享出来，大家可以用这个框架自行查阅资料。
+其实很简单，想了解一个专业，可以问这几个问题：
+这个专业在大学四年的培养计划是什么样的？会学一些什么课程？对比几个专业的培养计划就能看出区别来。如果培养计划没啥差别，那后面研究生阶段转换就会比较容易。 这个专业有哪些著名的公司？他们的产品是什么？他们的股价或者市值这几年是怎么变化的 这个专业有哪些著名的人物？可以分别找找学术界和工业界的，看下他们在研究什么。他们中有没有你想成为的人？ 大家有什么关于填志愿的好方法也欢迎在评论区留言。</description>
+    </item>
+    <item>
+      <title>令人吃惊的M2芯片</title>
+      <link>https://www.yuanhao.site/post/review/2023-06-11-apple-m2/</link>
+      <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2023-06-11-apple-m2/</guid>
+      <description>最近拿到了一台14寸的MacBook Pro，搭载了M2 Pro芯片，内存为16GB。昨天心血来潮，在上面尝试训练了一个神经网络，感触挺深的。
+我训练的是一个BERT-base模型，当年也算是个”大模型“，但在现在看起来就是个小不点。训练数据不多，大概一万多条文本，平均长度应该接近模型的最大输入长度。 这个任务在我的A6000显卡上跑得飞快，不到十分钟就可以跑完三个epoch的训练。我一开始移植代码到MacBook上的时候没有注意到Huggingface Trainer有个控制是否使用M系芯片神经处理的开关，所以用的是CPU，进度条显示训练完要15个小时。 后来查阅文档，打开开关后，跑完训练的时间大幅下降到了1小时左右，提速了十几倍！(测试不严谨，但提速非常大是肯定的)
+不过遗憾的是，目前pytorch并不支持在M系列芯片上使用半精度数据类型，导致训练的显存消耗略大，batchsize上不去。但GitHub上有个帖子说M2其实只支持bf16的，估计不久的将来会有PR来支持这一特性，那又可以有一个速度的大提升。
+前几天苹果发布了缝合版处理器M2 Ultra，碰巧知乎上有个付费问题，我就去了解了一下相关知识。目前苹果的统一内存架构是在CPU和GPU之间共享内存，而且内存带宽极大。4090的内存带宽是1T/s，而M2 Ultra达到了800GB/s。M2 pro的带宽也有200GB/s，而M2 max是400GB/s。 统一内存架构在大模型时代感觉有极大的优势，我查阅了一下目前NV主流的移动显卡，显存大多只有8GB，而M2 pro笔记本的起跳内存就有16GB，32GB版本再花3000块就能买到。
+即使在不支持半精度的情况下，32GB的统一内存也足够塞下7B的模型，已经有很多东西可以玩了。京东上一个24GB的4090显卡也要一万多，加上七七八八配个台式机估计两万块也是要的。但是一个32GB版本的MacBook Pro也只要19000，简直太划算了！
+高考刚刚结束，有不少同学或者家长估计都在挑选新的电脑、手机等设备。在不差钱的情况下，我强烈建议搞一个MacBook，教育优惠可以打八五折，你可以尝试很多普通笔记本电脑没法带给你的东西。</description>
+    </item>
+    <item>
+      <title>Vicuna初体验</title>
+      <link>https://www.yuanhao.site/post/review/2023-05-07-vicuna-impression/</link>
+      <pubDate>Sun, 07 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2023-05-07-vicuna-impression/</guid>
+      <description>今天深入体验了下Vicuna,以下是我的takeaways:
+指令跟随的能力跟ChatGPT有点差距。最典型的就是下面的身份设定任务都经常失败（如下图）。模型会非常倔强地回复你他是Vicuna，是LMSYS训练的模型。 针对上面的问题我看了下代码，发现他们专门搞了好几个问身份的语料来训练模型图片，真的是把身份感刻在了骨子里。 fastchat迭代挺快的，今天试了下他们新加的API功能。整个使用体验几乎和openai的client一模一样，学习成本很低。但目前文档没怎么跟上，有时需要看看代码。例如我在异步环境里用chatCompletion.create失败，看代码才知道要用acreate。 试了下Vicuna-7b的embedding，能力非常一般，而且维度4096太大了，那算相似度可真费劲，而且在检索任务上被768维的Instructor Embedding秒杀了。 看了下lmsys的成员，好家伙，几乎全是中国人，感觉人才这块可能对于中文大模型不会是短板。 使用下来总体还可以，下面这个例子和GPT的能力确实差不多。最后一个图是我提供些knowledge给它后的回答，措辞稍微不达预期。 </description>
+    </item>
+    <item>
+      <title>OpenAI官方出品的ChatGPT调校指南你读了吗</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</link>
+      <pubDate>Thu, 04 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</guid>
+      <description>作为一名Prompt Engineer，每天都在跟GPT打交道，时常被他惊艳，也看过很多模型失效的案例。在不精调的情况下，prompt基本上是影响效果的唯一因素了，虽然网上有很多Prompt编写指南，但我认为OpenAI出品的这份，你一定要看一下。
+这篇文章就给大家划一下重点。
+ChatGPT基操 主要包含在How to work with large language models这个文档里，同时适合网页和API用户。首先，介绍了向ChatGPT提问的三种主要范式，一种是直接给指令，例如
+Extract the name of the author from the quotation below. “Some humans theorize that intelligent species go extinct before they can expand into outer space. If they&amp;#39;re correct, then the hush of the night sky is the silence of the graveyard.” ― Ted Chiang, Exhalation 模型将会输出
+Ted Chiang 另一种是将指令转化为一个补全(completion)问题，例如上面那个指令改为
+“Some humans theorize that intelligent species go extinct before they can expand into outer space.</description>
+    </item>
+    <item>
+      <title>大力真的有奇迹</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-04-19-brute-force-is-miracle/</link>
+      <pubDate>Wed, 19 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-04-19-brute-force-is-miracle/</guid>
+      <description>在之前那篇颇受欢迎的卖惨小品【今天被OpenAI爆了】里，我讲述了被GPT embedding震撼的故事。但故事的最后，我们并没有采用openai的embedding接口，因为那样确实成本和产品稳定性都不好控制。
+我们在一番寻找之后，我们看到了一个叫Massive Text Embedding Benchmark (MTEB)的大型语义表征benchmark（在Huggingface上有最新的的榜单）。并且最终选择了榜单上排名第二的instructor-lg模型。
+Instructor-large模型的水平在这个榜单上超过了openai的ada-002，可见开源社区还是很能打的。这个模型基于的是谷歌的T5模型，然后用instruction finetuning的方法训练了一个可以适用多个场景的embedding模型。维度768，模型0.3b，推理速度很快，线上使用负担也比1536的ada-002低很多。这个跟之前我使用的21年SOTA Simcse模型（排在排行榜第30位）比，规模是三倍，在这个benchmark上的得分是61.59 vs 48.87，提升确实很明显。不过我猜Simcse large的得分应该也能超过50。总之instructor是个好模型，推荐大家在需要语义embedding的场景使用。
+但今天的主角并不是他，而是排在第14名的模型all-mpnet-base-v2。这个模型是sentence-transformers出品的一个模型，用的backbone是mpnet-base。它的规模和simcse相当，但得分是57.78，提升了很多。如果说前面的Instructor模型，甚至是GPT模型的提升很大程度来源于模型规模扩大，那这个同等规模模型的提升来自于哪里呢？mpnet这个稍显小众的网络可能比bert、roberta是强一些，但这不是主要的。因为有一个名字很类似的模型all-MiniLM-L12-v2，以及它的缩小版all-MiniLM-L6-v2，的得分分别是56.x。这两个模型的维度更小，是384维，而L6模型的层数甚至也只有bert-base的一半。主要的提升点来自于前缀all。model card里是这么说的
+We use the concatenation from multiple datasets to fine-tune our model. The total number of sentence pairs is above 1 billion sentences. We sampled each dataset given a weighted probability which configuration is detailed in the data_config.json file.
+十亿句子对训练，没错，是十亿。拿一个小小的6层模型，在大量数据上训练，就可以获得一个比两年前的SOTA好很多的模型。这种暴力美学真的令我叹为观止。看到他们数据集的时候突然感觉自己的格局或者想象力真的太小了。什么叫对深度学习有信仰，这种玩法大概就是吧。其实OpenAI也是很类似的，因为相信大模型，大数据，所以能搞成。而且就sentence-transformers用的数据来说，都是公开可获取的，能跑得动这个训练的人应该有很多，但真这么跑的却很少。
+不止是NLP领域，CV界不也是这样吗，前段时间Meta的SAM也是用史无前例的大数据集训练的。对比一下，之前的预训练模型用的常用数据集COCO才328K张图片，是SAM数据集的3%。
+SAM is trained on a massive dataset of 11 million images and 1.1 billion masks, which is the largest segmentation dataset to date.</description>
+    </item>
+    <item>
+      <title>今天被OpenAI爆了</title>
+      <link>https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/</link>
+      <pubDate>Tue, 28 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/</guid>
+      <description>今天第一次体验到来自大语言模型的压力。
+最近在做一个语义匹配的小任务，选择的方案是用2021年的SOTA模型SimCSE在我们的领域数据上先进一步预训练，然后再用任务数据finetune降维。前几天的时候还自我感觉良好，因为比之前的模型效果好，还修复了老语言模型的一些明显badcase。
+但是今天，我们用openai的embedding模型也试了一下，recall指标直接翻了一倍。当时看到结果我都惊呆了。这个模型一千个token只要0.0004美元，相当的便宜，而且开箱即用。
+之前我看到网上帖子说NLP工程师失业啥的还觉得有点夸张，现在感觉还真有可能。
+首先这个事情是有正反馈的，作为一款公开的产品，而且这么便宜，你不用别人也会用，你如果没法超过他（现在看起来确实不容易），那就只能也用，不然产品竞争力就会出问题。
+一旦大规模用，那很多NLP问题的处理范式真的会改变，以前大家在不同场景finetune类似bert这样的小模型，但现在可能会变成在OpenAI embedding基础上finetune最上面的输出层，例如分类层。一个底座可以支撑好几个上层需求。这样的话需要的人力大大减少，公司的inference负担也大大降低。虽然在OpenAI那花了些钱，但算下来大概率是比原来划算的。
+当然这样的方案也有一些问题，例如公司的数据就都让OpenAI知道了，并且OpenAI目前不太稳定，稳定性上有点不可控。
+那作为公司，感觉除了之前大家都看到的在NLG上投入大模型这条独木桥，未来在NLU上投入大模型的应该会有很多。自己跑个10B量级的模型作为底座，做到OpenAI的8、9成应该是个比较好的选择。朋友们，赶紧学起来啊，不然真要成为纺织女工了。</description>
+    </item>
+    <item>
+      <title>[大模型补课]模型及训练方法</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/</link>
+      <pubDate>Sat, 25 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/</guid>
+      <description>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 这是大模型补课的第三篇文章，主要关注模型及其训练方法。做算法的人往往最喜欢看模型相关的东西，这期包含的内容也确实很有趣，不需要技术背景也能看懂。
+Encoder vs Decoder 在模型层面，我认为大模型时代最重要的一个变化就是从前几年的Encoder为主变成了Decoder Only占据绝对的主流。相对应的，自然语言生成问题取代了自然语言理解问题成为了主流，并且是在用生成这种范式统一了理解问题。
+transformer编码器和transformer解码器的主要区别在于它们如何处理输入和输出序列。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 最开始的时候Transformer的Encoder和Decoder是成对出现的 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+Transformer编码器处理输入序列（例如句子），并将其转换为一组隐藏表示，以捕获序列的含义。编码器由一堆相同的层组成，每个层对输入序列应用自注意力机制和前馈神经网络。
+另一方面，Transformer解码器基于编码器产生的隐藏表示生成输出序列。它也由类似的层堆叠组成，但每个层还关注编码器产生的隐藏表示，以包含输入序列的信息。解码器还使用自注意力机制以自回归方式生成输出序列，这意味着它逐个标记地生成，条件是它已经生成的标记。
+总之，虽然transformer架构中的编码器和解码器都使用自注意力机制和前馈神经网络，但编码器处理输入序列，解码器通过关注编码器产生的隐藏表示来生成输出序列。
+当下火爆的大语言模型几乎都使用的是decoder only的结构。在知乎有一个问题为什么现在的LLM都是Decoder only的架构？，非常推荐大家阅读。GPT4发布之后，其处理context的能力从3.5的4k一下跃升到32k，不知道openai是不是又加入了encoder。
+涌现、Scaling Law和科学炼丹 模型的规模增大无疑是最近AI进步的重要推动力。目前像GPT3.5这样的语言模型包含了1750亿个参数，相比于人脑中的神经连接其实还小了差不多一个数量级。模型的大小和其能力的关系实际是一个非常有指导意义的值得研究的问题。
+涌现（emergent abilities）是在2022年中的论文Emergent Abilities of Large Language Models 提出的概念，是指在大模型中出现的而在小模型里没有出现的能力，用咱们熟悉的话说就是&amp;quot;量变引起质变&amp;quot;，而且这种现象是不可预测的。这种不可预测性给模型的开发带来了很大的麻烦，因为训练一个100B以上的模型成本是非常高昂的。这篇论文里列举了好几个任务里涌现的案例。
+Emergence is when quantitative changes in a system result in qualitative changes in behavior. &amp;ndash;Nobel prize-winning physicist Philip Anderson
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Few-shot任务里体现出来的涌现现象 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+实际上，早在几年前人们就训练过巨大的模型，但那时候并没有出现现在这么强的模型。例如可能是世界上最喜欢大模型的公司Nvidia，在2022年训练过一个530B的超大模型MT-NLG，但可能知道这个模型的人都很少。Deepmind的论文Training Compute-Optimal Large Language Models讨论了这个问题，并给出了结论：之前的模型都训练不充分，把数据量提上去小模型也会有大能力。还给出了一套算力消耗一定的情况下合理分配模型规模和训练数据多少的方法论。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 典型的大模型参数量及训练数据量，Chinchilla参数少得多但性能更强 {: .</description>
+    </item>
+    <item>
+      <title>[大模型补课]模型训练关键工具包</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/</link>
+      <pubDate>Sat, 25 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/</guid>
+      <description>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。
+并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种
+DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。
+TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP+TP+PP)。
+有关并行的介绍，推荐阅读Huggingface的这篇文档。
+Megatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。
+目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。
+全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵
+$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$
+这样 $$Y=X_1A_1+X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题
+$$GeLU(XA)\ne GeLU(X_1A_1+X_2A_2)$$
+所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到
+$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$
+整个过程可以用下图表示
+自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。
+上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。
+在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。
+We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15.</description>
+    </item>
+    <item>
+      <title>Logistic Regression: A Beginner&#39;s Guide</title>
+      <link>https://www.yuanhao.site/post/ml101/2023-03-24-logistic-regression/</link>
+      <pubDate>Fri, 24 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/ml101/2023-03-24-logistic-regression/</guid>
+      <description>Logistic Regression is a statistical method used to analyze the relationship between a categorical dependent variable and one or more independent variables. It is widely used in machine learning and predictive modeling for binary classification problems. In this article, we will discuss the basics of logistic regression and its mathematical formulation.
+Binary Classification Binary classification is a type of classification problem in which the output variable can take only two possible values, usually represented as 0 or 1.</description>
+    </item>
+    <item>
+      <title>Linear Regression: Understanding the Basics</title>
+      <link>https://www.yuanhao.site/post/ml101/2023-03-23-lr/</link>
+      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/ml101/2023-03-23-lr/</guid>
+      <description>Linear regression is a widely-used statistical method for modeling and predicting the relationship between two variables. In essence, it is a technique for finding the best-fitting line through a set of data points. This article provides a beginner-friendly introduction to linear regression and its underlying concepts.
+What is Linear Regression? Linear regression is a statistical method that models the relationship between a dependent variable (also known as the response variable) and one or more independent variables (also known as predictors).</description>
+    </item>
+    <item>
+      <title>基础量化策略</title>
+      <link>https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-22-basic-qi/</link>
+      <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-22-basic-qi/</guid>
+      <description>以下是一些基本的量化投资策略，它们使用数学模型和算法分析数据并做出投资决策：
+价值投资：该策略涉及寻找低市盈率（P/E）或低市净率（P/B）的被低估股票。价值投资者相信市场有时会低估好公司，以折扣购买这些股票可能会带来长期收益。 成长投资：该策略涉及投资于具有高增长潜力的公司，其收益增长率或其他指标证明。成长投资者相信这些公司将继续以比整个市场更快的速度增长，从而在长期内导致股价上涨。 动量投资：该策略涉及购买最近表现良好的股票，出售最近表现差的股票。动量投资者相信股票价格的趋势在短期内将继续，从而导致盈利交易。 统计套利：该策略涉及使用统计模型来识别相关证券的错误定价，然后在这些错误定价上进行交易。例如，统计套利者可能寻找两个价格高度相关的股票在价格上暂时发生分歧的情况，然后打赌价格最终会再次收敛。 风险平价：该策略涉及将投资资本分配到不同的资产类别中，以平衡风险。风险平价投资者相信在不同风险档案的资产类别之间进行分散投资（如股票、债券和商品）可以带来比仅投资于股票或债券更好的风险调整回报。 品质投资：该策略涉及投资于拥有强大资产负债表、稳定收益和低负债股本比率的高品质公司。品质投资者相信这些公司更有可能经受住经济衰退并在长期内产生稳定的回报。 这些只是一些量化投资策略的例子。每种策略都有其优点和缺点，投资者在选择要跟随的策略之前应仔细考虑其投资目标和风险承受能力。</description>
+    </item>
+    <item>
+      <title>美联储加息周期中一般什么行业的股票会表现更好</title>
+      <link>https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-21-rate-hike/</link>
+      <pubDate>Tue, 21 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-21-rate-hike/</guid>
+      <description>美联储加息周期中一般什么行业的股票会表现更好 一般而言，在美联储加息周期中表现良好的行业是那些对利率敏感性较低的行业。这些行业包括：
+医疗保健：无论经济情况如何，人们都需要医疗服务，因此医疗保健公司通常对利率变化不太敏感。 消费品：生产食品、家居产品和个人护理用品等消费品的公司在利率上涨期间也往往表现良好，因为人们会继续购买这些基本物品，不受经济条件的影响。 技术：技术公司往往具有高增长潜力，并且不太依赖借贷或利率，因此对利率上涨不太敏感。 公用事业：提供电力和水等基本服务的公司也不太受利率上涨的影响，因为这些服务是不可或缺的，无论经济条件如何。 另一方面，在利率上涨周期中表现不佳的行业是那些对利率敏感性较高的行业。这些行业包括：
+金融：银行和其他金融机构在利率上涨周期中通常会遭受损失，因为他们的借贷成本增加，从而减少了利润。 房地产：更高的利率使抵押贷款更加昂贵，降低了房地产的需求，可能导致房价下跌。 能源：能源公司通常需要大量资本来投资基础设施和勘探，而利率上升可能会增加他们的借贷成本，降低利润。 需要注意的是，股票表现受到许多因素的影响，利率只是其中之一。因此，在做出任何投资决策之前进行全面的研究和分析是至关重要的。 加息幅度和市场市盈率或价格中枢间有没有量化关系 有证据表明，利率上升与市场市盈率或股价水平之间存在量化关系，尽管这种关系很复杂，可能取决于各种因素。
+一般而言，当利率上升时，未来收益和现金流的现值可能会降低，从而导致市场市盈率和股价下降。然而，其他因素也会影响股价，例如公司特定因素、经济增长前景和市场情绪。
+一个常用的衡量利率与股价之间关系的指标是盈利收益率，它是市盈率的倒数。盈利收益率衡量了公司股价相对于其收益的收益率，并可与政府债券收益率进行比较。当利率上升时，债券收益率往往会增加，使其相对于股票更具吸引力，这可能导致股价下降。
+总的来说，虽然利率上升与市场市盈率或股价水平之间可能存在量化关系，但这种关系很复杂，可能取决于许多因素。在做出任何投资决策之前进行全面的研究和分析是至关重要的。
+当从加息周期转为降息周期时，通常什么行业的股票会率先上涨 当利率上升周期转变为降息周期时，对利率敏感度最高的行业往往会最先表现良好。这些行业包括：
+金融业：银行和金融机构往往受益于较低的利率，因为它们可以以更便宜的利率借入资金，然后以更高的利率贷出资金，从而增加其利润率。 房地产业：房地产公司和房屋建筑商可以从较低的利率中受益，因为它可以使人们更容易和更实惠地购买房屋，从而增加房屋需求。 消费周期股：这些是销售非必需品和服务的公司，如零售、旅游和娱乐公司。较低的利率可以提振消费支出，从而使这些公司受益。 公用事业：公用事业公司往往受益于较低的利率，因为它们往往有较高的债务，较低的利率可以降低其借款成本。 需要注意的是，这些行业的表现还可能取决于其他因素，如整体市场情况、经济增长和公司特定因素。投资者在做出任何投资决策之前，应进行全面的研究和分析。</description>
+    </item>
+    <item>
+      <title>大规模语言模型的评价方法</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/</link>
+      <pubDate>Wed, 01 Mar 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/</guid>
+      <description>上一篇文章介绍了大模型是用什么数据训练的，这一篇文章重点来看大模型的评价方法。Chatgpt这轮出圈很大原因是对话这种评价方式非常直观，普通大众就可以从对话质量看出来现在的模型比之前的&amp;quot;人工智障&amp;quot;要强很多。但真正开发大模型肯定不能用这种方式，不仅效率低、价格高，还存在不小的主观因素。这篇文章就来总结一下大模型的评价方式。
+还是先来看LLaMA论文里使用的评价指标。LLaMA里一共使用了**20种数据集（或任务）**来评估和对比模型。这些任务可以分为两大设定：零样本任务和少样本任务，涵盖以下几个大类
+常识推断 闭卷问答 阅读理解 数学推理 代码生成 大规模多任务语言理解 下面一一来看。
+常识推断 这个任务用了8个数据集，分别是BoolQ、PIQA、SIQA、HellaSwag、WinoGrande、ARC easy, ARC challenge和OpenBookQA。不同数据集有不同的形式，包括填空、威诺格拉德模式挑战（英语：Winograd Schema Challenge，缩写WSC）、多选问答。这些数据集在评价中都属于零样本，就是让模型通过预训练来直接回答问题。
+一个威诺格拉德模式的例子为：“	市议会拒绝给示威者颁发许可，因为他们[担心/宣扬]暴力。	” 当这句陈述中使用“担心”一词时，前面的“他们”指的是市议会。而当使用“宣扬”一词时，“他们”所指的则变成了示威者。人类通过常识可以很简单地看出两种情况下“他们”所指分别为何，但对于机器而言这个问题则十分困难。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 不同模型常识推断结果比较。​这种常识问题现在的模型基本都能对个​六成以上。 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+闭卷问答 这个任务包括两个数据集Natural Questions和TriviaQA。所谓闭卷，是相对于数据集原来的设定来说的。已Natural Questions为例，原来的设定是模型可以访问相关维基百科文本，然后根据百科内容回答问题。然而在评价大语言模型的时候，就不给看这个维基页面了。闭卷问答包括zero shot和few shot两种设定。zero shot很好理解，跟上面的常识推断很像，下面是论文附录里few shot的例子，实际上就是列几个问答对作为context。我目前还不太懂这种无关问答对对模型回答问题有什么帮助。
+Context → Answer these questions: Q: Who sang who wants to be a millionaire in high society? A: Frank Sinatra Q: Who wrote the book the origin of species? A: Target -&amp;gt; Charles Darwin
+阅读理解 阅读理解和前面提到的开卷问答有一点像。只是常见的阅读理解数据集用于支撑问题回答的背景材料比较短（相比于NQ里的维基页面）。在LLaMA论文里，使用的是RACE数据集，这个数据集对于做过阅读理解的朋友一定不陌生，是为初高中中文学生设计的英语阅读理解题。</description>
+    </item>
+    <item>
+      <title>如何使用ChatGPT算命</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/</link>
+      <pubDate>Tue, 28 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/</guid>
+      <description>可能是网站slogan：AI算命，朋克养生的关系，最近我看google search console后台总是有很多&amp;quot;Chatgpt算命&amp;quot;这个查询导致的网站展现。 既然大家有这个需求，我就实践SEO里面的方法，上网搜索了一下如何使用chatgpt算命，总结在这个文章里。
+好多chatgpt算命的查询 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+基本上，这要用到chatgpt的**&amp;ldquo;角色扮演&amp;rdquo;**功能，让它站在算命者的角度回答你的问题。
+先从英文开始，英文里算命先生叫做fortune teller，那么我们可以这么问chatgpt
+Act like a coffee fortune teller, I can see a cat shape in the corner of the cup, what is its meaning?
+翻译成中文就是：
+像个算命先生一样回答我，我在杯子的角落看到了一个猫的形状，这意味着什么？
+英文版的回答是
+The cat shape in the corner of your cup is a sign of good luck and protection. It is a reminder to stay alert and to be aware of any potential danger or obstacles that may arise in your life.</description>
+    </item>
+    <item>
+      <title>大规模语言模型的基石数据集</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/</link>
+      <pubDate>Sun, 26 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/</guid>
+      <description>最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉有很多课需要补。恰好昨天Meta发了新的大模型论文，浏览了一下发现很适合作为补课的切入点。
+今天这部分是关于预训练使用的数据集，是重中之重，说数据是当代AI的基石一点也不为过。GPT3用的数据其实没有公开，Meta这次论文里提到的应该算是开源模型里一个最全的版本。他们使用的数据如下表所示，我们一一来看一下。
+Dataset Sampling prop. Epochs Disk size CommonCrawl 67.0% 1.10 3.3 TB C4 15.0% 1.06 783 GB Github 4.5% 0.64 328 GB Wikipedia 4.5% 2.45 83 GB Books 4.5% 2.23 85 GB ArXiv 2.5% 1.06 92 GB StackExchange 2.0% 1.03 78 GB CommonCrawl 占比最大的数据集，他们的网站是https://commoncrawl.org/。我感觉这真是一个伟大的项目，7年时间爬了超多的互联网网页，涵盖了40种语言。
+CommonCrawl网站截图 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+根据他们博客的最新数据，2023年二月版的数据包含了400TB的数据（纯文本的数据是9个多tb），三十多亿个网页。
+The crawl archive for January/February 2023 is now available! The data was crawled January 26 – February 9 and contains 3.</description>
+    </item>
+    <item>
+      <title>ChatGPT未来会拥有自我情感和思维吗？</title>
+      <link>https://www.yuanhao.site/post/2023-02-16-chatgpt9/</link>
+      <pubDate>Thu, 16 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-16-chatgpt9/</guid>
+      <description>首先批评一下知乎，类似的问题翻来覆去提。感觉和上次的这个问题很像：https://www.zhihu.com/answer/2869775692
+我尝试问了下GPT以下问题，它的回答还挺乐观，哈哈。
+我：什么是情感？
+GPT：情感是一种心理状态，它指的是一种强烈的感情，如欢乐、悲伤、焦虑、愤怒、害怕、爱、厌恶等。它们可以由个人的生活经历、社会环境、文化和道德价值观等因素引起。
+我：语言模型，例如GPT是否具有情感？
+GPT：不具有情感。GPT（Generative Pre-trained Transformer）是一种预训练的自然语言处理模型，它可以帮助机器理解和生成自然语言，但它本身并不具有情感。
+我：为什么说语言模型不具有情感？能说得具体一些吗？
+GPT：语言模型本身并不具有情感，因为它们只是一种机器学习模型，它们可以帮助机器理解和生成自然语言，但不能感受和理解情感。语言模型的输出仅仅反映了输入的语义，它不能表达情感，也不能理解和识别情感。
+我：未来有可能让语言模型具有情感吗？
+GPT：是的，未来有可能让语言模型具有情感。随着技术的发展，许多机器学习技术和深度学习技术已经可以用来识别和理解情感，而语言模型也可以通过这些技术来学习情感，从而具有情感。
+就像GPT自己回答的一样，语言模型目前是没有情感的，本质上还是对文本之间概率分布的刻画。但因为人是有情感和思维的，对语言模型表现出来的一些能力，会不由自主地认为它具有情感或者思维。所以从“我要我觉得，不要你觉得”的角度，这个问题没啥讨论的意义。一千个观众眼里有一千个GPT。
+在上面那个回答里，我还举了两个思维实验来说明这个观点。但评论区网友上来就给我一顿喷。讲真我当时心理是有点小波澜，但我现在学乖了，多利用GPT来回答问题，被网友骂成狗也没啥心理负担。
+我个人认为，按照目前的技术方向，未来也无法获得思维和情感。但这不是个经济的想法。应该像GPT一样，大声说会就完了，然后再说一堆车轱辘话。毕竟未来的事，谁知道呢。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>ChatGpt能成为恋爱大师吗？</title>
+      <link>https://www.yuanhao.site/post/2023-02-16-chatgpt8/</link>
+      <pubDate>Thu, 16 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-16-chatgpt8/</guid>
+      <description>我认为能也不能。
+我问GPT：什么是恋爱大师？恋爱大师具有哪些特点和能力？
+GPT回答：恋爱大师是一种专业的恋爱咨询师，专门帮助人们解决恋爱问题。恋爱大师通过提供心理咨询、情感指导和婚姻咨询等服务，帮助人们解决恋爱中的问题，提高恋爱关系的健康水平。恋爱大师具有较强的心理学知识和专业能力，能够从恋爱关系的心理学角度出发，从客观的角度分析恋爱关系中出现的问题，并给出有效的解决方案。
+让我们再来试试他能不能“分析恋爱关系中出现的问题，并给出有效的解决方案”。
+我问GPT：我的女朋友老是迟到，跟她沟通过几次都没有效果，现在说她她还会生气，我该怎么办？
+GPT回答：
+首先，你要明确你的期望，并且要清楚地告诉她，你希望她能够准时到达。 然后，你可以给她一些实际的激励，比如说，如果她能够准时到达，你会给她一个小惊喜。 再者，你可以尝试一些不同的沟通方式，比如用短信或者电话来提醒她，或者在约定的时间前几分钟来接她。 最后，你可以给她一些支持，告诉她你理解她的情况，并且希望她能够改变，但也要表达出你的期望。 我再次追问：那万一我这么做之后她还是没有改变呢？我要和她分手吗？
+GPT回答：如果你采取了上述措施之后，她仍然没有改变，你可以再次和她沟通，让她明白你的期望，并且表达出你的失望。如果她仍然不能改变，你可以考虑是否要分手，但是你也可以尝试一些其他的方式，比如让她参加一些时间管理的课程，或者帮助她制定一些有助于准时到达的计划。
+对上面的回答，作为用户我是会满意的，给出了一些具有可行性的方法。这种人际沟通中的问题往往是有最佳或者较佳实践的。这方面博览群书的GPT可以给出一些不错的建议，对没有经验的小年轻可以有不小的积极作用。
+但感情的事又很复杂，而对感情的处理方式是没有标准答案的。如果上面那个爱迟到的女朋友就是屡教不改你要怎么办呢？你可以选择扬长而去，也可以选择包容承受。但毫无疑问，你考虑的肯定不只是迟到这个问题。她的性格、颜值、知识、财富、你们相处的每个瞬间都可能影响你最后的决定。但这么多的信息，目前甚至是无法通过prompt传递给GPT模型的（GPT模型只能处理一定长度的输入）。这个层面看，它跟人类心理咨询师还是有很大的差距。
+It has a token limit, which I believe is 4097. The total number of tokens used is equal to your message and GPT&amp;rsquo;s response combined. You can see how many tokens your prompt uses here: https://beta.openai.com/tokenizer
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>SEO手记</title>
+      <link>https://www.yuanhao.site/post/2023-02-10-seo/</link>
+      <pubDate>Fri, 10 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-10-seo/</guid>
+      <description>最近在看一些SEO相关的材料，比较主要的是一本名为《SEO实战密码》的书，虽然看了不少但又好像没学到什么。
+于是我决定用一个小网站，故事101，来进行实践，这个网站是之前做的讲故事小程序的延续，希望通过这个网站能为小程序吸引到更多的用户。
+网站优化 meta信息补充完整，title中增加类别词，找到了一个很棒的插件next seo 在尽可能多的地方插入超链接，例如模仿维基百科在内容中插入关键词的超链接 因为内容都是爬的，准备借助算法来提升内容原创性 外链建设 在这个博客站先加上了一个链接 </description>
+    </item>
+    <item>
+      <title>一月读书笔记：寻找目标</title>
+      <link>https://www.yuanhao.site/post/2023-02-09-%E4%B8%80%E6%9C%88%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%AF%BB%E6%89%BE%E7%9B%AE%E6%A0%87/</link>
+      <pubDate>Thu, 09 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-09-%E4%B8%80%E6%9C%88%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%AF%BB%E6%89%BE%E7%9B%AE%E6%A0%87/</guid>
+      <description>又好久没有写东西了，主要是因为工作和生活都比较忙碌。这段时间ChatGPT比较火，也在知乎参与了一些讨论。作为一个NLP圈内人，其实早在大众之前我们就已经关注到这个模型。不过除了模型的强大，OpenAI CEO奥特曼的生平事迹也很有冲击力，恰巧也和今天想写的东西有点关系。
+在陪产假和春节假期期间，除了初为人父的喜悦，最大的收获就是读了两本书。一本是冯友兰先生的《中国哲学简史》，另一本是畅销书《认知觉醒》。说实话哲学简史这本读起来还挺费力的，因为好多诸子百家的观点是直接引用文言文且没有注释。也正是因为这个原因，才挑了一本现代书籍搭配起来阅读，好在《认知觉醒》还挺不错。
+按照《认知觉醒》里的方法，读完一本书要留下一些最打动自己的东西，写出来。所以今天这篇的主题也很聚焦，就是“寻找目标”。哲学简史里讲到儒家的时候，有一节是《知命》，里面引用了论语里的名句
+君子坦荡荡，小人长戚戚
+不知道大家是否准确知道这句话的意思，翻译成汉语是“君子光明磊落、心胸坦荡，小人则是斤斤计较，患得患失。”。在书里，冯先生更多讨论的是个人和外界的关系，知命的人可以
+竭尽己力，成败在所不计
+但我认为这里的命，也和自身有关，是自己的使命。唯有找到使命，方有竭尽己力的方向。孔子自然是知道自己的使命，他希望在乱世之中重建礼乐秩序，而且一生为之奋斗。奥特曼身上我感觉也有这种气质，才能在大模型这条路上坚持下来。
+反观自己，在这方面还有很大的欠缺。因为没有找到”使命“，只能退而保证”先把每件事做好“，虽然看上去也能取得一些小成果，但这种模式很难产生系统性的大成果，也更容易计较当前的得失。要捡多少芝麻才能拼成一个西瓜？这种模式的天花板实在太低。
+也不是没想过要寻找可以作为使命的目标，但之前确实犯了一些错误，导致效果不佳。比较大的一个问题是“过犹不及”、“眼高手低”——太想定一个宏大的目标了。我们能看到的成功案例往往是非常难得的，几千年只出了一个孔子，这么多公司也只有一个乔布斯，如果一上来就把他们的成就作为标准去找目标是不合适的。特别是像我这种早年求学经历比较顺利的人，很容易有这个问题，总想着、等着干大事，觉得一些当下可以干的事情不够性感。其结果就是没有目标，先随大流，让自己保持选择的权利。我现在感觉可以逐渐提高目标的难度，先尝试定2-5年内的目标，再扩展到10年、15年。
+《认知觉醒》里有一节专门介绍了如何寻找人生使命，虽然有些泛（比较适合用来定15年甚至更长时间的大目标），大家也可以参考
+真正的觉醒者往往会有意无意地用感知力来代替思考力，比如《美好人生运营指南》一书的作者一稼就提出了6条寻找人生使命的建议。
+这个世界有很多事情可以做，你最想帮助哪些人？ 什么事让你废寝忘食？ 你在做什么事情的时候最让自己感动？ 你最让人感动的时刻是什么？ 如果没有任何经济压力，你会如何度过余生？ 闲暇的时候，你关注最多的是哪方面的信息？ 今年，给自己定一个预目标，就是找到未来5年的目标。
+2023.2.12更新 这几天朋友圈都在传精仪师兄们刚上市的公司禾赛，点进李师兄朋友圈，他对自己上市演讲视频配的文字是
+To achieve great things, two things are needed: A PLAN, AND NOT QUITE ENOUGH TIME.</description>
+    </item>
+    <item>
+      <title>ChatGPT在内容创作行业，依据现有的法律，它创作的内容是否享有著作权？如不能，如何界定内容的归属？</title>
+      <link>https://www.yuanhao.site/post/2023-02-03-chatgpt6/</link>
+      <pubDate>Fri, 03 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-03-chatgpt6/</guid>
+      <description>很实际的问题，之前并不是很了解。看了一些资料勉强答一波。
+首先，我国《著作权法》所保护的对象是“作品”，其定义在第3条进行了列明，即“文学、艺术和科学领域内具有独创性并能以一定形式表现的智力成果”。在这里跟本题最相关的一个作品属性是“独创性”。根据资料2的论述，法律界对目前AI的认识我感觉还是比较到位的，即当前的所谓AI并不具备创造性，因此ChatGPT之类的AI工具，性质为“帮助自然人进行创作活动的工具”，其自身无法自主思考，不是进行自主创作主体，AI软件对文章的生成是开发者意志的延伸。
+《著作权法》第2条规定了“中国公民、法人或者非法人组织的作品，不论是否发表，依照本法享有著作权”。因此著作权仅能由民事主体享有，但AI并不是民事主体，因此AI本身无法作为作品的作者，但使用AI的人是可以的。
+至于人是否可以享有AI生产作品的著作权，也要根据实际情况判定。主要的依据也是上面的独创性。
+下面是两个案例，第一个是不享有著作权的
+在北京知识产权法院于2020年审结的“北京菲林律所诉百度公司著作权侵权案”中，菲林律所发布的大数据报告被他人在未经同意的情况下转载至百度百家号，菲林律所由此认为百度公司侵犯了其著作权中的信息网络传播权，遂向百度公司主张侵权赔偿。法院经审理，认为菲林律所所提交的大数据报告仅是根据现有数据搜集并分析而形成，不具备独创性，不属于《著作权法》的保护范围。
+第二个是受著作权保护的
+2018年8月，腾讯公司在其下属网站中发布了一篇由腾讯旗下人工智能写作软件Dreamwriter生成的新闻，而该文在当日即被网贷之家转载，腾讯公司遂向法院起诉。法院经审理认为，相关文章“外在表现符合文字作品的形式要求，其表现的内容体现出对当日上午相关股市信息、数据的选择、分析、判断，文章结构合理、表达逻辑清晰，具有一定的独创性”，同时认为“该文章的表现形式是由原告主创团队相关人员个性化的安排与选择所决定的，其表现形式并非唯一，具有一定的独创性”，并最终确认该篇由人工智能软件生成的文章属于《著作权法》下的“文字作品”，受到我国法律的保护。
+最后，我想说，权利和义务是伴随的。ChatGPT之类的工具，经过大量语料训练，有一定概率会有侵犯他人著作权的情况出现。作为使用者，平常玩玩无所谓，一旦用于正式文本的产出一定要把好关。避免自己陷入侵权的窘境。
+参考资料
+https://www.sohu.com/a/592470873_398071
+http://www.anlilaw.com/100031/200
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>依据现有 AI 的发展速度，类似 ChatGPT 这样的产品，距诞生自我意识还有多远？</title>
+      <link>https://www.yuanhao.site/post/2023-02-03-chatgpt5/</link>
+      <pubDate>Fri, 03 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-03-chatgpt5/</guid>
+      <description>这个问题其实可以用两个著名的思想实验，从技术和哲学两个角度来回答。
+第一个是“中文房间”，是一个著名的思维实验。它是由美国哲学家约翰·赛尔在上世纪八十年代设计的。
+这个实验是说你想象一个只会说英语的人身处一个房间里，这个房间除了门上有个小窗户，其他地方全都是封闭的。这个人有一本用英语写成的书，里面指示了该如何处理接受到的中文信息，并且用中文进行回复。房间外面的人不停地向房间里塞进用中文写成的问题，房间里那个说英语的人查阅手边的那本指导书将合适的中文回答递出房间。
+虽然房间里的人可以和房间外的人对答如流，房间外的人以为房间里作着个懂中文的人，但实际上那个人只会说英语，只是那本包罗万象的指导书太牛逼了。
+套在这个问题里，ChatGPT就像那本指导书，如今的技术让人类真的可以造出这样的东西了。ChatGPT巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，然后给你一种无所不知的感觉，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。作为在屋外的人们，很有可能认为屋里的人有理解能力，甚至有意识。
+如果对技术有一定了解就会知道，当给定输入的时候，ChatGPT这样的模型做的最多的就是非常确定性的加减乘除等等数学运算，在某些环节，这些模型会输出一个概率分布，通过在这个输出的分布上进行随机采样，来达到一种丰富、随机应变的效果。
+关于生成式模型的输出采样，可以参考我之前的文章：https://zhuanlan.zhihu.com/p/114669778 和https://zhuanlan.zhihu.com/p/115076102。
+不夸张的说，如果把这种随机采样换成贪心采样，也就是每次都取概率最大的输出，那这个ChatGPT一下就会从牛逼闪闪变成木讷呆板。所以，从技术角度说，ChatGPT距离自我意识还相当遥远。
+另一个词是“图灵测试”。
+图灵测试的内容我直接摘抄维基百科
+1950年，图灵发表了一篇划时代的论文，文中预言了创造出具有真正智能的机器的可能性。由于注意到“智能”这一概念难以确切定义，他提出了著名的图灵测试：如果一台机器能够与人类展开对话（透过电传设备）而不被辨别出其机器身份，那么称这台机器具有智能。这一简化使得图灵能够令人信服地说明“思考的机器”是可能的。论文中还回答了对这一假说的各种常见质疑。图灵测试是人工智能哲学方面首个严肃的提案。
+或者是这样
+如果一个人（代号C）使用测试对象皆理解的语言去询问两个他不能看见的对象任意一串问题。对象为：一个是正常思维的人（代号B）、一个是机器（代号A）。如果经过若干询问以后，C不能得出实质的区别来分辨A与B的不同，则此机器A通过图灵测试。
+我相信当下的ChatGPT已经非常接近或者已经可以通过图灵测试了。那么从这个角度来说，机器已经相当与能思考，或者说有自我意识了。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>ChatGPT渗入到内容行业后，是否会造成剽窃、作弊成灾？会扼杀人类的内容创造力吗？</title>
+      <link>https://www.yuanhao.site/post/2023-01-31-chatgpt4/</link>
+      <pubDate>Tue, 31 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-31-chatgpt4/</guid>
+      <description>我的想法是剽窃、作弊成灾是会的，但扼杀人类的内容创造力是不会的。
+首先人工智能模型造成剽窃、作弊的现象是近几年才出现的新情况，这也是模型水平进步的一个表现。而且，这种模型导致的剽窃和作弊相比于原来的形式还有比较明显的差别。要理解这件事情，还需要稍微了解一下这些模型的训练方法。
+以ChatGPT为例，它最重要的一个环节是语言模型的预训练。它所依赖的语言模型是来自OpenAI的GPT-3.5。以他的前身GPT3来说，训练这个模型的数据来源如下
+来自https://en.wikipedia.org/wiki/GPT-3#GPT-3.5
+从表里可以看到，即使是让普通人觉得已经无所不包的维基百科只占到了训练数据的3%，可见训练一个顶级的语言模型需要多少数据。训练的过程有点像填字游戏，让模型看一小段文本，让它猜测后面接着的文本是什么。是不是有点像人类的背诵？
+而这么巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。它看过的这些文本，最终是形成了一个巨大的概率分布，例如看到“世界”，它会知道后面也许会跟着“杯”或者“地图”，它们有着不同的概率。
+所以这种模型的剽窃和作弊是隐性且抽象的，需要人类用问题把模型的知识“钩”出来。虽然稍微不一样的钩子就有可能从模型钩出很不一样的结果，但由于这写结果本质上都符合模型训练时语料的概率分布，所以很有可能就会触发剽窃和抄袭。这确实是一个两难的问题，如果没有这海量的训练数据，就没有令人惊艳的模型，但这么大量的数据要把版权问题搞得清清爽爽也绝不是一件易事。
+但对人类创造力的扼杀的担心我觉得大可不必。首先，模型暂时还没有实时进化的能力，ChatGPT的训练数据停留在2021年，它并不知道2022年底中国会突然放开防疫政策，那以此为题材的创作显然与他无缘。
+其次，真正的创造欲望和创造力哪会因为创作之后会有人剽窃就减弱？那是一种使命感，是不吐不快的感觉。
+大家都知道保护知识产权有利于激发社会创新创造，但近几十年来的开源运动也证明了这不是唯一的路径。在人人为我我为人人的开源软件世界，这种开放反而极大地促进了技术的进步和传播。说不定以后在AI模型领域也会有这样的运动，人们贡献出自己产生的语料供模型学习，然后用适当的license系统保证产出的模型可以被合理、公平地被使用。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>以 ChatGPT 为代表的「大模型」会是多大的技术革命？如果要发生技术革命需要具备哪些条件？</title>
+      <link>https://www.yuanhao.site/post/2023-01-30-chatgpt3/</link>
+      <pubDate>Mon, 30 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-30-chatgpt3/</guid>
+      <description>作为一个近几年语言模型大潮的经历者谈一谈自己的看法。
+ChatGPT is &amp;rsquo;not particularly innovative,&amp;rsquo; and &amp;rsquo;nothing revolutionary&amp;rsquo;, says Meta&amp;rsquo;s chief AI scientist
+上面一句话是Yann Lecun说的，虽然被网友群嘲柠檬精，但我是比较认同的。我感觉”大模型“确实是一个革命，但ChatGPT更适合作为这场革命阶段性胜利的一个里程碑。而其实这场革命的火种早就已经播下了。
+这场革命如果往早了说，我觉得可以追溯到连接主义的诞生。
+连接主义(connectionism)，又称为仿生学派或生理学派，其主要原理为神经网络及神经网络间的连接机制与学习算法。
+这一学派相信神经网络是实现人工智能的方式，上世纪40年代就出现了。但它的发展历程很曲折，经历过很多高光时刻，也多次陷入低谷
+我们先来看一组数据：
+人脑是一个极其复杂的器官，由大约1000亿个神经元、大致相同数量的非神经元细胞和数万亿个神经连接组成。
+如果你希望要用神经网络来实现人工智能，自然的想法就是神经网络的规模要跟人类大脑相当。也就是说足够”大“会是一个非常朴素的需求，他并不是最近才出现的。
+前几天横空出世的AI 爆款产品ChatGPT，可以聊天、写代码、解答难题、写小说，其技术底座正是GPT3.5 大模型，参数量多达1750 亿个。
+从上面的数据可以看出，目前牛逼的神经网络参数量已经跟人脑的神经元数量相当了。但了解神经网络的朋友应该会知道，上面所说的GPT3.5的参数量实际上是要跟人脑中的神经连接数进行类比，而不是神经元个数。也就是说目前最牛逼的神经网络容量和我们的脑容量还有数量级的差距。
+在当下，大部分人都会相信我们堆更大的模型用更多的数据还能够提高神经网络的能力。于是短短几年间，从BERT的1M参数已经进步到GPT3.5的175B参数。
+但在若干年前，这个事情还不是这样，人们想大也大不起来。因为没有找到合适的结构，也没有合适的训练方法，可能硬件也不够给力来让神经网络越大越好这件事成为现实。直到Transformers模型和基于掩码的非监督训练方式出现，事情才发生转机。所以往近了说，这场革命应该归功于这两件事，ChatGPT的祖宗GPT在2018年就出现了。
+要说这革命有多大，我感觉目前的结果还是不如前面第一和第二次工业革命大。那两次都是极大地改变了人类的生产方式，丰富了人类的物质生活，实现了例如探索宇宙这样之前无法办到的事情。现在的ChatGPT相比起来还差一些。但是AI4Science领域也有很多激动人心的结果，未来还有很大的潜力。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>目前ChatGPT 已应用到论文写作、剧本创作、媒体内容生产，是解放生产力的机会还是被AI支配的开始？</title>
+      <link>https://www.yuanhao.site/post/2023-01-30-chatgpt2/</link>
+      <pubDate>Mon, 30 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-30-chatgpt2/</guid>
+      <description>我感觉问题中的两个选项并不是互斥的，而且所谓被AI支配的开始甚至都不是一个合格的选项，为什么这个开始是ChatGPT，不是计算机的发明，甚至是二极管的发明呢？但是我认为说ChatGPT是“解放生产力的机会”还是比较靠谱的。
+它解放生产力的能力已经被大量的报道了，以剧本创作为例，假如你有一个绝妙的故事创意，你可以让ChatGPT快速地帮你产生好几个版本的剧本。这种机器辅助的模式可以极大地增加内容生产的效率。
+但ChatGPT并不是一个可以自主创作的人工智能，它是一个以对话机器人的形式呈现的算法模型。就像是一个从不主动说话，但几乎有问必答，且学富五车的人。要把它的知识或者创造力激发出来，需要有适合它的问题。而我一直觉得提问题是一个比回答问题更有难度、更体现创意的事情。还是以前面的剧本创作为例，正是因为你有了一个绝妙的故事创意，ChatGPT才能在此基础上写出一个好的剧本，你在这个创作中的贡献是无可替代的。
+以此展开，人类创作者还有很多能力是ChatGPT目前不具有的，例如ChatGPT没有情绪。他不会因失恋而难过，也没法因为看到一个漂亮的风景而开心。但很多时候，情绪才是创作的源头。
+也就是说，ChatGPT是一个次时代的工具，但创作的主动权，仍然在使用它的人类手上。或者可以说，ChatGPT只会作，而不会创。在内容生产领域如果说真的会被AI支配，我认为应该是被善于使用这种次时代工具的人支配。这也是我们大家可以在其中寻找的机会。如果一个人能够快速获取大量优质的prompt（也就是给ChatGPT的问题），那确实可以在内容生产这个行当里获得远高于一般人的经济回报。但我认为，在内容或者说创意行业，几乎不可能有个体或组织可以达到“支配”行业的程度。这是一个非常分散、个性化的行当，受众的喜好五花八门，萝卜青菜都有人爱。即使好莱坞再强，世界上的其他地方还是可以拍出叫好叫座的电影。
+反过来看，今天ChatGPT可以做的事情有多少是真正的创作呢？回答一些答案明确的问题？完成一些格式相对固定的文案？写一个常见功能代码？AI是面镜子，可以让人类反思到底哪些工作是真正的创意工作。当基于统计的模型（ChatGPT也是基于统计的模型）可以把一个问题解决得差不离，那它的创意属性基本上就消失殆尽了。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>协同滤波和它的子孙们</title>
+      <link>https://www.yuanhao.site/post/2022-12-23-cf/</link>
+      <pubDate>Fri, 23 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-23-cf/</guid>
+      <description>2022年Q4，在项目里接触了一些跟召回相关的工作，但坦白讲做的比较匆忙。整好最近在家带娃，空余时间比较系统地学习了一下，这篇小作文做个总结。
+本文总结的算法都有一个共同的发端，就是大名鼎鼎的协同滤波（collaborative filtering，CF）算法。这个协同只看字面也看不出个所以然，维基百科的解释如下
+协同过滤（collaborative filtering）是一种在推荐系统中广泛使用的技术。 该技术通过分析用户或者事物之间的相似性（“协同”），来预测用户可能感兴趣的内容并将此内容推荐给用户。
+经典CF 最早的CF算法是user CF。这种算法包含两个主要步骤
+对于当前用户，在所有用户中寻找与他最相似的一些用户 用相似用户对item的评价来作为当前用户对item的评价 我做的几个召回渠道也是基于CF的。如果把这个技术用在召回里，就是对于当前user，返回在与之相似的用户中受欢迎的item。这里面用户相似度的评价方式比较重要，例如通过计算两个用户交互过item的Jaccard距离来作为相似度。这种做法在用户集合很大时计算复杂度相当高。在早期的系统里，item的数量可能远远少于用户的数量，并且用户的相似度会随着用户行为的变化而变化。所以有人提出在item与item之间直接计算相似度，这种相似度相对稳定，离线计算好一个相似度关系表之后在线可以直接使用，这样就可以避免相似用户计算这个耗时的步骤，这种做法称为item CF。
+矩阵分解 Matrix Factorization 上面的经典CF算法实际是个间接推荐的方法，人们发现可以从用户和item的交互历史中得到用户和item的关系，从而进行直接推荐。基本的思路是将user-item交互矩阵近似为user矩阵和item矩阵的乘积。具体来说，若用户数为N，item数为M，则交互矩阵为N*M，希望把它近似为N*K和M*K两个矩阵的乘积。K可以远小于N和M，这样相似度的计算复杂度将比jaccard大大降低。实际上也就是获得了K维的user和item的embedding。交互矩阵通常是0,1矩阵（称为implicit feedback data），上面的操作实际上要让有交互的user和item embedding之间的点积接近1，没有交互的embedding点积远离1。
+以下图为例，我们获得了4个用户和5部电影的交互矩阵，右边是矩阵分解之后的结果。左边4*2的矩阵为用户矩阵，在一个二维空间对用户进行表征，上面5*2的矩阵是电影矩阵，在同一个二维空间对电影进行表征。右边的大矩阵是这两个矩阵相乘的结果，和左侧0,1矩阵是比较接近但不完全一致的（毕竟降维了）。对于一个user未交互过的item，我们可以拿user的embedding和item embedding做点积来预测用户发生交互的概率。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Matrix Factorization示意图 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+这个算法实际上优化的是下面这个目标
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} |A - U V^T|_F^2. $$
+学过数值分析的话会知道矩阵分解有一些经典算法，例如SVD。但这个交互矩阵A实在是太稀疏且太大了，经典算法比较难处理，因此实用的损失函数是这样
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} \sum_{(i, j) \in \text{obs}} (A_{ij} - \langle U_{i}, V_{j} \rangle)^2 + w_0 \sum_{(i, j) \not \in \text{obs}} (\langle U_i, V_j\rangle)^2.</description>
+    </item>
+    <item>
+      <title>也聊一下ChatGPT</title>
+      <link>https://www.yuanhao.site/post/2022-12-10-chatgpt/</link>
+      <pubDate>Sat, 10 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-10-chatgpt/</guid>
+      <description>最近ChatGPT火了，而且火出圈了。好多不是做技术的朋友都开始关注甚至转发相关文章。从广为流传的一些例子看，ChatGPT确实做出了让大家眼前一亮的效果。聊天机器人搞了这么些年，也终于有了一个让大家都比较认可的产品。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} ChatGPT的结果令人惊艳 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+小迷思 前几天几个小伙伴聊天，说起ChatGPT和OpenAI，纷纷感叹为什么国内没有这样的创新公司和突破性产品涌现。几个大厂的研究院，比如阿里达摩院、字节AI Lab虽然成果也很多，但跟deepmind、OpenAI比起来差距还是很大。其实ChatGPT背后的东西并不是有多难，但为什么做出来的是他们？
+今天在知乎上发现也有类似的问题，还挺火的。不少回答都从大环境的角度分析，有说我们还穷的，有说国内资源和人才不匹配的。这些固然对，但作为个体我们也可以从自己身上找找原因。前几天看到一个做AI架构的大佬在朋友圈感叹，18年就在某大厂实现了500块GPU并行训练transformer，但大家都不知道这东西能干嘛。所以有的时候并不全是资源不到位的问题。我不禁想起了马老师“因为相信，所以看见”的观点，我感觉就是差在这个境界上。从学校毕业五年多了，我感觉这也是自己目前比较大的一个问题，我们有把事情做好的能力，但却缺少真正相信且原意长期坚持的东西。
+ChatGPT背后的技术 还是聊回技术。ChatGPT还没有公开的论文，根据OpenAI的博客，基本上使用的技术和他们在今年早些时候公布的InstructGPT差不多。
+We trained this model using Reinforcement Learning from Human Feedback (RLHF), using the same methods as InstructGPT, but with slight differences in the data collection setup.
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} ChatGPT训练流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+上面是ChatGPT博客上的训练流程图，下面是早先InstructGPT论文里的训练流程图，嗯，可以说是一模一样，比较大的差别是基础语言模型从GPT3升级到了GPT3.5。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} InstructGPT训练流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+InstructGPT的介绍还有图例，更容易讲清楚ChatGPT是如何训练的。这个模型的训练分为3个步骤：
+从预训练语言模型出发，用标注者产生的数据fine tune一个根据提示（prompt）生成答案的模型，这一步称为SFT 用上一步训练的模型生成大量的答案，每一个prompt都生成多组，并让标注者对这些答案进行排序。用这样获得的数据训练一个奖励模型（Reward Model，RM）。这个模型会作为后续强化学习环节的世界模型。 强化学习训练。这一步有点左右互搏的意思，用RM模型作为世界模型，SFT之后的生成模型做agent，进行训练，让生成模型尽可能地在RM模型那里拿到高分。这一步使用的算法也来自OpenAI，为2017年发布的PPO算法。 {: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 强化学习基本流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+我对强化学习并不熟悉，只是稍微看了下PPO的介绍，这个算法的目标函数可以用下面的公式来概括，这个目标函数包含了三个部分，第一部分是标准的强化学习目标，即在reward model那得高分；第二部分是PPO的创新点，即KL惩罚，目的是让强化学习的每一步都不要更新太多（新模型和老模型的KL散度要小）；第三部分是针对语言模型精调新加的，为了防止语言模型在精调的时候退化，他们在精调时把语言模型loss也加了进来。三个部分通过两个超参数β和γ进行调节。</description>
+    </item>
+    <item>
+      <title>大教堂与集市-part1</title>
+      <link>https://www.yuanhao.site/post/2022-12-09-the-cathedral-and-the-bazaar-part1/</link>
+      <pubDate>Fri, 09 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-09-the-cathedral-and-the-bazaar-part1/</guid>
+      <description>《The Cathedral &amp;amp; the Bazaar》 By：Eric Steven Raymond, 1997
+基础版本：https://github.com/crazyangelo/Cathedral-and-Bazaar 基础版译注：原始版本為 1999 年 5 月 5 日，由謝志昌所翻譯；英文最新版為 2002 年 8 月 2 日的 3.0 版，由於內容更動處不少，因此逐一更新；翻譯以語句通順達意為主要考量，難免與英文版的字詞有所不同，為求盡善盡美，以 CC 授權釋出，希望各方同好自由修改散佈。
+本版译注：将繁体字改成简体，并修正了一些词汇表达
+第一章 教堂与市集 Linux 打破了许多软件发展的传统，这个世界级的操作系统在五年前（1991 年）仅仅靠着如丝般的网际网路，神奇地联合了散布在全世界数以千计兼职的玩家们来发展它，谁曾料到会发生这样的事情呢？
+我当然也没料到，Linux 出现在我电脑萤幕是在 1993 年初，当时我埋首于 UNIX 及开放性原始码的软件发展已有十年，1980 年代中期，我是 GNU 专案首批的贡献者之一，我写过许多开放性原始码的软件放到网路上供人使用，也曾独立或协同发展好几个程序（nethack，Emacs 的 VC 和 GUD 功能，xlife，&amp;hellip;等等），这些程序到今天仍广泛地为人所用，我想我知道这是怎么办到的。
+GNU 是自由软件基金会（Free Software Fundation）的一个专案，目标是发展出 UNIX 上所有程序的自由版本，Emacs 是自由软件基会发展出来的一支程序，可做文字编辑器，提供写程序的整合发展环境，用来读电子邮件，新闻群组，甚至浏览网页。更详细的资讯请参考 http://www.gnu.org。 ―― 译注。
+Linux 扭转了许多我认为我已知道的观念。多年来我一直宣扬使用小工具集、快速原型发展及程序进化的 UNIX 福音。但我也相信对于有一定复杂度的程序必需使用集中和有经验的方法来开发，我相信最重要的软件（操作系统以及庞大的工具程序如 Emacs）必须如建造一座教堂般，由个别的高手或一小群专家在光辉的孤立中小心翼翼地精雕细琢，时机未到之前，不会释出测试版。
+Linus Torvald[^2] 的软件发展风格（尽早并经常发表新版本，授权每一件作者可以委托的事，不拒绝几乎到混乱程度的程序）的出现如同一个惊奇，没有令人肃然起敬的教堂，甚至 Linux 的同好们似乎组成了一个有不同流程和不同方式的大市集（Linux 的档案服务站台就是它适切的象征，每个人都服从着自由的规则），以这个风格发展出来的 Linux 既一致又稳定，表面上看来真是一连串的奇迹。</description>
+    </item>
+    <item>
+      <title>大教堂与集市-part2</title>
+      <link>https://www.yuanhao.site/post/2022-12-09-the-cathedral-and-the-bazaar-part2/</link>
+      <pubDate>Fri, 09 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-09-the-cathedral-and-the-bazaar-part2/</guid>
+      <description>第五章 有多少眼球驯服了复杂度 可以很明显地观察到市集模式极大地加速了除错与程序演化。另一件可以清楚明白的是，在微观上，开发者与测试者的每天活动中，市集模式如何与为何可以达到这样的成果。在本章（初版完成三年后，依据开发者多次亲身体验过的洞察力），我们将仔细的检查它的实际机制。非技术性倾向的读者可以略过这一章，直接跳到下一章去。
+一个关键点是，为何没有源代码意识的使用者所报告的错不会太有用。没有源代码意识的使用者倾向报告表面上的问题，他们把自己的使用环境视为理所当然，所以他们会忽视重要的背景资料，报告错误时很少会包括可信赖的过程。
+这里的问题是测试者与开发者对问题的视角不同，测试者由外向内看，开发者由内向外看。在封闭源代码的体系中，两者只会固守自己的角度谈论事情，因而对另一方深深的失望。
+开源的体系则打破这条界线，使测试者与开发者可以站在同样的角度来讨论事情，这有高效多了。实践中，这将有巨大的差异，一者是只报告表象的症状，一者是以开发者那种以源代码为基础的角度来看问题。
+大部分的时候，大多数的bug是可以由描述开发层级的特征来除错的，即使是不完整的描述。当一个 beta 测试者告诉你在那一行代码有边界的问题时，或告诉你在 X、Y 跟 Z 的情形下，有个变量有问题，指出有问题的代码通常就足够找出问题并修正它。
+因此，对于 beta 测试者与核心开发者来说，有源代码意识的人对于双方都可以强化沟通与合作。换句话说，核心开发者的时间被节省了，即使是在有很多共同开发者的情形下。
+另一个开源方式的特征是节省开发者的时间，而这是典型开源项目的沟通结构。上面我使用了「核心开发者」（core developer）这个字来区别项目核心（project core，通常很小；一个开发者是常见的，一到三个开发者则是很典型的）与项目圈（project halo）的 beta 测试者跟贡献者（通常有数百个）。
+传统软件开发组织的根本问题是「Brooks法则」︰在落后的项目，增加越多程序员会使得项目更落后。一般的状况下，「Brooks法则」的预测是，随着开发者的人数增加，复杂度与沟通成本随着人数的平方上升，而完成的工作却只成线性上升。
+「Brooks法则」依据的经验是，bug会在由不同的人编写的代码的接口上大量出现，而沟通损耗会随着项目参与人数的升高而升高。因此，问题的规模会随着开发者间的沟通路径而呈现平方上升。（精确的说，是 N x （N-1）/2，N 是开发者的数目。）
+「Brooks法则」的分析建立在一个隐藏的假设基础上︰项目的沟通结构必须是完全图（complete graph），每个人都可以跟每个人沟通。但是在开源的项目中，开发者在有效平行分割的子项目中彼此很少互动；程序更改与bug报告是透过核心团体来处理的，只有在这样的小团体中，「Brooks法则」的分析才成立1。
+还有其它原因让源代码层级的bug报告变得有效率。事实是一个错误常常会有许多可能的症状，取决于使用的的使用状况与使用环境。这些错误是一些复杂与微妙的bug（像是内存管理错误或视窗的随意中断），也是最难被发现或靠静态分析来捕捉的，这在长期的开发中造成最多的问题。
+当一个测试者发出一个尝试性的源代码层级的多症状bug报告（例如，我看来在第 1250 行代码有个窗口在做讯号处理，或你在哪里把那个缓存清空），可能会给开发者一个关键的线索来发现半打的症状，这些开发者通常因为太靠近底层代码而无法发现这样的问题。在这种案例中，很难找出可从外部看见的不正确动作是从哪个bug引起的，甚至是不可能的 ―― 但是透过经常发布，就不需要知道了。其他的合作者会迅速找出bug是否已被修正。在很多案例中，导致不正常动作的源代码层级bug将被移除，甚至在还没有被报告之前就被移除。
+复杂的多症状错误，通常有很多从表面症状来的方式可以找出真正的bug。这种能让测试者与开发者找出问题的方式，可能与开发环境有关，也可能会随着时间而有无法预期的变化。实际上，当测试者或开发者追踪一个症状时，都是在程序空间的一个集合中「半随机」（semi-random）取样。bug越微妙复杂，越难找出相关的样本。
+对于简单与容易复现的bug，重点在于「半」（semi）而非在「随机」（random）；debug技巧、对程序与架构的熟练都是关键。但对于复杂的bug来说，重点就是「随机」（random），这时人多比人少好 ―― 即使这些少数人是平均技巧较高的。
+如果从表面的症状找出bug的难度大，像是一些无法从表面症状预测的，上述的结果会进一步增强。单一的开发者可能会以一个困难的方式来做第一次尝试，但其实也可以从简单的方式达到同样的结果。另一方面，假如很多人随着频繁的版本一起测试，可能就会有一个人可以用最简单的方式找到bug，节省了大量的时间。项目管理者将会发现，随着新版本发布，许多人一起用各种复杂方法追踪同一个bug的时代将会过去，尤其是在众人浪费太多时间之前2。
+第六章 今花非昨花？ 由 Linus 行为的研究中，我们得到了一个能解释他为什么成功的理论，所以我想要在我的新项目（当然不如 Linux 内核程序复杂和雄心勃勃）中来测试这个理论。
+但我做的第一件事情是大力重组和简化 popclient 的程序，Carl Harris 的实现非常扎实，可是却像许多的 C 程序员一样，含括了一种不必要的复杂，他以代码为主，数据结构为辅，因此代码看起来漂亮，但数据结构却很特殊，甚至可以说是丑陋的（至少以这位老资格 Lisp 高手的高标准而言）。
+然而，我重写程序除了改良原来代码和数据结构的设计外，还有其他目的，就是把它发展到我可以完全了解，否则负责修补你不懂的程序是一件很无趣的事。
+项目进行的第一个月，我简单地依循着 Carl 原来基本设计的用意，第一个重大的改变是我加入 IMAP 协议的支持，我重构原来处理协议的程序，改成一个较为通用的驱动程序再加上三个驱动它的方法表（即 POP2，POP3 和 IMAP）。这个改变阐释了一个广义的原则，特别在像 C 这种先天上未提供动态类型的程序语言，程序员们最好谨记在心︰
+格言9︰聪明的数据结构配上笨拙的代码要比相反的组合好。3
+Brooks 在《人月神话》的第九章中也说︰「光给我看你的代码，而不给我看它用的数据结构，我会一头雾水。给我看你程序的数据结构，我通常不需要再看你的代码，因为已经够明白了4。」</description>
+    </item>
+    <item>
+      <title>大教堂与集市-part3</title>
+      <link>https://www.yuanhao.site/post/2022-12-09-the-cathedral-and-the-bazaar-part3/</link>
+      <pubDate>Fri, 09 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-09-the-cathedral-and-the-bazaar-part3/</guid>
+      <description>第九章 由 Fetchmail 学到的一些经验 在我们回头讨论一般软件工程的议题前，由 fetchmail 得来的一些特殊教训值得深思。
+Fetchmail 配置文件（rc file）的语法包括可有可无的关键字，这些如「噪音」般的字眼会被语法分析程序忽略，这些字的加入，使得配置文件的语法和英文很接近，和传统中简洁的「关键字 ―― 设定值」配对表示法（把噪音字去掉就可以得到）比较起来，要来得容易阅读。
+这个教训开始于某一个夜晚的实验，我注意到配置文件中的宣告语法可以组成一个迷你的祈使语言。（这也是为什么我把原来 popclient 中的关键字 server 改成 poll）。
+对我而言，如果把这个祈使语言弄得更像英文，那会让 fetchmail 更易于使用，虽然我现在信服如 Emacs、HTML 及许多数据库引擎制定出来的模范语言，在正常情况下我也不那么迷英文的语法。
+传统的程序员喜欢非常精确而简洁的配置语法，不希望有任何冗余在其中，这是因为早期的电脑计算资源昂贵而遗留下来的观念，他们认为语法分析的过程要节约计算资源，并要尽可能的简单。英文的语句大约有百分之五十的冗余，所以不利于做为配置语法。
+但这并非我在正常的情况下不用英文语法的原因，我在此提及是为了推翻像英文的语法不适合作配置语法的论点，当中央处理器和内存都变得便宜时，配置语法的简洁已不再是我们的目标，现在的情况是︰一个电脑语言中符合人性易于使用的重要性已超过节约电脑的计算资源。
+然而还是有好几个地方要小心，其中之一是语法分析过程变得比较复杂的代价 ―― 你不会想把这个特点（使用像英文的配置语法）变成程序错误的来源及使用者的疑惑处。另一个是当我们要订出一个像英文的语言时，通常需要做些修改，表面上看起来修改过后的语法可重组出自然语言，但可能也会因修改过以致于和传统的配置语法一样，令人感到疑惑。（我们可以在许多所谓的第四代程序语言和商业用的数据库查询语言看到这个现象）
+Fetchmail 的控制语法看起来免除了这个问题，因为我严格地限制控制语法的范围，它不是一个以通用为目的的语言，它简单并不很复杂，所以在极小的英文子集和真正的控制语言之间的相混处很少，我认为这里还有一个更广义的教训︰
+格言16︰当你设计的语言没有一处是 Turing-complete，你可以采用比较平易的语法。
+另有一个教训是关于含糊的保密性，有一些 fetchmail 的使用者要我修改程序，以把经保密处理的凭证储存于配置文件内，这样一来，偷窥者就没办法看到真正的密码了。
+我并没有这么做，因为这个做法并不能达到真正的安全，能拿到读取你配置文件权限的人，也能以你的身份执行 fetchmail ―― 如果你的密码经保密处理存在配置文件中，他们可以由 fetchmail 中取得解码程序来得到你真正的密码。
+如果我把程序改成可以在 fetchmail 的配置文件中储存保密的密码，那会给认为这并不难的人们对保密性的错误观念。一般的守则应该是:
+格言17︰一个保密系统是否安全依存于它隐藏的秘密，注意不要有「虚拟秘密」。1
+第十章 市集模式必要的条件 早先看过这篇文章的书评家和试读者都提出同样的问题，那就是以市集模式发展软件，获得成功的先决条件为何？包括项目领导人的资格，代码到什么样的程度，才对社群发布并开始成立协同发展团队。
+相当明显的，任何人无法以市集模式建立软件基础2，但是可以用市集模式来测试，debug，改进软件，在一个项目的起始点很难运用市集模式，Linus 没试过，我也没有。项目初始的协同发展团队需要有一些东西可以测试，可以执行。
+当你开始召募项目团队时，你必须能提出大致合理的保证，你的程序不需要运作得很好，它可以暴力，有错，不完整，及注释贫乏，只要它可以使潜在的协同开发者相信，这个程序在可预见的未来大有可为。
+Linux 和 fetchmail 公开发布时都具有强健及吸引人的设计，许多人认为这和我所报告的市集模式有所不同，并以为这样的设计很重要，甚至进一步做出一个他们的结论 ―― 高度的设计直觉和聪明是一个项目领导人不可或缺的特质。
+但是 Linus 的设计由 UNIX 而来，我的设计由原先的 popclient 而来（虽然它后来改变甚大，比例上说来还超过 Linux），所以市集模式项目的领导人或协调者真的需要格外的设计技巧？或者能提升别人的设计技巧呢？
+我想对于项目协调者是否能做出耀眼的设计并不重要，最重要的是协调者是否能认知别人在设计上的好点子。
+Linux 和 fetchmail 都证明了这件事，Linus 这位仁兄如同之前所讨论的，他并不是伟大的创新设计师，但他展现了另一种卓越的技巧，即认同别人好的设计点子，且将这些好的设计整合到 Linux 的核心中。而我之前描述过 fetchmail 最有力的设计（藉 SMTP 转发邮件）也来自他人。</description>
+    </item>
+    <item>
+      <title>推荐系统金字塔</title>
+      <link>https://www.yuanhao.site/post/2022-11-16-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E9%87%91%E5%AD%97%E5%A1%94/</link>
+      <pubDate>Wed, 16 Nov 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-11-16-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E9%87%91%E5%AD%97%E5%A1%94/</guid>
+      <description>本文同样适合没有技术背景的朋友阅读
+遥想若干年前，今日头条和后来的抖音横空出世的时候，到处都可以看到关于他们推荐算法的讨论，个性化推荐对业务的重要性也被捧上了天。最近一年多，也算是亲身参与了一些推荐相关的项目，在实操之后，对这件事情也有一些自己的理解。
+开门见山，我认为好的推荐系统，或者说个性化系统有三层特点，从底向上分别是：
+有丰富的让用户感兴趣的物料 用户能够发现并表达兴趣 用户表达兴趣后能推荐高相关性的物料 就像一作金字塔。
+1 首先是【有丰富的让用户感兴趣的物料】，这实际上是所有推荐系统的基础：物料要丰富且高质量。物料就是要推荐的东西，电商应用里是商品，内容应用里视频、图文，社区应用是达人，各不相同。如果物料不丰富，那实际上没有推荐的必要，小卖部一般没有导购，有啥东西一目了然。物料如果质量不高，那后面的工作也很难做，用户很难在这种系统中留存下来，也就会导致推荐系统的另一个重要燃料用户行为数据的不足。这块一般和算法没什么关系，但实际确是重中之重。大的生态系统治理其实更像经济学问题，解决的是供给和需求的关系。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 京东平台在2015年就有两千多万件商品了，为推荐提供了舞台 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+2 接下来是【用户能够发现并表达兴趣】，这层开始跟算法有了一些关系，但更多还是通过产品和工程来解决。换比较专业的说法就是怎么做冷启动和试探。最理想的方法是把冷启动转变成热启动，例如说一个头条老用户来看抖音，好了，你在头条喜欢看啥我先给你看啥，大概率会比随机给你看点东西好。所以字节的产品矩阵在这方面就可以发挥很大的作用。但一般公司没这条件，那就只好尽量去挖可以用的先验信号，比如用户的地点、安装的app，甚至去爬其他的社交网络平台。
+如果这条路走不通，那就只好试探了，产品没做好的话大概率是自身生态里什么热门就给你试探什么，这里总归是要碰点壁的。所以大部分产品上来会让你选一下你感兴趣的话题或者分类，作为用户，这时候可以直接点告诉他们，让这些系统更好地为自己服务。
+{: .align-center style=&amp;ldquo;width:50%&amp;rdquo;} 常见的兴趣选择界面，让用户直接表达兴趣，顺利留存下来 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+还有些重要的用户表达兴趣的渠道，例如搜索。当一个系统的物料特别丰富，例如淘宝，什么东西都有，此时就很难试探，因为这个试探空间太大了。但好在买东西通常有目的性的，通常电商平台有50%的成交是搜索贡献的，用户会通过搜索功能来告诉平台自己想要什么。
+所以一个好产品一定要打通各种用户表达兴趣的渠道，尽量避免瞎猜。
+3 最后才是【用户表达兴趣后能推荐高相关性的物料】，也就是常说的推荐算法解决的问题。作为塔尖，它似乎吸引了最多的目光。举刚才搜索的例子，用户搜索“杯子”，ta已经表达了兴趣，你如果给他展示一堆碗，那肯定无法促成消费。
+这方面算法很多，比较常见的比如各种协同滤波（买了杯子的人还会买啥？）以及现在流行的各种序列建模（每个月都买米这个月应该也会买米）等等。当系统往大了发展，我感觉工程的重要性又会超过算法：这么多的用户行为怎么存？这么多的训练数据怎么跑？虽然每年新结构、新网络层出不穷，但实际上常用的还是那几个经典的。以Criteo数据集为例，多年下来各种模型迭代导致的auc提升不到3个百分点（但不是说3%不重要，以大公司的体量还是很可观的）。但实际上推荐系统的发展早已不是这个数据集可以追踪的了，因为各个大公司特征、用户的规模早就不是这样了。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Criteo数据集近年来的auc指标 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+前不久Tik Tok放出了他们推荐系统的论文，大量篇幅是在讲基础设施pipeline，模型部分这是个多年前的DeepFM。
+小结 我感觉三个层次大致对应了【生意】-【产品】-【技术】，在这个互联网纷纷裁员的寒冬回过头看，确实这三个层次都出现了不同程度的停滞。不过一个时代过去总会有一个新的时代来临，技术应该是这三个里面停滞现象比较低的，相信在不久的将来就会有新的增长点。
+以上就是我的一些想法，欢迎大家讨论。</description>
+    </item>
+    <item>
+      <title>现在的开源深度学习模型真的太强了</title>
+      <link>https://www.yuanhao.site/post/2022-10-17-multimodal/</link>
+      <pubDate>Mon, 17 Oct 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-10-17-multimodal/</guid>
+      <description>为了迎接宝宝的诞生，前段时间收集了一些中英文故事，做了一个讲故事小程序。
+在收集故事的过程中遇到不少问题，比较典型的情况是只有音频，或者只有文字，或者没有配图。在深度学习模型日新月异的2022，我决定尝试用最新的开源模型来解决一下这些问题。
+[TOC]
+插图生成（text2img） 这是目前大火的领域，每天各种营销号都有大量文章狂轰滥炸。不论是生成梵高画作还是生成性感waifu，似乎AI画师现在已经无所不能。
+但我实际使用下来感觉要让AI直接给故事画插图还是蛮困难的。我使用的是最近红的发紫、大名鼎鼎的Stable Diffusion，短短几个月已经发展到第四版了。我的做法也比较简单，直接把故事标题嵌入在一段prompt里面，例如a story illustration for children of the story about The crow and the water bottle 。这个prompt模板是参考了一些prompt编写指南结合尝试之后得到。
+在尝试的过程中发现几个比较明显的现象
+通过art by xxx控制风格非常灵敏，试了梵高和莫奈，得到图片的风格都很强 细节效果都比较差，不管是脸还是手，只要有这种部位的图都不太能用 AI产生的图片有时给人感觉阴森森的，给小朋友做故事书插画估计真会吓死宝宝 下面是几个我生成出来的例子
+这个乌鸦喝水的图是我比较满意的，两个东西都画的比较正常，水瓶子里还有点石头，估计是模型训练时有见过这个phrase和相应图片，直接给记住了。
+这个图不知所云，没看到有奶牛，青蛙也怪怪的。
+这张丑小鸭算是平均水平，虽然鸭头有点怪，但是在可以接受的范围内。
+后来我又调研了下，有的朋友为了给故事生成插图做得还是比较fancy的。例如这个小姐姐的repo，大家感兴趣可以看一下，也是开源模型攒的pipeline。
+更多生成图片的例子，可以参考这个故事集。
+语音转文字（ASR） 虽然各种有声故事大大减轻了讲故事的负担，但给婴儿或者胎儿讲故事最好还是由爸爸妈妈亲自来。毕竟这个时期故事内容肯定是听不懂的，更重要的是让宝宝听到父母的声音。为了能亲自讲故事，我需要把之前找到的一些故事音频（主要是英文的）转换成文本。
+经过一番调研，目前比较好的ASR模型是最近openAI开源的来源于论文《Robust Speech Recognition via Large-Scale Weak Supervision》的Whisper。 这个模型是个transformer seq2seq model，从插图来看multi task这块比较复杂。
+待转写的故事听起来都比较清晰，我直接搞了个base.en单语模型试了一下。跑出来的效果简直惊艳，几乎没有错误的单词，甚至连时态都识别得很准确。唯一美中不足的是有些文章转写出来没有标点符号，也几乎没法识别出段落，给阅读带来一些障碍。为了解决这个问题，我又找了个punctuation restore模型后处理了一下。现代化的语言模型做这个事情简直是易如反掌，效果也相当好。
+大家可以看这个故事集里面的内容，都是ASR转写出来的。
+文字转语音（TTS） 亲自讲故事虽好，但英语内容不是所有家长都能驾驭的。对于只有文本的英语故事，我也希望能生成相对应的音频。
+目前开源模型里面SOTA水平的应该是来自Facebook（Model Card里是叫fastspeech2，但正文里又写是S^2，微软也有一个叫fastspeech的模型，我还没搞懂他们之间关系）的FastSpeech2，这个模型是用faiseq来实现的，但也在huggingface的hub上托管。
+样例代码有点bug，按照讨论区的指导可以跑通。给一段文字的话生成很快，但句与句之间有点黏连太紧，听感不佳。我稍微做了点小后处理，让文章听起来自然了一些。大家可以参考这个故事集的内容。
+在做TTS和扫论文的过程中隐约感觉TTS是一个很有意思的领域，后面有时间可以多学习一下。
+总之，经过这些有趣尝试，我基本上解决了我遇到的内容问题。虽然这些模型都还有一些问题，但确实已经可以很大得提升生产力。原来需要特别专业团队才能做的事情现在只要几行代码就可以搞定。内容类、工具类产品的玩法也更多了，可以用这些模型和人相互激发促进来产生更多有趣的创意。
+本文就先写到这，如果你也需要经常给宝宝讲故事，欢迎使用这个简单的小程序！后面我还会写一两篇关于这个小程序工程和算法方面的心得，如果你感兴趣，欢迎关注公众号，及时获取更新。</description>
+    </item>
+    <item>
+      <title>文本生成专题2：常见的摘要生成方法</title>
+      <link>https://www.yuanhao.site/post/2022-07-03-summary2/</link>
+      <pubDate>Sun, 03 Jul 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-07-03-summary2/</guid>
+      <description>按照第一篇的计划，这篇文章梳理一下常见的摘要生成方法。大部分方法并不复杂，更多的内容其实包含在seq2seq框架、语言模型、self/cross attention这些模块里。
+[TOC]
+抽取式摘要 所谓抽取式摘要，有点像之前写过的关键词抽取，就是把原文里重要的部分抽出来作为摘要。
+前Transformer时代的方法 有好多基于统计的抽取式摘要生成方法，例如jieba里都集成的TextRank。这方面资料很多，大家搜搜就有。
+Transformers-based方法 比较典型的工作是BERTSum，其结构如下图。相比原始BERT，几个主要的变化是
+在每个句子前面增加[CLS]token，后续用他们对应的隐向量作为句子表征； 把BERT原有的token type改变成了0/1相间的形式； 在得到句子表征后，又增加了一个称为Summarization Layers的Transformer/LSTM模块，用户在句子表征间做交互。 最后对于每句话输出一个应该包含进摘要的概率，最终结果由得分top3句子产生。 来看一下BERTSum的表现，如下图，总体还是不错的。可以发现加上所谓的Summarization Layers模块并没有很明显的提升，预训练语言模型大部分时候确实很强，光魔改结构往往收效不大。这篇文章的结构我感觉很工整，句子前加[CLS]的操作给人一种细腻的感觉。
+生成式摘要 生成式摘要的大体框架很久都没有变过了，大概就是下面这张图。左边是一个encoder，用来编码原文，右边是个decoder，用来生成摘要。
+前Transformer时代的方法 在RNN之后，Transformer出来之前，主要的改进是加入各种各样的attention，原文间，摘要间，原文和摘要间等等。大家可以看出来上面那张图已经是有attention的了。
+我个人认为前Transformers时代最特别的一个问题是OOV。有不少工作是针对这个问题展开的，其中比较有名的是Google的Pointer Generator。对比和上图的区别可以发现，对于next token的预测，概率分布里出现了&amp;quot;2-0&amp;quot;这个从原文copy出来的词（也是不属于词典的词，是没有copy mechanism之前不可能被生成的词）。真的是要感谢subword tokenizer的广泛使用，让大家省去了很多类似的dirty work。
+目前主流的方法 目前的encoder-decoder transformer早已把各种attention玩到登封造极的程度，原文、生成结果间相互的联系已经大大加强。这几年的提升很多都是来自于非结构方面，例如BART用一种新颖的预训练方法来提高，GPT用超大语言模型来提高等。摘要生成逐渐成为了一个跟随语言模型水涨船高的领域（调参调结构当然也有用，但至少大的提升我认为是这样）。
+近期刷榜方法 如果大家有关心今年的ACL，会发现摘要相关的论文很多，前段时间还看到丕子老师发微博感叹。不仅数量多，今年在CNN/Dailymail数据集上还有个不小的涨幅，在本文的最后一起来看下是什么神奇的方法。
+近几年的刷榜方法我认为可以总结为更加充分地挖掘数据集提供的信号，同时在模型上结合生成模型和判别模型。
+我们先从一篇直白的论文Abstractive Summarization with Combination of Pre-trained Sequence-to-Sequence and Saliency Models讲起。这篇论文把原文和摘要中都出现的token认为是重要token，用这个作为监督信号，训练了一个重要性模型(saliency models)。然后尝试了多种组合方式来在解码器上使用重要性模型产生的辅助信号。
+这里解释一下里面出现的几种方式：
+SE，Selective Encoding：用重要性得分来控制编码器输出 SA，Selective Attention：用重要性得分来控制解码器cross attention SEG, Sentence Extraction then Generation：相当于精简原文输入 CIT, Conditional Summarization Model with Important Tokens：把重要的Token选出来跟原文一起输入编码器 来看一下各种方式的表现，只是单独增加一个siliency model训练任务（MT）就提高了1个点的R1，CIT表现也不错，提升接近两个点。
+有了上面这篇文章作为基础，我们来看下目前的SOTA，BRIO: Bringing Order to Abstractive Summarization，他们组其实工作是一脉相承的，感兴趣可以看下他们之前的论文GSum: A General Framework for Guided Neural Abstractive Summarization和SimCLS: A Simple Framework for Contrastive Learning of Abstractive Summarization。</description>
+    </item>
+    <item>
+      <title>文本生成专题1：基础知识</title>
+      <link>https://www.yuanhao.site/post/2022-05-25-summary1/</link>
+      <pubDate>Wed, 25 May 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-05-25-summary1/</guid>
+      <description>大家好，好久不见，疫情封控在家两个月写文章都不利索了😂。
+在这段时间我反思了一下之前写的东西，基本是最近用了什么、看到什么就写什么，感觉系统性比较差。后面我打算少写一些零散话题，多总结一些更有体系的内容。第一个小专题我想总结一下我最近关注比较多的领域，文本生成。文本生成领域很广泛，我主要会聚焦在文本摘要（Text Summarization）和数据驱动生成（Data2Text）。
+这篇文章是专题第一篇，将介绍以下的内容：
+[TOC]
+除了第二部分外都比较像科普文，没有相关技术背景的朋友也可以看懂。
+问题定义和数据集 摘要 摘要这个问题比较好理解，就是把长的文章，例如学术论文、新闻等等缩写成更短的文本，并且保留重要的信息。
+摘要领域常见的典型数据集CNN/DailyMail, arXiv, Pubmed, XSUM等。其中CNN/DailyMail的原始文本是大约几百个词的新闻，摘要（ground truth）是人写的，大概五六十个词。中间两个都是来自学术论文的数据集，原始文本比新闻长不少。学术论文通常都需要作者提供摘要，一般一百来个词，天然适合拿来做摘要的数据集。X-SUM是里面摘要长度最短的数据集，基本是一句话的长度。还有一些数据集，大家可以参考papwerswithcode。
+数据驱动生成 数据驱动生成则是给定一些结构化的数据，例如餐馆信息、实体间的关系等，生成一段自然语言。
+这个领域典型的数据集有WebNLG和E2E。WebNLG的每条样本会提供一系列用三元组描述的实体及关系，以及一段陈述三元组表达事实的自然语言文本作为标签。
+E2E数据集则提供了成对的餐馆结构化信息和自然语言描述。自然语言描述相比于WebNLG数据集更简短一些。更多数据集大家参考这个页面。
+常用的评价指标 除了数据集，要理解一个技术的发展水平，另一个很重要的方面是理解评价指标。评价机器生成的文本，最常用的指标是ROUGE和BLEU。
+ROUGE 摘要里最常用的指标是ROUGE，它的全称是Recall-Oriented Understudy for Gisting Evaluation，是在2004年的论文ROUGE: A Package for Automatic Evaluation of Summaries里提出的。从名字可以看出来它比较关注recall。它有很多形式，在论文里比较常看到的有ROUGE-N(N=1,2,3&amp;hellip;)和ROUGE-L两种。
+对于ROUGE-N，计算方式就是生成结果和参考文本中都出现的ngram占参考文本ngram的比例。ROUGE-L比较麻烦，需要考虑最长公共子串，但相比于预设ngram大小的ROUGE-N有一定的优势。单句的ROUGE-L是最长子串长度除以参考句的长度，举一个论文里的例子
+S1. police killed the gunman S2. police kill the gunman S3. the gunman kill police 假设S1是参考句，那S2和S3的ROUGE-2都是1/3(匹配上了the gunman)，但S2的ROUGE-L是3/4比S3的2/4大，实际情况确实是S2更好一些。
+可以看出ROUGE，特别是ROUGE-N是比较考察和参考文本用词的一致性的，理论上不是个语义上的评价，这也和后面会写到的一些trick有直接的关联。
+ROUGE指标的python实现可以参考这个repo，看代码应该是是最清楚的。
+BLEU 在Data2Text领域常用的指标是BLEU，全称是bilingual evaluation understudy，从名字也能看出来，最开始是在机器翻译的评价里被广泛使用。BLEU像是一个precision指标，基本是在算生成结果和参考文本都出现的词和参考文本长度的比值。主要考虑的问题是多次匹配，例如
+candidate：ha ha ha reference: only saying ha is not good candidate只有一种词，且在标签中出现了，但若BLEU是100分，显然是不合理的。因为ha在reference中只出现一次，所以只能匹配一次，所以BLEU是1/3。
+另一个要解决的问题是防止candidate过短而导致的高分。因为precision的分母是自己ngram的数目，只输出有把握的词是可以提高分数的。这里引入了一个叫brevity penalty的参数。这个参数的计算公式如下：</description>
+    </item>
+    <item>
+      <title>面向Meta全公司工程师的AI优化平台解析</title>
+      <link>https://www.yuanhao.site/post/2022-04-24-looper/</link>
+      <pubDate>Sun, 24 Apr 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-04-24-looper/</guid>
+      <description>原作者：Igor Markov, Norm Zhou
+人工智能是使现代软件系统和产品尽良好运行的一个重要部分，从改善用户体验到使计算基础设施更有效率都能看见AI的影子。无论是减少延迟，提高视频流的质量，还是精简界面以满足特定人的需求，今天的人工智能往往比人类精心构建的启发式策略更有效。但是，为了在我们的产品中更有效地利用人工智能，我们需要解决几个挑战：系统必须适应没有机器学习背景的软件工程师；它必须提供机制，为许多不同的产品目标进行优化，这可能不同于封闭形式的机器学习损失函数；它必须区分数据中的因果关系；它必须有效地扩展，以训练、托管和监测大量的人工智能模型。
+为了满足Meta公司的这些需求，我们建立了一个端到端的人工智能平台，名为Looper，具有易于使用的优化、个性化和反馈收集的API。Looper支持整个机器学习的生命周期，从模型训练、部署和推理一直到产品的评估和调整。与其围绕人工智能模型重建我们现有的产品，Looper使我们能够升级它们，使用人工智能进行个性化优化。Looper平台目前承载了700个AI模型，每秒产生400万个AI输出。
+让智能策略为应用程序所用 Meta的不同服务每天有数十亿人在使用，每个人都有不同的兴趣和偏好。Looper使我们能够以前所未有的规模定制其中的许多 &amp;ldquo;开箱即用 &amp;ldquo;的服务，而不需要复杂的专业代码。
+让使用产品的人在用户界面菜单上有几十个选择，会使产品失去吸引力，无论它提供多少价值。但不同的人对菜单的偏好是不同的。同样，适时地将可能被用户浏览的内容预取到移动设备上，可能会极大地改善我们产品的用户体验，但要做到这一点而不使设备的硬件资源不堪重负，需要准确地预测什么会是最感兴趣的。
+为了以可扩展的方式支持实时智能策略，Looper提供了几个功能。
+Looper的目标是为具有适度数据规模和模型复杂性的用例提供易用性和快速部署模型。 它支持各种模型类型，托管和训练众多模型和决策策略。 它通过使用监督学习或强化学习，支持广泛的机器学习任务（分类、估计、价值和序列预测、排序、planning）。结合模型管理基础设施，我们的自动化工具（AutoML）选择模型和超参数以平衡模型质量、大小、推理时间等。Looper涵盖了从数据源到产品影响的范围，通过因果实验进行评估和优化。 它是一个声明式的人工智能系统，这意味着产品工程师只需要声明他们想要的功能，系统就会根据声明来填充软件的实现。在内部，Looper依赖于我们的策略蓝图抽象，它将特征、标签、模型和决策策略的配置合二为一，并维护这种联合配置的多个版本。这支持更全面的优化，捕捉不同版本之间的兼容性，并实现智能策略的整个生命周期的免编码管理。蓝图能够使用强大的实验优化系统对黑盒产品指标进行垂直优化。 其他人工智能平台通常以批处理模式进行离线推理，而Looper则是实时操作。 许多人工智能系统使用统一的数据工作，如像素或文本，但不同的产品往往有非常不同的元数据，往往来自不同的来源。此外，元数据的模式变化很快，需要定期在新数据上重新训练人工智能模型。 A/B测试，以评估许多不同类型的模型和决策规则，包括那些由上下文bandit使用的模型，以模拟一个或多个目标的预测的不确定性；或强化学习，以优化长期、累积的目标。 与传统的端到端人工智能系统不同，Looper使Meta公司的工程师和其他人能够跟踪一个模型在软件栈中的实际使用情况，并对建模框架的所有方面进行实验&amp;ndash;从指标选择到策略优化的所有过程。为了做到这一点，Looper将常见的端到端定义扩展到软件层，这样，模型架构、特征选择参数可以在模型质量和计算资源之间进行多目标权衡优化。为了优化长期的产品目标，工程师可以调整在做实时决策时对不同输入的重视程度。我们的平台使得使用应用于整个管道的AutoML技术来优化这些和其他参数成为可能。 用于部署智能策略的Looper平台 与用于视觉、语音和自然语言处理的重量级人工智能模型不同的是，Looper使用的是可以重新训练并在共享基础设施上快速大量部署的模型，这些模型有利于离线推理和批量处理。我们的平台将用户互动和系统互动的元数据解释为监督学习的标签或强化学习的奖励。
+Looper追求的是快速上线、稳健部署和低能耗的多种智能策略的维护，其中的积极影响是直接在应用方面进行测量和优化。应用程序代码与平台代码分离，Looper利用现有的水平AI平台，如PyTorch和Ax，为机器学习任务提供可互换的模型。
+为了使智能策略获得成功，我们需要一种方法来评估它们，并在结果不够好时加以改进。这种评估是基于产品指标进行的。在某些情况下，每个决策都可以被检查，因此，好的和差的决策可以作为智能策略学习的例子（通过监督学习）。然而，有些产品指标追踪的是长期目标（如每日活跃用户），无法追踪到具体的决策。这两种情况都可以由Looper来处理，而使用实时数据则尤为重要。访问Meta的监控基础设施有助于发现不可预见的副作用。在我们的平台上，产品开发者定义决策空间，允许平台自动选择模型类型和超参数设置。在不影响用户的情况下，对模型进行训练和评估，并对其进行改进，直至可以部署。在产品使用前，新训练的模型会被关起来（部署在影子流量上）&amp;ndash;这种模型在记录的特征和观测值的抽样子集上进行评估，并计算出离线质量指标（例如回归任务的MSE）。这有助于避免在部署较新的模型时降低模型质量。
+智能策略的应用和影响 我们的垂直机器学习平台承载了来自水平平台的中等规模的模型，以便改善软件系统的各个方面。这些模型的部署只需很少的工程努力，并且不需要特定模型的基础设施来维护。Looper目前被Meta公司的90多个产品团队使用，这些团队部署了690个模型，每秒进行400万次预测。
+应用案例可分为五类，按频率递减排列：
+个性化体验是根据用户的参与历史而定制的。例如，一个产品可能只向那些可能使用它的人突出显示与购物有关的内容（但这种内容所有用户都可以通过菜单访问）。 排名对项目进行排序，以提高用户的效用，例如，为浏览者提供个性化的候选项目。 根据预测的使用可能性，预取/预计算数据/资源（4.1节）。 通知/提示可以只发送给认为有帮助的用户。 值估计预测回归任务，例如，数据查询的延迟或内存使用。 下图按资源类别对活跃的Looper用例的资源消耗（Y轴上的服务器数量）进行了比较。
+各个产品团队的人工智能专业知识各不相同，从初学者到经验丰富的人工智能工程师都有。而使用Looper平台的团队中只有15%为人工智能工程师。对于没有生产人工智能经验的团队来说，一个易于使用的人工智能平台往往是采用的决定性因素，而人工智能的投资在证明有用后继续进行。我们的平台在高级服务背后处理关于软件升级、日志、监控等问题，并释放出巨大的生产力改进。对于有经验的人工智能工程师来说，智能策略平台通过自动化重复性的耗时工作来提高生产力：编写数据库查询，实施数据管道，设置监控和警报。与专精型的系统相比，它可以帮助产品开发人员推出更多的AI用例。无论之前是否有人工智能经验，成功的平台采用者在短短几天内就配置了最初的机器学习模型，迅速开始收集训练数据，然后在短短几个月内完善他们的模型并推出新产品。
+让工程师和产品开发人员更容易实现规模化的人工智能 将产品决策的自我优化智能策略嵌入到软件系统中，从而提高用户体验，优化资源利用，并支持新的功能，这其中存在巨大的机会。我们的人工智能平台Looper解决了产品驱动的端到端机器学习系统的复杂性，促进了智能策略的大规模部署。它在数据可用性、简易配置、明智地使用可用资源、减少工程努力和确保产品影响方面提供了直接、切实的好处。平台采用者尤其被通过因果推理和资源开销测量对产品影响评估的广泛支持所吸引。
+Looper使软件工程师更容易获得智能策略，并使产品团队能够以自我服务的方式建立、部署和改进人工智能驱动的能力，而无需人工智能专业知识。我们将继续开发这个平台，以便我们能够以新的方式利用人工智能来改善Meta的产品和服务。</description>
+    </item>
+    <item>
+      <title>做NLP？Don&#39;t stop pretraining!</title>
+      <link>https://www.yuanhao.site/post/2022-04-20-mlm/</link>
+      <pubDate>Wed, 20 Apr 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-04-20-mlm/</guid>
+      <description>应该很多朋友知道，在训练下游任务之前先在任务的语料上做一下非监督的masked language model任务预训练可提高目标任务的性能。特别是当下游任务的标注数据少，相关语料多的情况下这个小技巧带来的提升更大。举个例子，假设你要做一个恶意评论分类器，但由于时间和成本关系，只标注了几万条评论，但系统里的评论已经有几百万条，这时候先在所有评论上做个MLM训练，再finetune恶意评论分类任务就是个比较好的选择。
+这个问题多年前论文Don’t Stop Pretraining: Adapt Language Models to Domains and Tasks做了比较详细的探讨。
+首先是个很好理解的现象，如下图所示，虽然现代化的Transformer语言模型都是由海量数据训练的，但难免跟我们目标任务的语料领域无法完全重叠
+论文还做了定量的分析，它们选了几个领域，然后抽样了每个领域最高频的一万个token，看下重合度，发现确实不高。重合度最高的是新闻，那是因为Roberta训练的语料里其实就有新闻。
+那既然如此，就在目标任务所在领域语料上继续做一把预训练（DAPT），然后再finetune目标任务。同样是上面几种领域的任务，发现经过DAPT之后都有明显提高，上面重合度最低的CS领域提升最明显。最后一列是个比较有意思的实验，它是为了排除单纯增加了训练数据带来的性能提升，选了一个非目标任务所在领域来进行预训练（数据同样变多，但领域和目标任务无关）。结果大多没提升，有些还下降了。这就说明在目标任务领域做预训练确实有效果！
+这个论文后面还有不少内容，但我感觉对一般场景有些overkill，就不写了，有兴趣的朋友可以自己看。下面来给大家演示一下怎么用目前主流的transformers库来做MLM，相当简单，可以说是开箱即用。
+首先你需要安装Transformers库，然后在transformers/examples/pytorch/language-modeling/目录下面找到run_mlm.py文件，把这个文件复制一份到你的工程目录。
+为了做MLM训练，你需要准备好一些文本数据，将他们以一行一个样本的格式写在一个文本文件里，为了可以监控训练的进程，最好是像平常做其他机器学习任务一样准备一个训练集，一个验证集。但由于是MLM，验证集不需要太多。
+准备好代码和数据之后就可以来运行这个脚本了，有三部分参数需要指定
+模型参数
+必须的模型参数只有一个，即model_name_or_path，即你要使用的基础模型。给这个参数是最方便的，tokenizer等组件会配套使用。你也可以参考代码来精细控制每个组件。
+数据参数
+train_file，即训练数据路径 validation_file，即验证数据路径 max_seq_length，最长的序列长度，不给的话会使用tokenizer的默认最大长度 mlm_probability遮蔽比例，默认是15%，之前陈丹琦组的论文说增大比例可以提高性能，但目前似乎还有争议 line_by_line，因为我们的数据是line by line的，所以这个要设置为True 训练参数。这部分参数有很多，可以参考这个文件。比较推荐设置的有以下几个
+output_dir，这个必填，训练后模型保存的地址 do_train，这个必填 do_eval，如果有验证集必填 num_train_epochs，默认为3 fp16，如果你的显卡支持tensor core，那一定要把这个打开 weight_decay，MLM的时候可以给点衰减防止过拟合，常用0.01 per_device_train_batch_size，batch size 最后的成品可能像这样
+python run_mlm.py \ --model_name_or_path roberta-base \ --train_file training_corpus.txt \ --validation_file validation_corpus.txt \ --per_device_train_batch_size 8 \ --per_device_eval_batch_size 8 \ --do_train \ --do_eval \ --fp16 \ --weight_decay 0.01 \ --line_by_line \ --output_dir .</description>
+    </item>
+    <item>
+      <title>还在用RoBERTa？快来看看DeBERTa吧！</title>
+      <link>https://www.yuanhao.site/post/2022-04-16-deberta/</link>
+      <pubDate>Sat, 16 Apr 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-04-16-deberta/</guid>
+      <description>如果你现在不知道DeBERTa，那相当于你在2018年不知道BERT ——多头注意力
+DeBERTa模型是微软在2021年提出的，首发在ICLR 2021上，到现在其实已经迭代了三个版本。第一版发布的时候在SuperGLUE排行榜上就已经获得了超越人类的水平，如今也成为了Kaggle上非常重要的NLP Backbone（BERT感觉已经没什么人用了）。比较奇怪的是，似乎这个模型被大家讨论并不多，于是最近看了两篇相关论文DeBERTa: Decoding-enhanced BERT with Disentangled Attention和DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing学习了一下。
+DeBERTa 1.0 1.0版本在BERT的基础上有三个主要的改进点：
+更加解耦的self attention，上图中右边黄色部分； 考虑绝对位置的MLM任务，上图中Enhanced Mask Decoder； 预训练时引入对抗训练 我认为其中1应该是最重要的，然后是3，2最不重要，因为在后面的3.0版本已经不再使用MLM作为预训练任务了。
+Disentangled Attention 第一个改进其实有点“复古”，这里的解耦是将位置信息和内容信息分别/交叉做attention。想当年BERT横空出世时大家都津津乐道地讨论为什么可以把word embedding，position embedding加起来做注意力，没想到没过几年却又被分开了。当然，DeBERTa的相对位置编码不同于BERT的绝对位置编码，似乎也不好直接比较。
+论文里定义了一个相对位置embedding P，和一个相对距离函数$\delta(i,j)$，除了和标准transformers一样的内容QKV，计算了相对位置QK，分别为$Q_r=PW_{q,r}$，$K_r=PW_{k,r}$。注意力矩阵的计算变成了
+$$A_{i,j}={H_i,P_{i|j}}\times{ H_j,P_{j|i}}^T=H_iH_j^T+H_iP_{j|i}^T+P_{i|j}H_j^T+P_{i|j}P_{j|i}$$
+第一项是常规的内容自注意力（content-to-content)，第二第三项分别是content-to-position和position-to-content，第四项论文里认为不重要，直接省略了。具体看是下面这个公式
+$$A_{i,j}=Q^c_i{K^c_j}^T+Q^c_i{K_{r,\delta(i,j)}}^T+K_j^c{Q_{r,\delta(j,i)}}^T$$
+这一部分其实看一下代码也比较清晰。
+SiFT 对抗训练也是NLPer经常使用的技术了，在做比赛或者公司业务的时候我一般都会使用FGM对抗训练来提升模型的性能。DeBERTa预训练里面引入的对抗训练叫SiFT，比FGM复杂一些，他攻击的对象不是word embedding，而是embedding之后的layer norm。整个过程需要forward 3次，亲测比FGM慢一些。微软已经把代码放出，大家可以参考，在自己的任务里试一试。
+DeBERTa 2.0 2012年2月放出的2.0版本在1.0版本的基础上又做了一些改进：
+更换tokenizer，将词典扩大了。从1.0版的50k扩成了128k。这个扩大无疑大大增加了模型的capacity。 在第一个transformer block后加入卷积。这个技巧在token classification、span prediction任务里经常用到。 共享位置和内容的变换矩阵 把相对位置编码换成了log bucket，各个尺寸模型的bucket数都是256 这些变化里1和2是把模型变大，3和4是把模型变小。总的效果是V2版本模型比V1版本变大了。
+2.0版几个变更对模型的影响，增大词典效果最显著
+DeBERTa 3.0 2021年11月微软又放出了3.0版本。这次的版本在模型层面并没有修改，而是将预训练任务由掩码语言模型（MLM）换成了ELECTRA一样类似GAN的Replaced token detect任务。因为多了个生成器，DeBERTa 3.0的论文中也更多的是对不同的embedding sharing的探讨，下面这种图是对文中对比的三种方式的简介。
+3.0论文探讨的集中参数更新方式
+根据下图所示论文的结果，3.0的改进进一步提升了DeBERTa模型的性能（实际并不是所有任务都有提升）。DeBERTa-v3也确实成为了Kaggle上最常见的DeBERTa版本。
+DeBERTa 3.</description>
+    </item>
+    <item>
+      <title>Key Phrase Extraction</title>
+      <link>https://www.yuanhao.site/post/2022-03-26-key-phrase-extraction/</link>
+      <pubDate>Sat, 26 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-26-key-phrase-extraction/</guid>
+      <description>做了一段时间的新闻NLP，越来越感受到抓重点对长文本理解的重要性。类别、话题、关键词句这种离散标签对下游的推荐、搜索业务以及产品的形态都有很重大的影响。最近读了两篇关键短语抽取（Key Phrase Extraction，KPE）相关的论文，感觉挺有意思，跟大家分享一下。
+问题定义和数据集 首先，对于一篇文章来说什么是其中的关键短语就没有一个统一的标准，标注的时候也比较主观，而且标注难度很大。常见的类别体系可能包含几百个类别，话题体系包含成千上万个话题，而对于关键短语来说，连个确定的候选集都没有。
+目前主流的KPE任务benchmark数据集有好几个，这里列两个比较有名的
+KP20k：2017年论文Deep Keyphrase Generation贡献的数据集，由科学论文组成。文本包括标题和摘要。发过论文的都知道，作者需要给文章提供几个关键词，确实是很好的数据来源。 KPTimes：2019年论文****KPTimes: A Large-Scale Dataset for Keyphrase Generation on News Documents****贡献的数据集，文章都是新闻，下面是一个例子。 KPTimes数据样例
+这两个数据集规模应该都挺大了，KPTimes的论文里有一张主流数据集规格对照表，一目了然，大家可以参考。从统计上看KP20k和KPTimes篇均5个KP的确实比较实用，但它们的问题是测试集里很大比例的标签并没有在文本中出现，对于模型来说难度可能太大了
+主流数据集对比
+监督方法 KP20k数据集其实是那篇论文的副产品，那篇论文的主要贡献其实是一个叫CopyRNN的方法，看名字大概就知道是个seq2seq+copy机制的生成式方法。这里引入copy机制也是有比较明确的动机的，因为在RNN时代生成式方法会受限于字典，decoder输出层没有的词是无法被预测出来的。
+RNN+copy机制可以在KP20k上获得0.255的F1@10
+到了2020年，BERT等Transformers模型已经成了NLP领域的标配，那自然也会想到用来做KPE。Joint Keyphrase Chunking and Salience Ranking with BERT 就是里面简单且有效的一个方法。题目里的Salience是个显著的意思，这篇文章的方法也非常直接，就是把最可能是KP的文本段落（n-gram）用排序的方法找出来。那怎么得到一个n-gram的表示呢，这篇文章的办法就是在Transformer上面再套一个一维CNN，n和卷积核的大小相对应。
+论文里用了两个任务来训练这个网络，一个任务是二分类，即n-gram是否是KP；另一个是排序任务，这个任务是对于文档中的每个unique n-gram，获得最大的预测值（文中称为max pooling），然后用hinge loss来使得KP的概率值大于非KP。
+JointKPE的成绩大大提高
+感兴趣的朋友们可以参考他们的代码实现。
+非监督方法 一开始我是想找一些靠谱的非监督方法的，毕竟像KP20k这样优质的的训练数据集一般只有英语。然后就在paperswithcode上看到了目前的榜一，UCPhrase。这个方法比较有意思，它的流程如下面这张图所示
+分为几个核心步骤：
+找到所谓的Core Phrase。这其实是通过一些规则找到文本中反复出现的片段，并且把它们当做KP，以及后续网络训练的Silver Labels。 用Transformers语言模型生成特征。这里的特征不是大家常用的embedding，而是attention map。 训练一个图像分类器，对于一个attention map进行是否KP的二分类。 一个attention map样例，从中可以发现：1. attention map把句子分成了比较明显的几块 2.attention map可以可以作为图像输入来进行KP分类
+这个论文的结果如下，在KP20k上的F1@10是19.7，和2017年的RNN+copy差了6个百分点，但和同样使用Transformers的监督方法相比差了16个百分点。
+非监督方法比起监督方法来确实逊色不少
+这个工作的代码也开源了：https://github.com/xgeric/UCPhrase-exp。
+写在最后 提到KPE，可能大家第一个想到的方法是SpanBert那样的span prediction方法，亦或是序列标注里常用的BIO分类法，但JointBert论文里对比下来还是这种接一个CNN的方法更好。相比于单纯序列标注或片段预测，这个方法确实可以更直接地利用附近的邻域信息，在Kaggle中其实也常有在序列标注前先加一层CNN或RNN来强化邻域信息的做法。
+UCPhrase的方法让人眼前一亮，有一种学术美，但与JointBert 16个百分点的性能差异又实际上让它的实用价值大打折扣。所以在业务明确的前提下，搞漂亮方法确实不如扎扎实实搞点标注数据啊。</description>
+    </item>
+    <item>
+      <title>围观特斯拉总监把玩MNIST</title>
+      <link>https://www.yuanhao.site/post/2022-03-09-%E5%9B%B4%E8%A7%82%E7%89%B9%E6%96%AF%E6%8B%89%E6%80%BB%E7%9B%91%E6%8A%8A%E7%8E%A9mnist/</link>
+      <pubDate>Wed, 09 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-09-%E5%9B%B4%E8%A7%82%E7%89%B9%E6%96%AF%E6%8B%89%E6%80%BB%E7%9B%91%E6%8A%8A%E7%8E%A9mnist/</guid>
+      <description>最近大名鼎鼎的特斯拉AI总监Andrej Karpathy发了篇博客（看来写博客是个好习惯），叫Deep Neural Nets: 33 years ago and 33 years from now。饭后花了点时间围观了一下，写得确实挺有意思。
+他先尝试复现了一下深度学习开山模型LeNet，然后尝试利用这33年人类的新知识去改进模型的效果。他干了这么几个事情：
+Baseline. eval: split train. loss 4.073383e-03. error 0.62%. misses: 45 eval: split test . loss 2.838382e-02. error 4.09%. misses: 82 把原文的MSE loss换成如今多分类的标配Cross Entropy Loss eval: split train. loss 9.536698e-06. error 0.00%. misses: 0 eval: split test . loss 9.536698e-06. error 4.38%. misses: 87 首战失败，怀疑SGD优化器不给力，换成了AdamW，并使用“大家都知道”的最优学习率3e-4，还加了点weight decay eval: split train. loss 0.000000e+00. error 0.00%. misses: 0 eval: split test .</description>
+    </item>
+    <item>
+      <title>心流</title>
+      <link>https://www.yuanhao.site/post/2022-03-09-%E5%BF%83%E6%B5%81/</link>
+      <pubDate>Wed, 09 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-09-%E5%BF%83%E6%B5%81/</guid>
+      <description>断断续续读完了《心流》这本书，感觉不错，特别是序言和前几章，大家都可以读读看，应该会有些启发（序二的作者说自己在推荐这本书时也总加上一句“读前三章就行了”）。我也把我的一些收获分享给大家。
+管理好你的注意力 体验过心流的人都知道，那份深沉的快乐是严格的自律、集中注意力换来的。
+书里有一个很有意思的观点，关于享乐和乐趣的区别，其中有一个差别就是乐趣是需要投入注意力的，而享受是无需耗费精神能量的。投入注意力也是体验心流的重要条件，因此不花力气的享乐只能体会到低级的“刺激”。
+现代人的注意力其实是个稀缺的资源，无数的人和公司在为之竞争。而这种相对“自我”来说外部的激烈竞争甚至是侵入式的，它们把“自我”对注意力的控制权也削弱了——好多人把自己的注意力交给抖音、b站、小红书去打理。这其实是比较遗憾的。
+心流较强的那组人能关闭其他资讯的管道，只把注意力集中在接收闪光的刺激上。
+我我感觉注意力是可以管理和训练的，有一些简单的方法例如不带手机进卧室，把搜索作为主要的信息获取起点，多读书，多看长视频少看短视频等等。
+学会自得其乐 这一点听上去有点阿Q，但我感觉确实很重要，我也挺庆幸自己对这一点掌握的还可以。之前跟总哥探讨过这个问题，我们是本科同学，他比我多金且光鲜，但他觉得我一直比他快乐。后来我们总结了几点原因，记得其中一个是我的好奇心比较强，对啥都感兴趣，所以兴趣爱好比较多，例如打游戏、弹吉他，从而可以获取乐趣的渠道比较多。
+对弹吉他这点近来体验尤其强烈。之前弹吉他是下载个谱子照着弹，最近更多是就着一个backing自己即兴乱弹。虽然知道弹得很烂，但确实能体验心流。书里也提到孔子说的“立于礼，成于乐”，古人诚不欺我。
+现在都说内卷，为什么卷？因为大家的差异小了，或者说是大家都不差了。如果此时再强调竞争，边际收益是很低的。特别是对个人而言，结果可能是多赚了几块钱，但身心俱疲。既然已经不差了，而且从竞争获胜获得的乐趣已经变淡，为什么不转而直接去获取快乐呢？
+克服现代生活的焦虑与沮丧，必须先从社会环境中独立出来，不再孜孜以求，只以社会赋予的赏罚为念
+塑造乐趣 书里有一段话描述乐趣出现的八项元素
+首先，这种体验出现在我们面临一份可完成的工作时。其次，我们必须能够全神贯注于这件事情。第三和第四，这项任务有明确的目标和即时的反馈。第五，我们能深入而毫不牵强地投入到行动之中，日常生活的忧虑和沮丧都因此一扫而空。第六，充满乐趣的体验使人觉得能自由控制自己的行动。第七，进入“忘我”状态，但心流体验告一段落后，自我感觉又会变得强烈。第八，时间感会改变——几小时犹如几分钟，几分钟也可能变得像几小时那么漫长
+前四项可谓是塑造乐趣的方法，比较实用。回到刚才弹吉他的例子，我感觉即兴弹比练谱有乐趣的原因就是难度比较容易匹配我的水平，也就是在做“可完成的工作”，但相比练谱也缺少“明确的目标”。
+书中还有一个塑造乐趣的方法是竞争。当然这里是指良性的竞争，例如体育活动里的对抗，而不是内卷里的低效竞争。这点我也很认同，就像是我之前做Kaggle比赛的时候，竞争让我进步非常快。
+英文的“竞争”（compete）一词，源自拉丁文的“con petire”，意为“共同追寻”。每个人追求的都是实现自己的潜能，在别人逼迫我们全力以赴时，这份差使就变得容易些。
+以上就是所有内容，如果觉得自己最近日子过得没啥意思，不妨读读这本书。</description>
+    </item>
+    <item>
+      <title>分级利器：序数回归</title>
+      <link>https://www.yuanhao.site/post/2022-03-02-ordinal-regression/</link>
+      <pubDate>Wed, 02 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-02-ordinal-regression/</guid>
+      <description>之前面试的时候遇到过好几个候选人在做”评级“相关的项目，例如针对图片、视频的色情程度，评论的粗鲁程度分级等等。绝大部分的人在面对这种问题时通常想到的都是用回归或分类来解决。这两种方法都是有效的，但都有一些问题：
+常规的分类无法很好地建模类别间的关系。例如你要对评论的不文明程度分5档，但对于分类常用的交叉熵损失函数来说，把一个最高档的评论分成了最低档还是中间档对它来说损失是一样的。但对于实际的业务，前者显然比后者是更难接受的。 回归算法需要比较多的超参调试。在之前的文章里聊过，回归对标签的尺度是敏感的，把细粒度，例如100档（标签为1-100）的评级问题直接交给MSE Loss往往得不到好的结果。回归对标签中的最大值和最小值也天然会有一些抗拒。 在Pawpularity比赛结束后CPMP说他使用了一种叫Ordinal Regression（中文名没找到，姑且称它为序数回归）的方法，我在一些评级问题上尝试之后发现这个方法确实行之有效，而且非常简单优美。
+数学解释 说是序数“回归”，但我它认为本质上是一个考虑了类别间关系的分类算法。 大家一定都很熟悉sigmoid函数$σ$，它的定义域是(-∞,+∞)，而值域是(0,1)，且是单调增函数，连续可导。我们可以把$σ(x)$看做是随机变量小于x的概率，即某个(-∞,+∞)上随机变量的累积分布函数（CDF）。
+假设我要处理一个5档的分类问题，而上面说的随机变量就是模型的输出，那么问题可以转化为找到四个切分点$\theta_1, \theta_2, \theta_3, \theta_4$，并用$P(x&amp;lt;\theta_1)$, $P(\theta_1&amp;lt; x&amp;lt;\theta_2)$, $P(\theta_2&amp;lt; x&amp;lt;\theta_3)$, $P(\theta_3&amp;lt; x&amp;lt;\theta_4)$, $P(\theta_4&amp;lt; x&amp;lt;+\infty)$这五个概率来表示$x$分别属于五个等级的概率。进一步结合前面的sigmoid函数做CDF的方法，可以把五个概率转化为$σ(\theta_1-x)$, $σ(\theta_2-x)-σ(\theta_1-x)$, $σ(\theta_3-x)-σ(\theta_2-x)$, $σ(\theta_4-x)-σ(\theta_3-x)$, $1-σ(\theta_4-x)$。
+这样我们就把一个模型输出的实数logit转化成了属于五个等级的概率，进而可以使用负对数似然损失函数来优化这个分类问题。在这样的设定下既可以使用一组固定的切分点来优化模型，又可以把切分点也作为可学习的权重和模型一起优化。
+代码 一开始我在网上找到了一个pytorch的Ordinal Regression实现spacecutter，但经过一番实验之后我发现它写的并不完美，于是自己又修改了一下，在这里分享给大家
+class OrdinalRegressionLoss(nn.Module): def __init__(self, num_class, train_cutpoints=False, scale=20.0): super().__init__() self.num_classes = num_class num_cutpoints = self.num_classes - 1 self.cutpoints = torch.arange(num_cutpoints).float()*scale/(num_class-2) - scale / 2 self.cutpoints = nn.Parameter(self.cutpoints) if not train_cutpoints: self.cutpoints.requires_grad_(False) def forward(self, pred, label): sigmoids = torch.sigmoid(self.cutpoints - pred) link_mat = sigmoids[:, 1:] - sigmoids[:, :-1] link_mat = torch.</description>
+    </item>
+    <item>
+      <title>2021面试总结</title>
+      <link>https://www.yuanhao.site/post/2021-12-20-2021%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Mon, 20 Dec 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-12-20-2021%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
+      <description>今年由于各种原因参加了很多面试，面过的候选人可能快一百个了。其中有经验丰富的高P，也有初出茅庐的应届生。面的多了之后不仅能发现候选人的问题，也能发现自己作为面试官的问题。就像古人说的，千里马常有而伯乐不常有，为了以后能更好地评估候选人（主要是工程师）的水平，我做了一些总结，也分享出来跟大家讨论。
+明确要招什么样的人 正所谓看人下菜碟，在面试之前要对候选人有个大致的定位，当然这个不是静态的，可以在面试的过程中调整。总体来说我目前接触过的大概分成三类
+工具人。对应的大概是三年以内工作经验的人，可以完成安排的任务，不需要考虑为什么做这个。 能独立解决问题的人。三年以上经验的候选人我会期待他能够在工具人的基础上具有方案设计能力，如果能有一些业务洞察就更好了。 能带团队做业务的人。带队大佬还聊得不多，这篇就先不谈。 考察什么 目前我认为有以下三个方面需要考察：
+业务能力 专业技能 数理逻辑能力 知识面 三观 软技能 沟通能力 领导力 首先业务能力达标是候选人需要满足的基本要求；然后是三观，跟一个价值取向正确、积极向上、有趣的人一起工作一点会让自己和公司收益；最后是软技能，基本是作为加分项。
+怎么考察 聊项目 这部分对面试官的要求最高，因为候选人做的东西可能超出了自己的知识范围，但我觉得这部分又特别重要。以技术面为例，候选人在项目上花的时间远比花在面试时的代码测试长，所以这部分更能综合地看出候选人的上限。
+聊项目我认为有几个层次：
+第一个层次是聊出候选人在其中的工作量和项目的完成度。一个合格的工具人应该能做到高完成度并讲清楚自己做的事情。 第二个层次是聊价值和动机。为什么做这些事情，技术指标和业务指标怎么对应，为什么按照简历里写的方案做。一个能独立解决问题的人应该能回答出这些问题。 聊项目的时候我觉得应该避免太泛也难量化评估的问题，例如：之前项目里遇到的最大困难是什么，怎么解决的。如果是候选人是大神应该觉得都没啥困难，真的困难大概率也还没有被解决。
+方案设计 这是我目前认为比较好的一种考察方式，刚才聊项目是顺着候选人来，方案设计则是由面试官来主导。这里可以选一个工作里实际遇到且比较开放的问题和候选人进行讨论，几乎可以考察到业务能力里面的各个维度。可以提前准备一些比较细致、刁钻的follow up，不仅能考察候选人，说不定还能对自己的工作产生启发。
+代码测试 代码测试也很重要，但我认为这是用来控制下限的。考LeetCode上的数据结构和算法感觉也不是一个特别好的选择，试问大家工作中用过几次动态规划呢。所以我比较倾向于考一些即使没有见过也能用基本编程思想解决的问题。
+数学题、基础知识 我之前面试的时候也被问过数学题和基础知识，这是考察之前项目不是特别对口的候选人或者应届生的一个好手段。对于比较有经验的候选人可以让总结一下近些年技术的发展脉络，这个对逻辑思维和知识面是个不错的考察。
+聊天 聊天主要是对三观和软技能的考察，最直接的可以聊一下换工作的动机，对年轻候选人可以聊聊人生规划，对老人可以聊聊对领域和行业的看法，有个前辈经常问候选人平常有什么兴趣爱好等等。
+让候选人问问题 从我面试的结果看，不同人问的问题不太一样。不少人会问公司规模、工作节奏相关的问题，有的会问自己面试的岗位定位业务发展相关的问题。有两个候选人的问题我印象比较深刻。一个是说他看了应用商店里的评论后发现不少用户在抱怨一个问题，问为什么会出现这个问题，从这个问题可以看出候选人主动做了功课，还对后面的技术问题有好奇心。另一个问我当时为什么决定加入这家公司，这个问题不仅可以拉近和面试官的距离，也可以给候选人带去很多信息，如果一个新人问这个问题，那ta大概率是比较有探索精神的一类人。
+建立打分表 不管公司的打分表是怎么样的，最好都给自己的考察方案设计一套最合适的打分表，提前确定好各个维度的权重和打分细则，这样不仅能更加公平地做候选人之间的比较，也能让面试更加有针对性。这里也给出我针对3-5年经验工程师的打分表，算是对上面内容的总结。
+维度 分值 细则 备注 项目：工作量和完成度 6 工作量正常、完成良好4分，能回答各种问题2分 项目：价值和动机 5 抓住对业务的价值重点2.5分，技术方案综合考虑效果、成本、可行性2.5分 方案设计 5 方案能满足功能3分，方案体现优秀的技术深度、广度2分 代码测试 6 正确、完整实现功能4分，速度快、代码风格好2分 三观 2 正常人1分，特别正2分 不正常人直接淘汰 软技能 1 沟通、表达特别好1分 总和 25 </description>
+    </item>
+    <item>
+      <title>多模态对比学习预训练模型CLIP</title>
+      <link>https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/</link>
+      <pubDate>Mon, 13 Dec 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/</guid>
+      <description>我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的
+CLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。
+方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.
+正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。
+用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。
+更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。
+it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet
+更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。
+图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。
+更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。
+This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset.</description>
+    </item>
+    <item>
+      <title>对比学习学习笔记</title>
+      <link>https://www.yuanhao.site/post/2021-12-06-%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Mon, 06 Dec 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-12-06-%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/</guid>
+      <description>对比学习已经火了一阵了，之前看过一下SimCLR和SimCSE的论文，但走马观花也没有实践。这两天仔细学习了一下，大概明白了是怎么回事。
+首先对比学习通常是在自监督的设定下进行表征学习，也就是不依赖标注数据获得一个编码器（Encoder），大致的环节如下
+通过一些方式构造人工正样本对 在一个Batch内构造负样本对 设计一个loss，拉近正样本对表征（Embedding）间的距离，扩大负样本对表征间的距离 构造正样本对 对比学习一开始是在计算机视觉领域兴起的，CV论文里最初是通过对一张图片进行两次不同的数据增强来构造正样本对的。
+SimCLR里用到的图像增强方法，可以看出来强度是比较高的，模型要学会图像间的关系不是那么容易
+后来这把火烧到了NLP领域，最开始也是模仿CV的做法，通过例如删字词、换同义词等数据增强来构造。直到大名鼎鼎的SimCSE横空出世，提出了用两次不同的dropout来构造正样本对的方法，而且效果还特别好。这个方法的前提是在transformers里面每层都有dropout，但常见的卷积神经网络里面dropout往往都只在最后才有，所以并不能迁移到CV界；但最近ViT大火，应该也有人会试着使用这种方法。
+SimCSE除了有自监督的版本，还有通过数据集特点构造的有监督版本
+损失函数构造 SimCLR里面用的是NT-Xent Loss，它是the normalized temperature-scaled cross entropy loss的缩写，我来翻译的话会叫他“归一化的带温度交叉熵”。其公式如下
+$$l(i,j)=-\text{log}\frac{e^{\text{sim}(z_i,z_j)/\tau}}{\sum_{k=1}^{2N}1_{k\ne i}e^{\text{sim}(z_i, z_k)/\tau}}$$
+$$L=\frac{1}{2N}\sum_{k=1}^N[l(2k-1,2k)+l(2k,2k-1)]$$
+SimCLR中一个batch是由N张图片通过两组不同的增强变成2N张并且穿插排列，即2k-1 和 2k 是由同一张图构造的一对人造正样本。从第二个式子可以发现，一个Batch的Loss是其中N对loss的均值。跟cross entropy相比，首先是指数项从模型预测的概率变成了样本对间的相似度。分子与正样本对的相似度相关，分母则与第i张图与其余图的相似度有关。注意分母中只有2N-1项，因为自己与自己天然组成正样本，不去除的话这个分式的极限值（完美模型的loss值）将变成0.5，总loss也就不是0了。
+SimCSE里使用的loss是上面的变种，或者说是个简化版本。$z_i$是原始第i个样本的表征，$z&amp;rsquo;_i$是对应的人造正样本的表征。与上面不同的是原始样本表征之间的相似度、变换样本表征之间的相似度都没有参与loss计算。
+$$l(i)=-\text{log}\frac{e^{\text{sim}(z_i, z&amp;rsquo;i)}}{\sum^N{j=1}e^{\text{sim}(z_i, z&amp;rsquo;_j)}}$$
+代码实现 下面是我实现的SimCSE版本的对比学习loss，供大家参考
+class NTXentLoss(nn.Module): def __init__(self): super().__init__() def forward(self, rep1, rep2, temperature=0.5): normalized_rep1 = F.normalize(rep1) normalized_rep2 = F.normalize(rep2) dis_matrix = torch.mm(normalized_rep1, normalized_rep2.T)/temperature pos = torch.diag(dis_matrix) dedominator = torch.sum(torch.exp(dis_matrix), dim=1) loss = (torch.log(dedominator)-pos).mean() return loss 实验心得 我还是在之前提到的Pawpularity数据集上进行的实验，并且和论文里的表征学习不同，我是将对比学习作为一个辅助任务来帮助主任务的训练。经过一天的实验，有以下一些发现
+在参数合理的情况下，加入对比学习作为辅助任务确实可以提升主任务的表现。 加入对比学习作为辅助任务看上去可以让模型收敛更加稳健，从而可以使用更大的学习率、更高强度的数据增强。 Loss中的温度是很重要的参数，在SimCLR论文中最好的温度是0.1，在SimCSE论文中最好的温度是0.05，但在我的实验里最好的值跟这俩差的很多。熟悉蒸馏的朋友应该知道，温度越高会让样本间的差异越小，loss趋近常数；温度越低则反之。SimCSE论文的消融实验尝试了不同数量级的温度，大家在用的时候也可以大胆地多尝试一下。 将对比学习作为辅助任务额外增加的时间代价不明显。 今天先到这里，上班去辽。</description>
+    </item>
+    <item>
+      <title>Swin Transformer (v2)学习笔记</title>
+      <link>https://www.yuanhao.site/post/2021-11-28-swin_transformerv2/</link>
+      <pubDate>Sun, 28 Nov 2021 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-11-28-swin_transformerv2/</guid>
+      <description>上篇总结了一下最初的ViT模型，它有几个明显的问题：
+建模能力方面，强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性 复杂度方面，之前的ViT是在每层都做全局(global)自注意力。如果保持每个Patch的大小不变，随着图片尺寸的变大，Patch的个数会增加，而Patch的个数等于进入Transformer的Token个数，且Transformer的时间复杂度是O(n^2)。 易用性方面，由于Embedding（结构是全连接）和图片大小是绑定的，所以预训练、精调和推理使用的图片必须是完全同等的尺寸。 Swin Transformer提出了一种称为shifted window的方法来解决（缓解）以上问题。
+Swin Transformer的结构如下图所示
+{: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+Embedding Stage（stage1）。将图片划分为若干4*4的patch，使用线性变换来将patch变为Embedding向量，这一步和ViT是一样的。但是注意，这里的patch比ViT的14*14小了很多。 若干个使用Swin Transformer 的Stage（stage2-4）。这里模仿了经典卷积网络backbone的结构，在每个Stage都将feature map（对应到Vit就是Patch或Token的个数）变成原来的四分之一。这是通过简单地将2*2patch合并成一个来完成的。同时，用Swin Transformer替代了原来的标准Transformer，主要变化如下 用M*M大小的窗口自注意力代替全局自注意力。因为自注意力机制时间复杂度是O(n^2)，通过减少参加自注意力的元素，将原来关于patch数平方复杂度的计算变为关于patch数线性复杂度 用对角线方向的shift来使Swin Transformer里的每一层窗口都是不同的，这样一个patch有机会和不同的patch交互。这里还使用了一个mask trick来使得这种shift的自注意力计算更高效。 添加了相对位置偏置(relative position bias)，对比发现这比添加绝对位置embedding效果好很多 shifted window示意图，l+1层的窗口是从l层往右下角平移2个patch得到的 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+从结果来看，SwinT相比于ViT有了很大的提升
+Swin Transformer实验结果，可以看出来比ViT已经有了很大的提升 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+综合消融实验的结果可以对比三种不同的attention方式: fixed window、sliding window和shifted window的性能。他们的imagenet top1 acc分别是80.2， 81.4和81.3。从中可以看出类似于卷积的sliding window性能是最好的，无奈太慢了。fixed window丢失了很多有用的窗口间交互，性能最差。shifted window性能相比sliding window下降微弱，但速度提升了好几倍。同样可视为fixed window的ViT只能得到0.78的top1 acc，我想这是小patch带来的差别，因为现在的线性变换embedding实在太弱了，patch越大带来的信息丢失就越多。
+前不久原班人马又发布了V2版的Swin Transformer，主要是解决模型上规模的问题，有几个主要的改动：
+把每个Block里的LN从前面换到了后面，来解决深度增加之后训练不稳定的问题 把原来的scaled dot attention换成了scaled cosine attention，也是为了解决训练不稳定的问题（否则可能被某些像素对的相似度主导）。 改进相对位置偏置。V1版里这个模块是用一个规模跟窗口大小M相关可学习参数矩阵来处理的，如果预训练和finetune时M大小改变，就用插值来生成原来不存在的值。V2版首先是引入了一个小网络来取代参数矩阵，其次是将相对位置从线性空间换到了对数空间，通过取对数压缩空间差距来让M变化时的过渡更加顺滑 通过取对数，让finetune时增大窗口和图片的性能损失大为减小。但其实这里还是跟卷积神经网络有差距。通常卷积神经网络在finetune时使用更大的图片可以提升性能。 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+从结果来看，更大的网络确实带来了更好的性能，30亿参数版的SwinV2-G比8800万参数版的SwinV2-B性能提升了不少。同样参数量的V2版也比V1版提升了一些。
+不同模型Imagenet结果 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+消融实验也比较清晰地反映出了V2版加入的新技术带来的技术提升</description>
+    </item>
+    <item>
+      <title>Vision Transformer学习笔记1</title>
+      <link>https://www.yuanhao.site/post/2021-11-17-vision_transformer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/</link>
+      <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-11-17-vision_transformer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/</guid>
+      <description>最近Transformer结构在计算机视觉领域的应用非常火，时不时都有新的文章出来。作为一个已经使用了两三年Transformer结构的NLPer，一直很想了解一下它在视觉领域是怎么工作的，最近借着一个Kaggle比赛的数据集学习了一下，稍作总结分享给大家。
+首先是学习了一下Vision Transformer，ViT的原理。看的论文是谷歌名作《An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale》，本文初稿发布于2020年10月，今年投了ICLR 2021，应该算是ViT的奠基论文之一。要用Transformer来处理图像，首先（也可能是唯一）要解决的是输入问题，原先的Transformer处理的是token序列，而图像是HWC的像素矩阵。这里做法也很暴力，第一步是将一张图拆成了N个PP个小块(patch)，每个patch看做是一个token。一个patch里有PP个像素，每个像素C个通道，这里直接就给拍平了进一个全连接（线性变换）得到patch的D维Embedding表示。所以ViT里的Embedding层不再是一个lookup table了，而是一个可以学习的线性变换。
+ViT结构图 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+通过这个方法，就把Transformer结构套在了图像上，虽然这不是唯一的方法，但这么做在参数量的角度和时间复杂度的角度都是比较合理的。首先是时间复杂度角度，Transformer的关于序列长度的时间复杂度是O(n^2)，所以输入序列不宜过长。如文题所说，如果我们把图分成1616个patch，那transformer处理的序列长度将会是256，比BERT的默认长度521还短了一半。参数量上，尺寸正常的Transformer很大比例参数在embedding层上，例如BERT-base的30k个token768维的Embedding层有23M参数大约占了其110M总参数量的五分之一。ViT里Embedding层的参数量是正比于图像尺寸的，以224224图像为例，单patch像素点数为196，所以总参数量是196C*D，C是输入通道数，D是Embedding维数，以3和768记的话为0.45M，远小于BERT-base。从下表可以看到同样尺寸的ViT参数量都小于对应的BERT。
+按论文的这种处理方式也有几个比较明显的问题，例如强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性。在中等规模数据集上用这种方法得到的结果还是比卷积要差，但是当把预训练数据变多用更大的数据集训练时，模型性能显著提升了（第二列比第三列），接近甚至超过了SOTA。
+上面的结果都是针对有监督训练的，这篇文章还做了些无监督训练的初步实验，发现加入无监督预训练在下游任务比没有预训练强一2%，但是比有监督预训练差4%，总之一句话，没有实现BERT的效果。
+实验的部分用Pytorch Lightning简单做了一下Kaggle的Pawpularity数据集。这是一个值域0-100的回归问题，评价指标是RMSE。模型部分没什么花头，直接backbone接了个回归头，代码如下
+class Pawpularity(pl.LightningModule): def __init__(self, config): super().__init__() self.config = config self.backbone = timm.create_model(config.backbone_name, pretrained=not config.predict, num_classes=0) self.head = nn.Sequential( nn.Linear(self.backbone.num_features, 128), nn.GELU(), nn.Linear(128, 1) ) self.save_hyperparameters(config) 实验的运行环境是在我的HP Z4工作站上，它搭载了两个RTX 6000 GPU，因为显存是24GB版本，所以batchsize设的比较大。实验结果如下
+模型 模型参数 lr batch size 单轮耗时 早停轮次 RMSE vit_base_patch16_224 85.9M 1e-3 128 36s 10 20.514 vit_base_patch16_224_in21k 85.</description>
+    </item>
+    <item>
+      <title>试用Notion</title>
+      <link>https://www.yuanhao.site/post/2021-11-07-%E8%AF%95%E7%94%A8notion/</link>
+      <pubDate>Sun, 07 Nov 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-11-07-%E8%AF%95%E7%94%A8notion/</guid>
+      <description>上周看到Notion估值100亿美元的消息，有点受震撼。一来是因为它好像在国内都还没什么名气，身边除了青南老师还没见过第二个用户，怎么突然就炸了；二来是他们团队真的好小，据报道2019年才3个人，目前才180多人；最后，他们的增长是非常漂亮的指数曲线，在这个看似做不出什么花头的领域实数难能可贵。
+2019年-2021年，公司披露的用户数分别为100万、400万和超2000万，今年的收入则大涨70%。
+笔记真的是一个很重要的应用，之前我也曾经多方对比都没有找到特别满意的产品，于是先入为主用了好几年印象笔记。作为一个印象笔记的老付费用户，心中对它早已有诸多不满，功能乏善可陈不说，不知从什么时候开始给已付费用户疯狂发广告。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 作死的印象笔记，不思进取，疯狂发续费广告 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+于是今天决定试用一下Notion，看下能不能替换掉印象笔记。
+强大 我是在浏览器进行体验的，不得不说Notion的前端工程师有两把刷子，输入体验特别好（远好于Confluence），公式、图片、超链接都没啥问题，除了用自带的/进行功能呼出，还支持Markdown语法自动映射。除了浏览器版本，Notion还提供了各种系统的客户端，跨平台使用一点都没问题。
+为了帮大家用好这个软件，开发者还提供了海量的模板，从个人用途的阅读清单、旅行规划，到团队用的看板、文档一应俱全。虽说都是几个核心组件的有机组合，但对于一个泛笔记类应用确实足够了。特别是对于一个小团队来说，完全可以用Notion达到Confluence+Jira的功能效果。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Notion给Startups提供的模板，涵盖了日常工作的几乎所有环节 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+简洁 我是使用邮件注册的账号。和其他软件一样，当你输入邮箱并提交，Notion会给你发送一个激活码，填入激活码后需要设置用户名和密码，这里它没有按照常规做法让你输入两次密码来进行确认。虽然只输入一次密码会有可能会因为误操作填入不同于你设想的密码，但实际情况是：
+这个比例应该很低 如果用户使用一个现代化浏览器例如Chrome，又有谁会真的自己去记忆密码呢，像我自己很多时候就是使用浏览器生成的随机密码。此时让用户输入两次就成了一个错误的设计 由于我对设置密码的期望是输入两次，他这个小心思一下就带来了眼前一亮的感觉。
+Notion在浏览器端没有保存键，估计是随时都update到最新状态，这也更像是用笔写作状态，不知道为什么Office应用还要保留保存键。
+精美 漂亮的东西无疑会增加用户使用的兴致，这方面Notion做的很棒，它内置了很多制作精良的模板，让你有兴趣继续探索它。就拿博客模板为例，里面不是简单地填充上文字和图片，还展现了丰富的样式如加粗、超链接甚至图文混排。这里选择的图片美观度也很高，颜色丰富且红、绿对比明显。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 博客模板页面，样式丰富，图片精致 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+它还给每个类目都加上了一个小图标，对比一下印象笔记的界面，Notion显得活泼很多。
+一些不成熟的想法 作为一个公司，想清楚怎么赚钱真的很重要。这里再次为印象笔记感到惋惜，作为笔记类应用的先行者没有快速进入到企业服务领域，一年两百的个人付费很难支撑起特别大的业务规模。从Notion的定价策略可以看出，它压根没想在个人用户身上赚多少钱，企业版单月价格是个人版的五倍。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 从定价策略可以看出，企业用户能带来更多的利润 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+跟这个产品竞争最强的应该是Confluence，作为老牌企业知识平台产品，Confluence的售价贵的不是一星半点。Confluence的记录体验我认为远没有Notion强，跟外部的打通也更弱。其母公司Atlassian15年上市后股价涨了十多倍，目前市值一千多亿美元，从这个角度看，Notion还有很大的空间。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 相比于Notion，Confluence昂贵得多 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+从生产力的角度看，Notion这样的应用确实补充了office系列的一些空白。Office主要针对长文档、幻灯片这种非常正式的文档类型。而笔记类应用则擅长帮助用户做一些即兴、随机、格式要求不严格的内容梳理。而Notion预置的模板也体现了近几年团队管理领域沉淀下的一些最佳实践，如果一个团队能用好这些工具，应该生产力不会太差。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Office365，其实不贵 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+最后，想聊一下对国内工具或者企业服务类产品的看法。飞书看上去不错，功能全面，文档的体验跟Notion很像，但觉得它比较封闭，想在手机日历导入飞书日程都要费点劲，而且对个人用户不友好。钉钉之前用过，它更像一个管理工具而非生产力工具，已读状态也注定了它无法营造一个舒适的沟通环境，比较适合执行团队，例如销售来使用，而非创意团队。还有一个问题我一直没搞懂，为什么国内工具类应用都不收钱？zoom敢收2000块每人每月，腾讯会议到现在还免费，即使飞书这样号称”下一代工作方式“的产品都不敢收钱，企业应用不收钱给人的感觉就是不靠谱，更要命的是收了钱国内应用给人的感觉还是不靠谱，引人深思。
+这篇文章就是在Notion上写的，写到这我感觉可以跟印象笔记说再见了。</description>
+    </item>
+    <item>
+      <title>《增长黑客》阅读笔记</title>
+      <link>https://www.yuanhao.site/post/2021-09-21-%E5%A2%9E%E9%95%BF%E9%BB%91%E5%AE%A2%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Tue, 21 Sep 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-09-21-%E5%A2%9E%E9%95%BF%E9%BB%91%E5%AE%A2%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>《增长黑客》阅读笔记 最近一年算是在做一个从0开始的项目，用户量看上去涨了不少，但也遇到了很多问题。有时候对问题的原因会有些模糊的猜测，也会想想怎么去解决，但大多不成体系也没有机会验证。
+看这本书的时候感觉很亲切，因为写到了很多遇到过的问题；同时又学到了很多东西，因为它不仅很有体系，还引申到一些心理学、行为学的东西去解释现象背后的原因。它像一面镜子，没有镜子你也知道自己长什么样子，但多照镜子还是能发现自己的很多问题。这篇文章记录一些阅读之后的收获和思考。
+数据驱动 这本书很强调ab实验和深挖数据，这两个概念在过去几年随处可见，甚至有种被奉为圭臬的感觉。之前看到一个说法，只要ab的速度足够快，就不需要产品经理了。但最近我看到不少关于数据驱动的反思，亲身经历后也更深刻地认识到要做好，特别是在产品的增长期（初期）做好数据驱动是很难的。不仅样本少、变量多，很多团队甚至连像样的ab工具都没有。
+在做数据分析的时候我认为有两个大的gap，一个是主观预期和用户实际行为的gap，另一个是当前用户群和目标用户群的gap。 前一个像是一个症状明显的感冒，相对好解决。第二个却像一个难以发现的慢性病，很难搞。 因为第二个gap的存在，数据驱动像是在迎合用户，而产品驱动是在寻找“对味”用户。数据驱动可能带来短期的成功，但长期结果也许是一个没有灵魂的平庸产品。而有个性的产品一旦找到能发生共振的用户，应该能产生更紧密的链接。说到底这是一个选择问题，并不存在silver bullet。
+我个人比较倾向于把数据作为工具，而不是驱动力。或者换一个角度，两种平庸的方案进行ab，并不会让你选到一个牛逼的方案。必须有一个不依赖结果的驱动力让产品不断提升，团队必须自己为送入ab的方案质量负责。
+啊哈时刻 “啊哈时刻”就是产品使用户眼前一亮的时刻，是用户真正发现产品核心价值——产品为何存在、他们为何需要它以及他们能从中得到什么——的时刻
+找到或定义产品的啊哈时刻，然后引导用户到达啊哈时刻应该是这本书里最重要的目标之一。我觉得这是一个很有效的思维模型，但好像在我们的产品里没有被很好地执行。
+因为多线作战、语言不通、缺少用户研究团队，我们对产品在市场的反馈一直没有全面的了解。前几天问同事什么是我们的啊哈时刻，大家答案的方向差不多，但也没有完全达成共识。
+而在引导用户到达啊哈时刻这方面我们也不够努力。例如用户的地点对我们至关重要，但目前的设计只会在ta第一次onboard的时候询问一次，后面就放任自流了。而且之前版本的第一次询问我觉得也不是很好。
+这里有一个我一直没想明白的问题：不同渠道来的用户在提供地点的比例上有很大的差别。虽然之前产品同事给过一个解释，但我不是很能理解。同理心真的是对产品经理一个重要且难得的能力，根据产品猜测不同渠道、不同步骤的流失率可能是一个不错的考察办法。
+储值 大体上讲，用户往产品放入的个人信息或财物被称为储值，储值的形式有很多，例如用户在印象笔记写的笔记，在微信的联系人，在亚马逊购买prime会员的年费等等。储值能很有效地增加用户的粘性。
+比较可惜的是我们的产品几乎没有提供储值的途径（似乎只有收藏夹一个），就像前面说的，我们对用户信息的询问非常保守；用户没有办法花钱来获得增值体验；也没有在产品里设计任何回报和奖励。当用户过了蜜月期，基本上可以毫无负担地离开我们的产品。
+要构建出储值体系对于我们现在的产品其实是比较困难的，但这个真的蛮重要，毕竟我们不具备什么不可替代性，需要多一些和用户建立物质和情感连接的渠道。
+产品雕琢 这个话题散落在本书的很多地方，例如
+找到语言语市场的匹配点，优化广告语 根据三个根本任务：传达相关性，展示产品价值和提供明确的行为召唤来设计landing page。 少并不总是多，便宜的价格不总是能带来更多的用户，因为面人们可能将价格视作质量的信号 根据“相对论”来设计烟幕弹套餐优化定价，例如《经济学人》网络版杂志全年订阅价是59美元，纸质版杂志全年是125美元（烟幕弹），而纸质版加网络版的合订价也是125美元。这一设置可以大大降低用户选59美元套餐的比例而增加用户选购第三种套餐的比例。 我是在微信读书上读的这本书，不得不说微信免费提供这些书籍真的很赞，后面准备再读一下书里提到的《怪诞行为学》和《设计心理学》，读完了再跟大家交流。
+微信读书显示我3小时22分读完的这本书，感觉比我实际花的时间短一些。这种夸大用户单位时间收益的方式也许是他们的一个增长策略？
+团队和工作流 书的第一部分叫“方法”，确实相对比较抽象。首先谈到的是如何构建增长团队，
+大方向是要打破筒仓结构，构建职能齐备的复合型增长团队
+增长团队里应当有对企业战略和目标有深刻了解的人，有能够进行数据分析的人，也要有能够对产品的设计、功能或营销方式进行改动并通过编程测试这些改动的工程师
+对于这一点其实对于创业小团队问题不大，因为还没有像大公司那样的部门墙。</description>
+    </item>
+    <item>
+      <title>Impvove Inference Efficiency with Batch Inference</title>
+      <link>https://www.yuanhao.site/post/2021-06-20-inferlight/</link>
+      <pubDate>Sun, 20 Jun 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-06-20-inferlight/</guid>
+      <description>As an algorithm engineer, it is inevitable that you will encounter the problem of bringing models online in your daily work. For some less demanding scenarios, you can handle this by utilizing a web framework: for each user request, call the model to infer and return the result. However, this straightforward implementation often fails to maximize the use of the GPU, and is slightly overwhelming for scenarios with high performance requirements.</description>
+    </item>
+    <item>
+      <title>模型上线不用愁，批量推理来加油.</title>
+      <link>https://www.yuanhao.site/post/2021-06-20-%E6%A8%A1%E5%9E%8B%E4%B8%8A%E7%BA%BF%E4%B8%8D%E7%94%A8%E6%84%81%E6%89%B9%E9%87%8F%E6%8E%A8%E7%90%86%E6%9D%A5%E5%8A%A0%E6%B2%B9/</link>
+      <pubDate>Sun, 20 Jun 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-06-20-%E6%A8%A1%E5%9E%8B%E4%B8%8A%E7%BA%BF%E4%B8%8D%E7%94%A8%E6%84%81%E6%89%B9%E9%87%8F%E6%8E%A8%E7%90%86%E6%9D%A5%E5%8A%A0%E6%B2%B9/</guid>
+      <description>作为一个算法工程师，在日常工作中难免会碰到模型上线的问题。对于一些要求不高的场合，简单找一个web框架实现一下接口就能搞定：对于每个用户请求，调用模型得到结果再返回。但这种朴素的实现往往无法最大化利用GPU，对于性能要求比较高的场景应付起来就略显吃力。
+优化的方法有很多，一个增益很大的措施就是把一个请求推理一次改成多个请求一起推理。去年大概也是这个时候我写了一个小工具来实现这个功能，还取了个蛮霸气的名字InferLight，但当时写得并不太好；最近参考香侬科技的Service-Streamer又重构了一版。这个功能看似简单，但是在实现的过程中可以了解很多Python异步编程的知识，感觉收获颇丰，于是写篇短文总结一下。
+首先，要提高模型的线上推理吞吐量，应该把推理服务做成异步的。对于web服务来说，异步的意思是当模型在计算的时候它可以处理别的请求。对于Python来说，异步服务可以通过很多优秀的基于Asyncio的框架来实现，例如我常用的Sanic。而推理是计算密集的，也没有什么同步异步的说法，我们的目标就是能够汇聚多个推理请求，高效利用GPU的并行计算能力，并且能将批量推理的结果正确地返回给对应的请求者。
+要实现上面的目标，需要以下几个模块
+前端服务：用于接收请求、返回结果。可以是Http、PRC等各种协议。是一个独立进程。 推理Worker：负责模型的初始化、批量推理数据构建、推理计算。是一个独立进程。 任务队列：前端服务收到请求之后把计算任务送入任务队列；推理Worker监听该队列，每次取出一个小批量由模型推理 结果队列：推理服务推理完成后将结果送入结果队列；前端服务监听该队列，获得推理结果 结果分发：在将任务送入任务队列前需要生成任务的唯一标识，从结果队列取回结果后根据标识获取到任务对应的结果 其中两个任务队列的实现方式很多，可以通过一些成熟的中间件例如Kafka、Redis等，但为了避免外部依赖，这次我选择使用Python原生的多进程队列。结果队列监听和分发通过前端服务进程的一个子线程来完成。
+实现细节 推理服务相对简单，由于各种模型的加载、数据处理步骤千奇百怪，所以我将推理Worker设计成了一个基类，使用时继承它并实现特定方法。
+import logging import multiprocessing as mp import time from queue import Empty class BaseInferLightWorker: def __init__(self, data_queue:mp.Queue, result_queue:mp.Queue, model_args:dict, batch_size=16, max_delay=0.1, ready_event=None) -&amp;gt; None: self.data_queue = data_queue self.result_queue = result_queue self.batch_size = batch_size self.max_delay = max_delay self.logger = logging.getLogger(&amp;#39;InferLight-Worker&amp;#39;) self.logger.setLevel(logging.DEBUG) self.load_model(model_args) # 由于模型载入时间较长 # 加载完成后使用一个event来通知主进程 if ready_event: ready_event.set() def run(self): self.logger.info(&amp;#39;Worker started!&amp;#39;) while True: data, task_ids = [], [] since = time.</description>
+    </item>
+    <item>
+      <title>Tricks of Semantic Segmentation</title>
+      <link>https://www.yuanhao.site/post/2021-05-30-segmentation-tricks/</link>
+      <pubDate>Sun, 30 May 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-05-30-segmentation-tricks/</guid>
+      <description>{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} HuBMAP - Hacking the Kidney {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+Last month, I spent some time doing the “HuBMAP - Hacking the Kidney” competition on Kaggle. The goal of this competition is the implementation of a successful and robust glomeruli FTU detector. It is a classical binary semantic segmentation problem. This is my second semantic segmentation competition, and our team ended up in 43rd place and won a silver medal.</description>
+    </item>
+    <item>
+      <title>Training large model with your GPU</title>
+      <link>https://www.yuanhao.site/post/2021-04-15-save-vram/</link>
+      <pubDate>Thu, 15 Apr 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-04-15-save-vram/</guid>
+      <description>In the last post, I shared my story of the Kaggle Jigsaw Multilingual Toxic Comment Classification competition. At that time, I only had a 1080Ti with 11G VRAM, and this made it impossible for me to train the SOTA Roberta-XLM large model which requires larger VRAM than what I had. In this post, I want to share some tips about how to reduce the VRAM usage so that you can train larger deep neural networks with your GPU.</description>
+    </item>
+    <item>
+      <title>面向电商场景的语言模型E-BERT</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2020-09-16-ebert/</link>
+      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2020-09-16-ebert/</guid>
+      <description>最近跟不少做电商NLP的朋友们聊天，有不少收获。我之前从来没想过【搜索】在电商里的地位是如此重要，可能GMV的50%以上都是从搜索来的。巨大的经济价值也极大地推动了技术的发展，他们的工作做得很细致，毕竟一个百分点的点击率后购买率提升也许对应的就是几百亿的成交额。
+其实之前做的汽车领域NLP工作跟电商有很多相似的地方，场景先验都非常重要。直接使用开放域语料预训练的语言模型效果并不好。我们也尝试过一些方法，例如用本领域语料训练语言模型，结合一些词库词典等等。今天介绍最近看到的一篇针对电商场景调优BERT的论文《E-BERT: Adapting BERT to E-commerce with Adaptive Hybrid Masking and Neighbor Product Reconstruction》，其中的一些方法应该对细分领域NLP都有一些启发。
+方法 论文的创新方法主要有两个：Adaptive Hybrid Masking（AHM，自适应混合掩码）和Neighbor Product Reconstruction（NPR，相似商品重构）。
+E-BERT总览 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+AHM 第一个方法AHM其实是对已有掩码方式的改进。原始版本的BERT采用的是随机mask，这个大家应该都比较清楚。这种mask方式针对的是token，而众所周知token是由单词通过wordpiece tokenizer分割而来。所以这种方式遮盖住的可能是单词的一个部分，学习这种类似看三个字母猜剩下四个字母的任务不是很符合大家的直觉。随后就诞生了更加符合人类认知的Whole Word Masking，这个方法就是说要遮就遮整个词。这里用一个网上的例子帮大家理解
+Input Text: the man jumped up , put his basket on phil ##am ##mon &amp;#39; s head Original Masked Input: [MASK] man [MASK] up , put his [MASK] on phil [MASK] ##mon &amp;#39; s head Whole Word Masked Input: the man [MASK] up , put his basket on [MASK] [MASK] [MASK] &amp;#39; s head philammon是一个词，他会被tokenizer分解成三个token，这时就体现了普通mask和WWM的区别。</description>
+    </item>
+    <item>
+      <title>受控文本生成2</title>
+      <link>https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/</link>
+      <pubDate>Thu, 23 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/</guid>
+      <description>昨天的文章介绍了在输出空间对文本生成进行控制的两篇论文，今天介绍一篇在隐空间控制的论文。
+隐空间方法也分为两个流派，一种认为在隐空间里可以把内容和特性的向量表示分开（disentangled)，然后通过修改特性向量来实现对特性的控制；另一种则无须这种假设。下面分别介绍一篇相关论文。
+Style Transfer from Non-Parallel Text by Cross-Alignment disentangled representation的代表作之一，发表在2017年的NIPS上，如今引用已经接近300多。
+Style Transformer: Unpaired Text Style Transfer without Disentangled Latent Representation 复旦大学NLP组发表于2019年的文章，已经被引用20次，文章标题中明确写了他们的方法without Disentangled Latent Representation。
+在文章的introduction部分列举了一些Disentangled表示的问题，我觉得比较重要的两条是：
+难以评价Disentangled表示的质量，纯粹的Disentangled表示也很难获得； 分离不是必要的，有文章已经论证了靠解码器就可以overwrite风格。 这篇文章总的来说是对抗生成网络的思路。模型分两大块，一块是典型的encoder-decoder结构的transformers，用来作为风格迁移器，另一块是判别器，用来解决由于没有平行语料带来的训练问题。
+判别器训练 文中提出了两种判别器，从结果上看多分类判别器对BLEU指标更友好，而条件判别器对迁移后的风格更友好。
+多分类判别器 这种方法比较好理解，即采用K+1类的多类分类器作为判别器，输入只有句子。后K类对应K种风格，第0类对应$f_\theta(\rm{x},\rm{\hat{s}})$，即假样本。在训练时判别器时，将原始语料和用原风格重建后的句子都标为对应的风格，假样本标为第0类。在训练风格转换器的时候，我们希望转换器能尽量提高$f_\theta(\rm{x},\rm{\hat{s}})$被判别为$\rm{\hat{s}}$类的概率，即能骗过判别器，使判别器不认为生成的是个假样本。
+条件判别器 输入包括句子和风格，判别器需要判断句子是否含有风格（二分类）。训练判别器时将原始语料和重建句子$f_\theta(\rm{x},\rm{s})$标注为正样本，将变换后的句子$f_\theta(\rm{x},\rm{\hat{s}})$标注为负样本。
+判别器训练算法 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+风格迁移器训练 风格迁移器有三个重要的任务，一个是自重建（Self Reconstruction），一个是循环重建（Cycle Reconstruction），以及风格控制（Style Controlling）。
+自重建就是输入句子$\rm{x}$以及其原本风格的控制变量$\rm{s}$，让他生成自己。这个任务是可以使用监督学习来完成的，loss计算公式如下
+$$ L_{\rm{self}}=-p_\theta(\rm y=\rm x|\rm x,\rm s) $$
+循环重建是先输入$\rm{x}$和一个其他的风格控制变量$\rm{\hat{s}}$，生成$\rm\hat y$，再用$\rm\hat y$和$\rm s$生成一个$\rm y$。此时$\rm y$应该和$\rm{x}$无论内容及风格都一致，并且可以使用监督学习来计算loss：
+$$ L_{\rm{cycle}}=-p_\theta(\rm y=\rm x|f_\theta(\rm x,\rm\hat s), \rm s) $$
+前面两个任务虽然解决了没有平行语料带来的训练问题，但思考一下就会发现这两个任务并不会起效果。模型可以完全只学习返回原句子就可以“蒙混过关”。解决的办法就是检验一下循环的中间结果$f_\theta(\rm x,\rm\hat s)$，这个中间结果应该尽可能含有$\rm\hat s$风格。因此引入了第三个风格控制任务，这个任务根据判别器的不同也分成两种情况：</description>
+    </item>
+    <item>
+      <title>受控文本生成1</title>
+      <link>https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/</guid>
+      <description>关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。
+受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。
+名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。
+受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。
+相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。
+Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。
+这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。
+DRG的四种迁移方法 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。
+$$ s(u,v)=\frac{\text{count}(u, \mathcal{D}v)+\lambda}{(\sum{v&amp;rsquo;\in \mathcal{V},v&amp;rsquo;\neq v}\text{count}(u, \mathcal{D}_{v&amp;rsquo;}))+\lambda} $$
+围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。
+Delete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。
+Retrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。
+Generate 这是最后一步，即获得最终的结果。文章里有四种策略
+Retrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c+a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。</description>
+    </item>
+    <item>
+      <title>Tweet Sentiment Extraction比赛总结</title>
+      <link>https://www.yuanhao.site/post/2020-07-08-tweet/</link>
+      <pubDate>Wed, 08 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-08-tweet/</guid>
+      <description>这是前段时间结束的Kaggle比赛，之前在文档问答的文章中我也有提到过，最终我们队获得了第七名，这篇文章分享一下我的参赛收获和感受。
+首先感谢队友，特别是曹老师，如果没有曹老师我肯定中途就弃赛了。至于弃赛的原因，在感受部分会详细介绍。我的代码已经传到Github上了，感兴趣的朋友可以看一看，里面包含了我所有的commits，可以完整看到我方案的演进。
+Repo: https://github.com/thuwyh/Tweet-Sentiment-Extraction
+赛题回顾 比赛叫做Tweet Sentiment Extraction，对于给定的tweet和情感极性，需要选手从文本中找出支撑情感的部分。例如下面这条数据
+&amp;#34;My ridiculous dog is amazing.&amp;#34; [sentiment: positive] 模型应该返回amazing这个词。比赛的评价指标是word-level Jaccard score，它的含义看下面的实现就一目了然了。
+def jaccard(str1, str2): a = set(str1.lower().split()) b = set(str2.lower().split()) c = a.intersection(b) return float(len(c)) / (len(a) + len(b) - len(c)) Baseline及一些改进 在比赛的初期讨论区和kernel分享区基本就定下了解题思路的基调，即用机器阅读理解（MRC）的方法来做span prediction。具体的说，就是把数据提供的情感词作为question，把tweet作为context，把预测对象作为answer。
+模型也很简单，在RoBERTa后面接一个questionAnswering head预测start和end位置就可以了。这道题一个比较神奇的地方就是RoBERTa的效果比普通的BERT要好一些。
+在这个框架下，大家也都做了一些改进，例如：
+在语言模型输出后面加dropout； concat语言模型的多层输出结果； 引入FGM等对抗训练方法 以上都是一些比较常规的操作，也比较容易实现，类似FGM是比较稳定能提分的。还有一些稍微复杂一点的trick，例如：
+在词级别进行数据增强，例如同义词替换，随机删词 在token级别的增强 label smoothing 蒸馏 因为是span prediction任务，数据增强如果做成随机动态的，需要考虑到改词后对label的影响，这是实现的一个小难点。英文的同义词替换可以使用wordnet来做，相比中文的一些同义词库来讲质量是比较高的。
+label smoothing和蒸馏是很相关的两个技术，因为他们都需要用到KL散度作为损失函数。我也是趁这个比赛补了一补相关的知识，感觉还蛮有趣的，感兴趣的朋友可以参考这篇文章。做QA任务通常是对位置用CrossEntropyLoss，但是如果label不是一个确定的位置而是平滑过或者是teacher model预测得到的分布，就需要使用KLDivLoss。
+这里在做标签平滑的时候遇到了一个小问题，蛮值得思考的。最开始是Google在Imagenet上用这个技巧，对于这个分类问题标签的种类是确定的K=1000类，所以在Inception论文里直接用一个系数来控制平滑的强度，即
+$$ q&amp;rsquo;(k) = (1-\epsilon)\delta_{k,y}+\frac{\epsilon}{K} $$
+但是如果用同样方法在这些长短不一的句子上做平滑，其实是不合适的。每个位置的平滑概率反比于句子的长度，也就是K，所以我认为更好的确定平滑强度的方法是先确定一个单位平滑强度，再根据句子总长来确定原标签的权重。
+针对数据特点的方法 这次的数据总体质量很差，噪声（其实是错误）很多，给参赛者带来了很多困扰。主要的噪声模式有两种，一种是把整个句子都标注成了支撑情感的selected_text，第二种是数据中有大量“断头词”出现在标签中。下图给出了一些例子。
+对于第一种整句都是标签的情况，早期很多参赛者就发现了对于neutral类型的情感，绝大部分selected_text都和text一样；但对于其他情感，我们在人工审阅数据之后没有发现什么规律。我只好设计了一个辅助的分类任务让模型自己学习，实测下来有些微的提升，但并不明显。
+对于“断头词”的情况，我们在比赛的末期终于发现了其规律。这种情况应该是由于标注环境不一致导致的。例如Twitter数据里有很多@用户的情况，这份比赛数据集会把相关的文本删除，但由于删除脚本的问题会导致文本中多出一个空格。我们猜测标注者看到的数据应该是没有多余空格的，类似于是使用&#39; &#39;.join(text.split())处理过的。这就会导致标出来的span相对于原text的位置产生了位移。且位移的大小就等于多余空格的数量。</description>
+    </item>
+    <item>
+      <title>跨语种语言模型</title>
+      <link>https://www.yuanhao.site/post/2020-05-11-xlm/</link>
+      <pubDate>Mon, 11 May 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-05-11-xlm/</guid>
+      <description>在著名的科幻电影《银河系漫游指南》里有一种叫巴别鱼的神奇生物。将它塞进耳朵里你就能听懂任何语言。多语种语言模型做得事情和巴别鱼很像，人们希望这个模型能用来处理所有的语言。举个例子，大家常用的中文bert有很强的中文处理能力以及一定的英文处理能力，但基本也就只能处理这两种语言；而目前的SOTA多语种模型XLM-RoBERTa能够处理104种语言。
+巴别鱼，体型很小，黄色，外形像水蛭，很可能是宇宙中最奇异的事物。它靠接收脑电波的能量为生，并且不是从其携带者身上接收，而是从周围的人身上。它从这些脑电波能量中吸收所有未被人察觉的精神频率，转化成营养。然后它向携带者的思想中排泄一种由被察觉到的精神频率和大脑语言中枢提供的神经信号混合而成的心灵感应矩阵。所有这些过程的实际效果就是，如果你把一条巴别鱼塞进耳朵，你就能立刻理解以任何形式的语言对你说的任何事情。
+数据集 训练跨语种语言模型会用到两种语料。一种是单语种（monolingual）语料，另一种是平行（parallel）语料。所谓平行语料就是源语言与译文“对齐”的语料。所谓对齐也有好几种级别，最常见的是句子级对齐，也有按词进行对齐的文本。可想而知，平行语料的获取相比于单语种语料要困难许多。如何充分借助单语种语料来提升模型能力是XLM研究的一个重点。
+跨语种语言模型的评价一般有两个大方向，一个是其语义理解能力，另一个是文本生成能力。语义理解能力通常借助XNLI数据集，它提供了15种语言的平行文本，每种语言7500对的NLI语料。文本生成通常用翻译任务来评估，感兴趣的朋友可以自己查阅相关资料。
+模型 下表列出了常见的单语种和多语种预训练语言模型。接下来我们将分析其中的mBERT、XLM和XLM-R三个模型。
+Multilingual Bert（mBERT） 模型来自于这论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》，你没有看错，就是发表于2018年大名鼎鼎的BERT论文。
+2018年11谷歌就放出了支持104种语言的多语种版本预训练模型，规格是BERT base。这个模型的较新版本是uncased版，即没有对输入文本进行规范化。使用WordPiece算法进行tokenization，词典大小是110k。其他的训练方法和普通的BERT一样，采用的是MLM和NSP两个loss，语料是Wikipedia。
+XLM 模型来自于论文《Cross-lingual lan- guage model pretraining》，来自于FAIR，发表在NIPS2019。
+XLM使用BPE算法进行tokenization，并且词典大小比mBERT更大，达到200k。论文指出Shared sub-word vocabulary对模型性能有很大的影响，在训练BPE算法的过程中他们使用了特殊的采样方式来避免低资源语种被进行字符集切分。
+模型训练使用了三种不同的目标函数，在单语种语料上使用非监督的CLM和MLM。MLM就是masked language modeling，大家比较熟悉，在此就不再赘述了。CLM全称是Causal Language Modeling，简单的说就是用前面的词预测当前词，更详细的介绍大家可以参考我们之前UniLM和MASS的文章。在平行语料上使用的目标称为Translation Language Modeling (TLM)。其训练方式如下图所示，是将平行句子拼接后随机mask，希望让模型能借助另一种语言的信息来还原出被遮蔽的词。从图中可以看出模型用language embedding替换了BERT里的type embedding，并且在做TLM任务时position embedding在两个语言间是对应的。
+我们来看一下XLM在XNLI上的表现。这张表很有意思，首先对这个数据集有3种处理方式：translate-train，translate-test和直接测试，即zeroshot。第一种是把英语的MNLI数据集机器翻译成XNLI内的15种语言用于训练，在XNLI测试集上测试；第二种是把XNLI测试集的15种语言翻译成英文。本文的对照组就是上面的mBERT。
+可以看到效果最好的是翻译训练集，平均精度达到了76.7%，zero-shot次之，最差的是翻译测试集。在相同的实验设定下XLM稳定优于mBERT，甚至在zero-shot下的XLM也比finetune过的mBERT强。另外MLM+TLM也稳定优于只用MLM的方式。
+XLM-RoBERTa 模型来自于论文《Unsupervised Cross-lingual Representation Learning at Scale》，和上文一样来自FAIR，已经被ACL 2020接收。
+XLM-R使用了比XLM更大的词典，达到了250k。它也没有辜负RoBERTa的血统，使用了比Wikipedia大得多的cc100数据集。XLM-R只使用单语种语料，训练目标也只有MLM一个。
+Tokenizer换成了sentence piece算法，在构建时也进行了采样，并且调整了系数使得各语言更加平衡。模型层面去掉了language embedding，变得更加简洁。我感觉用“重剑无锋”来形容XLM-R再合适不过了。
+这篇论文总结了几个影响多语种模型的重要因素，可能会对大家有所启发：
+当处理的语种变多的时候模型的能力会下降（嗯，符合常识）。增大模型可以一定程度对抗这种效应。 模型能力主要受词典大小、训练集大小、语种的采样频率影响 增大词典规模可以提高模型性能 sentence piece可以提高模型的通用性 下面这种图可以让大家对这些结论有更直观的印象
+最后来看一下XLM-RoBERTa的实力。下表是在XNLI数据集上的结果对比，设定和XLM论文中差不多，其中Devlin et al.指的是mBERT，Lample and Conneau指的是XLM。可以看出XLM-R相比于XLM又前进了一大步。
+顺便再提一嘴，论文作者还在GLUE数据集上对比了XLM-R和XLNET、RoBERTa等单语种语言模型，XLM-R超过了BERT-large，略低于XLNET和RoBERTa。也就是说XLM-R不仅获得了多语种能力，而且没有牺牲英文上的水平。
+总结一下，从2018年的mBERT到2020年的XLM-R，跨语种预训练语言模型获得了长足的发展，地球语言范围内的巴别鱼指日可待。最近在Kaggle上正在进行一场跨语种文本分类的比赛，如果有想体验XLM最新进展的朋友可以去试试身手。
+今天的文章就到这里，下期再见👋</description>
+    </item>
+    <item>
+      <title>十分钟读懂beam search-2</title>
+      <link>https://www.yuanhao.site/post/2020-03-23-beamsearch2/</link>
+      <pubDate>Mon, 23 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-23-beamsearch2/</guid>
+      <description>在上一篇文章中我们介绍了基础版的beam search，这篇文章是对它的一个扩展，可以在模型不改的情况下获得更好的生成结果。今天的介绍围绕的也是一篇蛮新的论文，《The Curious Case of Neural Text Degeneration》，根据这篇论文的版面内容，它应该已经被ICLR 2020接收了。
+Beam Search的问题 先解释以下什么要对Beam Search进行改进。因为Beam Search虽然比贪心有所改进，但还是会生成出空洞、重复、前后矛盾的文本。如果你有文本生成经验，一定对这些现象并不陌生。在语言模型还不像如今的BERT、GPT这么厉害的时候，这种现象更加明显。
+没有经验也没关系，我们来看一个论文里面的例子。输入模型的引文（context)
+&amp;ldquo;The study, published in the Proceedings of the They were cattle called Bolivian Cavalleros; they live in a National Academy of Sciences of the United States of remote desert uninterrupted by town, and they speak huge, America (PNAS), was conducted by researchers from the beautiful, paradisiacal Bolivian linguistic thing. They say, Universidad Nacional Autónoma de México (UNAM) and</description>
+    </item>
+    <item>
+      <title>十分钟读懂beam search-1</title>
+      <link>https://www.yuanhao.site/post/2020-03-20-beamsearch1/</link>
+      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-20-beamsearch1/</guid>
+      <description>最近研究了一下用基于BERT的encoder-decoder结构做文本生成任务，碰巧管老师昨天的文章也介绍了以生成任务见长的GPT模型，于是决定用两篇文章大家介绍一下在文本生成任务中常用的解码策略Beam Search（集束搜索）。
+解码及贪心搜索 生成式任务相比普通的分类、tagging等NLP任务会复杂不少。在生成的时候，模型的输出是一个时间步一个时间步依次获得的，而且前面时间步的结果还会影响后面时间步的结果。也就是说，每一个时间步，模型给出的都是基于历史生成结果的条件概率。为了生成完整的句子，需要一个称为解码的额外动作来融合模型多个时间步的输出，而且使得最终得到的序列的每一步条件概率连乘起来最大。
+在文本生成任务中，每一个时间步可能的输出种类称为字典大小(vocabulary size，我们用$v$表示)，进行T步随机的生成可能获得的结果总共有$v^T$种。拿中文文本生成来说，$v$的值大约是5000-6000，即常用汉字的个数。在如此大的基数下，遍历整个生成空间是不现实的。
+最容易想到的策略是贪心搜索，即每一个时间步都取出一个条件概率最大的输出，再将从开始到当前步的结果作为输入去获得下一个时间步的输出，直到模型给出生成结束的标志。例如下图，每一个时间步都取出了条件概率最大一个结果，生成了序列[A,B,C]。
+很明显，这样做将原来指数级别的求解空间直接压缩到了与长度线性相关的大小。由于丢弃了绝大多数的可能解，这种关注当下的策略无法保证最终得到的序列概率是最优的。
+Beam Search 而beam search是对贪心策略一个改进。思路也很简单，就是稍微放宽一些考察的范围。在每一个时间步，不再只保留当前分数最高的1个输出，而是保留num_beams个。当num_beams=1时集束搜索就退化成了贪心搜索。
+下图是一个实际的例子，每个时间步有ABCDE共5种可能的输出，即$v=5$，图中的num_beams=2，也就是说每个时间步都会保留到当前步为止条件概率最优的2个序列。
+在第一个时间步，A和C是最优的两个，因此得到了两个结果[A],[C]，其他三个就被抛弃了； 第二步会基于这两个结果继续进行生成，在A这个分支可以得到5个候选人，[AA],[AB],[AC],[AD],[AE]，C也同理得到5个，此时会对这10个进行统一排名，再保留最优的两个，即图中的[AB]和[CE]； 第三步同理，也会从新的10个候选人里再保留最好的两个，最后得到了[ABD],[CED]两个结果。 可以发现，beam search在每一步需要考察的候选人数量是贪心搜索的num_beams倍，因此是一种牺牲时间换性能的方法。
+以上就是Beam Search的基本概念，下面我们解析一种高效率实现方式。
+Beam Search代码解析 Beam Search的原理虽然简单，但实际实现的时候却有很多细节要考虑。下面要解析这个实现出自于NLP界著名Python包Transformers，我为了说明方便做了一些改动。
+一个正确且高效的算法需要处理的问题大概有两个：
+充分利用硬件，可以处理批量数据，且尽量使用并行计算少用循环 处理好长短不同的生成结果 下面是基础版的beam search函数定义。其中context是编码器编码获得的向量，batch_size是每批数据中包含的样本量，bos_token_id是句子开头标志的token id，pad_token_id是用于填充的token id，eos_token_id是句子结束标志的token id。这里给参数填上的默认值和我们后面讲解时使用的例子是一致的。
+def beam_search_generate(context, batch_size=3, max_length=20, min_length=2, num_beams=2, bos_token_id=101, pad_token_id=0, eos_token_id=102, ): pass 在函数中主要执行以下三个步骤：
+准备初始输入 在当前生成的序列长度未达到max_length时扩展生成序列 准备最终输出的序列 下面我们分别解析。
+准备初始输入 # 建立beam容器，每个样本一个 generated_hyps = [ BeamHypotheses(num_beams, max_length, length_penalty, early_stopping=early_stopping) for _ in range(batch_size) ] # 每个beam容器的得分，共batch_size*num_beams个 beam_scores = torch.zeros((batch_size, num_beams), dtype=torch.float, device=encoder_input_ids.</description>
+    </item>
+    <item>
+      <title>最近邻搜索，MIPS，LSH和ALSH</title>
+      <link>https://www.yuanhao.site/post/2020-03-07-mips/</link>
+      <pubDate>Sat, 07 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-07-mips/</guid>
+      <description>上一篇介绍REALM的文章对文中提到的Maximum Inner Product Search没有作充分的介绍。发出去的标题已经没法改了，这篇文章介绍一下MIPS和最近邻搜索问题，以及两个相关的算法。
+问题定义 MIPS的定义很简单，假设你有一堆d维向量，组成集合X，现在输入了一个同样维度的查询向量q(query)，请从X中找出一个p，使得p和q的点积在集合X是最大的。用公式写出来就是
+$$p=\mathop{\arg\max}_{x \in X}x^Tq$$
+这个问题和最近邻问题很像，最近邻问题只要把上面的定义改成找一个p使得p和q的距离最小，假设这个距离是欧氏距离，则
+$$p = \mathop{\arg\min}_{x \in X}\left |q-x\right|^2=(\left | x \right |^2 – 2q^Tx)$$
+如果X中的向量模长都一样，那两个问题其实是等价的。然而在很多实际场景例如BERT编码后的句向量、推荐系统里的各种Embedding等，这个约束是不满足的。
+最近邻搜索其实应用非常广泛，如图片检索、推荐系统、问答等等。以问答匹配为例，虽然我们可以用BERT这样的大型模型获得很好的准确度，但如果用BERT直接对语料库中的所有问题进行计算，将耗费大量的时间。所以可以先用关键词检索或者向量检索从语料库里召回一些候选语料后再做高精度匹配。
+朴素的算法 对于MIPS问题，一个直观的蛮力算法就是计算出所有相关的内积，然后将内积排序，找到最大的那个。对于最近邻问题其实也类似，即使X中向量模长各不相同，也可以提前计算出来，并不会增加排序的时间复杂度。
+内积的计算可以转换成一个矩阵乘法，在CPU和GPU上都有大量的高效实现。当X中有N个向量时，时间复杂度是O(Nd)，当N不大的时候是可以接受的，但是通常在工业界的大规模系统中，X的规模往往很大，朴素算法就显得力不从心。
+Locality-sensitive hashing 对于某些距离度量（例如欧式距离，cosine距离）下的最近邻问题，可以使用LSH算法来解决。LSH的思路就像下图示意的那样，用hash函数把高维空间的点分到几个桶里去，从而减少距离的计算量。
+跟普通的哈希函数不同，这个哈希函数是Locality-sensitive的。具体地说就是它有一个神奇的特点：在空间中离得近的点被分到同一个桶的概率大，离得远的点则大概率被分到不同的桶里去。或者说对于两个点x和y，他们被哈希函数分到同一个桶的概率随着距离的增大单调递减。
+这样在查询的时候，只需要精确地比较和查询向量q处在同一个桶里的那些x。如果桶足够多，那便可以将N大大降低，从而提高查询速度。但需要注意的是，LSH是一个近似算法，有可能产生桶内的向量其实都不是最优解的情况，不同哈希函数发生这种情况的概率都不一样，也是作为评价哈希函数好坏的重要依据之一，对这部分感兴趣的朋友可以读参考文献。
+下面举一个具体的例子来解释一下LSH。假设某个最近邻问题考虑的距离度量是cosine距离，有一个满足要求的LSH函数（变换），称为Random Projection。
+如上图所示，其过程很好理解：
+随机取一个空间中的超平面将空间分为两半，X内位于某一半的点标为0，其他标为1； 重复第一步K次。 完成之后，X中的每个点便得到了一个由K个0，1组成的表示（signature）。例如重复了K=32次，那每个点都被分到了一个用一个int32类型的整数编号的桶里。如果这些点在空间中分布足够均匀，那么我们将可以期望每个桶里只有N/2^K个点，当K～logN，则查询的时间复杂度就约为O(dlogN)。整个过程构建出了一张哈希表，由于LSH可能会错过最优解，一个可行的增强鲁棒性的做法是用同样的方法多构造几张哈希表，借助随机的力量来降低犯错的概率。这里有一个讲解LSH的视频，可谓短小精悍，直观易懂，推荐给大家。
+LSH看上去相对于朴素算法确实前进了一大步。但别高兴得太早，要达到O(dlogN)的效果必须服从那个很强的假设。而点在空间中分布足够均匀往往是不太现实的。除此之外，一个LSH只能适用于某些距离度量，对于MIPS，找不到符合要求的LSH。
+Asymmetric LSH(ALSH) 论文里证明了找不到可用于MIPS问题的LSH函数，但他们发现对LSH稍作点改动即可将MIPS问题转变为欧式距离下的最近邻搜索问题。改动的关键就在于Asymmetric这个词。在LSH算法中，对查询向量q和X中的向量做的是同样（对称） 的变换，而在ALSH中作者对两者使用了 不同（非对称） 的变换。简单起见，假设查询向量q的模长是1。对于X，先做一个放缩变换使得X中所有向量x的所有元素都小于1。然后对X中的向量进行变换P(x)，对查询向量q做变换Q(x)，P和Q的定义如下：
+$$P(x) = [x; \left | x \right |_2^{2^1}; \left | x \right |_2^{2^2},…,\left | x \right |_2^{2^m}]\ Q(x) = [x;\frac{1}{2};\frac{1}{2},…,\frac{1}{2}]$$
+可以发现，P和Q虽然变换不同，但都会使输入向量增加m维。进一步观察可以得到
+$$Q(q)^TP(x)=q^Tx+\frac{1}{2}(\left | x \right |_2^{2^1}+ \left | x \right |_2^{2^2}]+…+\left | x \right |_2^{2^m})\ \left | P(x) \right |_2^2=\left | x \right |_2^{2^1}+ \left | x \right |_2^{2^2}]+…+\left | x \right |_2^{2^{m+1}}$$</description>
+    </item>
+    <item>
+      <title>REALM: Retrieval-Augmented Language Model Pre Training</title>
+      <link>https://www.yuanhao.site/post/2020-03-06-realm/</link>
+      <pubDate>Fri, 06 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-06-realm/</guid>
+      <description>知识就是力量 ——培根
+背景 去年可以说是语言模型快速发展的一年，BERT、XLNET、Albert等等模型不断刷新各个NLP榜单。在NLP榜单中比较引人注目的应该属于阅读理解型的任务，例如SQuAD等等。以SQuAD为例，模型需要阅读一段给定的文本，然后回答几个问题，问题如果存在答案，答案一定可以在文章中找到。所以说虽然叫阅读理解，但其实和序列标注有点相像，是在给定序列中标出答案段。而这篇论文针对的问题叫开放领域问答（Open-domain QA），对于一个问题Q，模型需要从包含大量文档的知识库中找到答案，而不是像SQuAD数据集一样从一篇文章中寻找。
+大部分的语言模型都采用一种称为masked language model，简称MLM的任务来训练，让模型学会类似完形填空一样的能力。通过在大规模语料上的训练，预训练语言模型如BERT实际上已经隐含了一些知识。例如输入一句“The is the currency of the United Kingdom”，BERT很有可能会填入单词&amp;quot;pound&amp;quot;。虽然他还是根据词的共现信息学习和推理的，但看上去就像具有所谓的知识一样。从去年开始就有越来越多的研究从单纯语言模型转换为带有知识嵌入的语言模型，例如清华和百度提出的两个同名模型ERNIE。
+但上面说的这种隐含知识不好把握，也难以扩展。这篇论文则提出了一种更加模块化且可解释性更强的知识嵌入方法。总的来说，他的方法是训练一个独立的“语境知识抽取器”（contextual knowledge retriever），通过这个抽取器来决定应该在推理时使用哪些知识。而且这个抽取器和语言模型一起进行非监督预训练大大提高模型性能。
+方法 如上图所示，整篇论文涉及两个任务，左边是语言模型预训练任务MLM，右边是QA任务。下图是预训练任务一个更加完整的流程图，我们由此切入进行介绍。
+整个过程分为两个关键步骤。先看第一步，即neural knowledge retriever，它负责计算p(z|x)。要实现这个过程首先需要对z和x进行编码。论文采用的是BERT，对于问题x，直接输入BERT，取[CLS] token的输出作为编码向量，而对于文档z，则将标题和正文用[SEP]连接后输入BERT，同样去[CLS] token的输出。论文中还对BERT的输出向量进行了降维处理。即
+对于文档库中的某一个z，则
+其中f是问题和文档的相关性，
+以上部分就称为neural knowledge retriever，通过他每篇z都会得到一个p。现在可以进行第二步，综合x和z求y。上图是一个预训练的例子，y是抠掉的词。利用z的方式是将z的正文和x拼在一起来提供上下文信息，然后优化下面的目标
+其中j指第j个masked token。
+在做QA的时候稍有不同。由于此时是针对某个具体的z，所以作者将开放域问答任务退化成了像SQuAD一样在文档中找答案的阅读理解任务。
+这一部分就是knowledge-augmented encoder。
+训练 上面已经描述了预训练阶段和QA finetune阶段的任务。训练的过程都是最大化正确y对应的logp(y|z,x)，而且以上描述的两个任务都是可以端到端优化的。
+但这里面对一个问题，上面有个公式需要对整个知识库中所有的文档z的相关概率求和，这是很困难的。作者提出将这一步用只对概率最高的k个文档计算来近似，因为绝大部分文档由于与问题不相关，p(z|x)都非常小。但问题还没有解决，如何找到概率最高的k个文档呢。
+观察公式可以发现p(z|x)是正比于两个编码后的内积的，由于大家的分母都一样，分子的顺序就是整个分数的顺序。所以可以用最大内积搜索算法（Maximum Inner Product Search, MIPS，并不知道是什么，维基百科都没有）来解决。但要构建一个快速检索的索引又要求两个编码后的向量是确定的，而由于编码器是不断训练的，所以这个条件无法满足。为了追求一个平衡，作者决定每隔几百步才更新一下编码器，并重新构建索引。而且这只发生在预训练语言模型的时候，在finetune QA任务的时候只使用语言模型得到的编码器编码一次所有的z和x并构建索引。
+额外策略 在研究过程中作者发现了一些能让模型更好训练的策略。
+只训练真正需要知识的词（通常是实体和日期）来训练MLM 在topk文档外添加一个虚拟的null document 避免让x出现在z中（因为x被mask过，如果它来源于z，那答案就暴露了！） 避免冷启动的retriever太渣导致的恶性循环，他们用了一个以ICT作为任务的模型来初始化retriever 结果对比 这篇论文的对手主要是原来sparse retriever+神经阅读理解模型的组合，例如大名鼎鼎的DrQA。所谓sparse retriever就是指用例如TFIDF之类的特征进行检索的模型。还有一些跟本文很像的neural retriever+neural reader的组合。其中提到了一个ORQA，跟这篇非常像，只是这篇增加了预训练的步骤。最后是一些生成式模型，例如finetune后的T5（可怕！）
+在Natural Questions-Open（NQ）、Web Questions（WQ）和Curated Trec（CT）三个数据集上的结果如下 总之一句话，非常牛逼！而且这里模型只取了top 5文档，其他模型可能取了20-80篇，还是打不过他。注意到ours的括号内有两个数据，Z是知识库，很好理解，X是指预训练用的语料。而且通过文章的Ablation Analysis部分可以知道预训练其实是非常关键的一个步骤，对performance的贡献非常大。
+后记 我感觉这篇论文和他提到的ORQA还是很厉害的，知识嵌入也从去年的实体粒度的嵌入发展到了如今句子、篇章级别的嵌入。试想一下，这项技术发展起来之后，如今基于词的Sparse搜索引擎应该很快会发展成对NN更友好的Dense搜索引擎，所有的内容也许都会被映射到一个向量空间。各路神经网络将在这个向量空间尽情驰骋~莫非得encoder者得天下？！
+论文链接：https://kentonl.com/pub/gltpc.2020.pdf</description>
+    </item>
+    <item>
+      <title>能跟你聊DOTA的神经对话模型：Meena&amp;DialoGPT</title>
+      <link>https://www.yuanhao.site/post/2020-03-02-meena/</link>
+      <pubDate>Mon, 02 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-02-meena/</guid>
+      <description>提到对话机器人或者聊天机器人，国内的朋友可能先想到的是微软小冰或者苹果Siri。这两个机器人由于需要完成一些功能性的任务，都采用了模块化设计，虽然神经网络在其中起到了重要作用，但输出结果并不是从输入语句“端到端”产生的。而且用过的朋友都知道，他们的聊天能力并不是很令人满意。
+今天介绍的神经对话模型则是一步到位，将对话历史作为输入，让模型直接生成下一轮的回复。学术一点说，神经对话模型本质上是在解决文本生成的问题。相比于很多聊天机器人（包括我们的晴天一号）目前使用的语料库+检索算法的架构，生成式（包括改写等等）算法能给对话带来更多的可能性和趣味性。最近，得益于大规模预训练语言模型，文本生成任务得到了长足的发展。本文的主角就代表了目前神经对话模型的最高水平，分别是19年十一月由微软发布的DialoGPT和20年一月谷歌发布的Meena。
+在开始正文之前，先展示一段机器人生成的对话，让大家对技术现状有个直观感受。
+模型 两篇论文都没有在模型方面有什么重大的创新，他们使用的都是如下图所示基于Transformer的seq2seq模型。这里大致介绍一下所谓seq2seq模型的工作原理。每生成一个单词的过程如下：将对话的历史信息输入进编码器（左下角inputs），模型已经生成的当前轮结果输入解码器（右下角outputs，没错，outputs是也用来input的~），然后模型将会综合两者信息输出它预测的下一个词（上方output）。而生成一句完整的回复只需要将刚才新生成的词拼接到当前轮已有结果的后面（图中shifted right的含义），重复上述过程直到模型输出句子结束符。
+DialoGPT采用的是标准的GPT-2模型，也就是上图模型的加大号版本；而Meena采用的是去年Google通过神经网络结构搜索（NAS）方法得到的进化版transformer模型（Evolved Transformer）。Meena由1个ET编码器和13个ET解码器构成，ET解码器和标准Transformer解码器的对比如下图所示，两者似乎差别不大，论文注脚说一个ET Decoder Block大概是标准Transformer Decoder Block的两倍深。
+虽然Meena和DialoGPT都是Transformer模块搭建的模型，但两者规模的差别非常巨大。Meena使用了极其巨大的隐层规模（2560 hidden size，32 attention heads)，总参数量达到了惊人的2.6B。相比之下微软的模型就克制很多，最大规模的DialoGPT参数量为762M，表现最好的模型参数量是345M。作为参照，目前地表最强——google的T5模型参数量是11B，BERT large则只有340M。
+数据 数据则是两篇论文提升performance的重中之重，特别是对于模型大小比较正常的DialoGPT来说。 DialoGPT论文里明确说数据是从Reddit上搞下来的。通过解析Reddit上的讨论帖，可以获得“树状”的对话数据，然后把每一条从根节点到叶节点的路径拎出来都能获得一个完整的对话。假设一个对话共说了K轮，每次取出当前轮作为标签，之前轮的对话作为输入，总共可以获得K-1条训练数据。Meena的数据来自于public domain social media conversations，他也是从树状对话中获得的数据，我猜测这些对话的形式应该和reddit这种论坛比较相似。
+他们的数据量都是非常之巨大的，DialoGPT的总session数是147116725（147M），总词数是1.8B。再来看Meena，他们的总训练数据量是867M，总词数是40B，存成文本文件是341GB。这里可以对比一下之前的模型，BERT的训练数据是16GB，GPT-2的训练数据是40GB，曾经的数据狂魔Roberta是160GB。谷歌再次定义了什么叫大力出奇迹。我在维基百科看到人的平均阅读速度是每分钟200词，按这样的速度1 Billion单词需要一个人不眠不休阅读大概347天。从这个角度看，目前的训练数据量似乎又显得比较合理了。
+两篇论文都提到要对数据做非常大刀阔斧的清洗，例如删掉太长或太短的、重复词语多的、含有URL的、不含有常见词的等等。总之，要保证数据质量足够高。
+顺便提一下，DialoGPT尝试了从预训练模型迁移和从对话数据集从头训练两种方式。结果是迁移的表现明显好于从头训练。我认为这个现象非常的合理，使用预训练模型就好比教一个学过好几年语文的小朋友在网上聊天，这应该好过一个从小就只通过网络聊天学语文的小朋友。但Meena好像采用的是从头训练的模式，也许他们预训练一把能得到更好的结果。
+由于使用了极大的模型和数据集，两个模型都是使用了豪华的硬件来进行训练。DialoGPT使用16个V100，而Meena则使用了2048个TPU v3核训练了30天。512个v2 TPU组成的POD三年协议价是12万美元一个月，v3应该更贵，所以你如果想复现这个模型，至少要花费48万美元。有钱真好:)
+解码方式 解码是生成式任务里很重要的一个部分。因为正如前面介绍的，生成模型在推理时每一个时间步只会生成下一个词，而且后面的结果会依赖前面的结果，所以就需要一个好的解码策略来保证这一个个token最后能组成高质量的句子。去年有不少关于解码的工作，希望让机器人产生更有意义、有个性的回复。
+DialoGPT没有采用什么独特的解码方式，而是使用了常见的Beam Search（集束搜索），只在最后用了一个较为新颖的重排序算法来从集束搜索得到的TOP K个结果中选出最佳的那个。在排序时，他们用一个训练好的“反向模型”来由生成的回复倒推输入。选用使输入语句概率最大的那个输出作为最终的输出。由于采用了Beam Search，它的解码过程应该是比较耗时的。
+Meena比较有意思，作者们表示由于模型的Perplexity（困惑度）够低，完全不需要使用集束搜索。而是采用非常简洁的采样+重排就可以得到好的句子。
+困惑度p可以理解为，如果每个时间步都根据语言模型计算的概率分布随机挑词，那么平均情况下，挑多少个词才能挑到正确的那个。 &amp;ndash;知乎用户TimsonShi
+所谓采样，就是在每一步都根据输出层得到的概率分布，随机选一个输出token，直到得出一个完整的句子。重复采用过程N次，得能到N个句子，最后将这N句话根据归一化后的句子概率排序，选出最优的。需要注意的是他们的输出层并不是对Vocabulary的简单Softmax，而是像知识蒸馏里一样增加了采样温度，即
+$$p_i=\frac{\exp(z_j/T)}{\sum_j{\exp(z_j/T)}}$$
+作者们发现T的大小会影响生成结果。T小的时候，倾向于使用常规词汇，而T大的时候倾向于使用与上下文相关的词汇。论文使用的T为0.88，N为20。他们的结果显示这种采样的效果相比于集束搜索确实有很大的改进。下面一个是集束搜索的结果，另一个是采样，采样很好地避免了集束搜索生成结果丰富性差的弊端。
+能得到这么好的结果有一个重要前提，就是模型的困惑度也就是perplexity够低。Meena的困惑度有多低呢，它是10.2，相比较之下DialoGPT的困惑度大约是15。 评价指标与结果
+对评价指标的选择，两篇论文有很多共同点。他们都已经从BLEU这种考量词级别重合度的离散客观指标进化到了直接跟对话质量相关的抽象指标。从这一点也可以感觉出这个领域已经进入了相对成熟的阶段。DialoGPT使用人工评价的方式，评价模型的relevance，informativeness和how human-like。而Meena则用综合sensibleness和specificity的称为SSA的指标对机器人进行评价。所谓SSA就是对sensibleness和specificity的简单平均，A对应就是average。
+Sensibleness我认为基本对应relevance，是指机器人能否得出符合上下文的有意义回答。但有意义是不够的，正如文章所说，一个只会回答“I don&amp;rsquo;t know”这类万金油句子的机器人说的话也是符合上下文的，但其实并不好。
+Specificity对应infomativeness，是另一个维度，它评估机器人是否能给出有具体信息的答案。例如当人问”你喜欢电影吗”的时候你可以回答“我不知道/这很难说”，但一个更令人满意的回答可能是”当然，我特别喜欢科幻电影”。
+我们来看一下Meena论文里的结果，因为他们为了比较，在相同的评测体系下把DialoGPT也测了。在Meena论文的评价指标下Meena的水平相当高，人类的SSA大概是0.82，Meena是0.78，已经相当接近。其他的对手在Meena面前基本抬不起头来，DialoGPT 0.51，Cleverbot 0.44。他们还评估了小冰和Mitsuku这两个著名的模块化机器人（非端到端的神经对话模型），SSA分别是0.36和0.56。文中还特别提到小冰的Specificity很差，只有0.19，这和我的使用感受是一致的。小冰感觉总是在扯淡，很难说出有意义的东西来。
+SSA体系虽好，但完全依赖人工评价。Meena论文还评估了perplexity和SSA的相关度。结果如上图所示，横坐标是困惑度，纵坐标是SSA，Perplexity和SSA呈现非常明显的负相关关系，相关度大概是0.94。这就是说在训练模型的时候只需要评估混乱度基本就能知道最终的效果。这个结论我觉得非常重要，它无疑给广大神经对话模型研究人员带来了一个福音，毕竟人工评价实在太麻烦也太贵了。这下好了，以后大家奔着降低perplexity去就好了。
+对话样例 在这一小节再放几张对话小样，从图中可以看出，这些模型的表现都很好，回答不仅流畅还符合一些常识。当然，我们在前面的文章里也讲过，这种隐含知识不太好控制。但只要语料够优秀，效果看起来是非常棒的。
+后记 DialoGPT去年年底就发布了，而且微软大方地提供了预训练好的模型，他们也成为了这个领域当时的SOTA，但没想到这么快就被谷歌超越了。今年初看到谷歌连续放出Meena和REALM的时候还是蛮激动的，一个在类人闲聊上获得突破，另一个大幅提高了外挂知识库的利用水平。Twitter上针对这两篇论文也充满了乐观的论调，甚至有人预测2021年我们就能看到AGI了。这两年的技术发展确实让我们对文本数据的利用水平有了质的飞越，虽然不知道AGI如何，中文房间我感觉很快就会造好了。 另外也感慨Quoc V. Le带领的团队最近势头真猛。谷歌海量算力给了他们无限的空间，已经有在CV（例如去年的EfficientNet已经红遍Kaggle社区了）、NLP等领域遍地开花之势。如果中文房间真的盖好了，门牌上应该写的是1600 Amphitheatre Parkway, Mountain View, CA, U.S.吧。
+参考阅读 DialoGPT： http://arxiv.</description>
+    </item>
+    <item>
+      <title>大江大海1949</title>
+      <link>https://www.yuanhao.site/post/review/2017-09-01-river-sea-1949/</link>
+      <pubDate>Fri, 01 Sep 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-09-01-river-sea-1949/</guid>
+      <description>大江大海1949 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+就是上面的这本书，在大陆是买不到，甚至搜不到的。书商也很精明，在封面上印着“全球畅销经典作品，至今未能在中国大陆出版”来增加你对它的好奇心。其实早在多年前我就读过几页电子版，这次去台湾又在诚品书店遇见，便买了一本纸质书。
+书是从讲述龙应台他们家如何辗转入台开始，通过描绘不同人物的故事和生平来展现那个特殊历史时期，更重要的可能是如书的扉页中写的
+向所有被时代践踏、侮辱、伤害的人 致敬
+断断续续花了一个月才读完全书，一些人和事已经记不清楚了，但有几点确实给我比较强烈的冲击。
+其一是历史的残酷。不管是从台湾山区被征到东南亚成为狱卒的青年，还是从河南一路往南逃亡的少年，抑或在内战中被自己的同胞兄弟杀死的军人。身处那个时代的人们在历史的巨浪面前，真的就如蝼蚁一般，没有选择的权利，只能随波逐流。但反过来思考，历史往往又是被几个人左右。不管是日军将领，还是国共两党的高层，因为他们的诉求和命令，成千上万的平民百姓便被无故卷入到历史的漩涡中。高层虽然也是成王败寇，但在这个过程中最受伤的还是底层百姓，因为底层往往就只有你死我活的残酷争斗，生死关头，哪还管什么对错，可能连人类的尊严都可以置之不理了。
+但历史又有公正的一面，我觉得龙应台的这本书对待这个问题却不够坦诚。书里有许多对解放军的描述，例如让手无寸铁的民兵打头阵与国民党军作战，有一些表述让我这个大陆人读起来不太舒服。我以前对解放战争时期我军如何能以弱胜强还不太清楚，但看了这本海峡对面的书我更加确定，胜利正是因为人民站在解放军这边，因为我党描绘的蓝图更加能打动民众的心。
+与残酷的历史形成鲜明对比的当然是人的光辉，这也是龙应台一向擅长的部分。印象最深的是那五千个逃亡的少年和他们的老师，一路风餐露宿却还靠一本《古文观止》传承文化，我是真的为我们民族身上的这种韧性感动了。还有那些为了自己的理想信念甘愿付出生命的人，那些身处邪恶阵营却保有良知的人等等。我也相信不管再黑暗的时代，都会有点点温暖人心的光，而这些星星之火，终可燎原。
+最后说一点稍不切题的内容。虽然身处和平年代，但中国大地上这几年涌起的浪潮其实也不小。就拿最简单的房子来做例子。多少人因为早买房、多买房甚至炒房就积累了大量的财富。而这些巨量的财富对于后来者来说就变成了沉重的负担。试想你的房子在一年之内暴涨了几百万，你又怎么还会把心思放在只能带来微薄收入的工作上呢。听说是最近北京的房价跌了，几个月的时间财富就能缩水上百万。但不管是涨价还是跌价，刺激太多，人总会变得狂躁，人生的悲欢也容易被放大，甚至扭曲。</description>
+    </item>
+    <item>
+      <title>台湾游记之感悟</title>
+      <link>https://www.yuanhao.site/post/review/2017-08-21-trip-to-taiwan-2/</link>
+      <pubDate>Mon, 21 Aug 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-08-21-trip-to-taiwan-2/</guid>
+      <description>总体印象 对台湾的总体印象是非常不错的，非常温馨。例如在台北，除了便利店和屈臣氏，最多的当属咖啡店、烘培坊和小吃店了，街道中洋溢着咖啡香、面包香和各种其他食物的气味。城市的规划也很合理，巷子多而不窄，行人走车都没有问题。沿街大多是骑楼，可以为行人遮阳挡雨，这在台湾真的非常重要。厦门中山路一带的老城区也是这种骑楼，但新建的房子却丢掉了这个优良的传统，大多一块地建一个小区或是一个独栋的写字楼。没有沿街的店面，更不要提骑楼了。城市成了一个个孤岛，哪里去找温馨的气氛？
+另一处给我震撼很大的地方是花莲。在夜市恰逢他们的嘉年华，舞台非常酷炫，场地中有凳子，不需要票可以自由进出，组织也非常专业，现场秩序很好。虽然表演嘉宾一个都不认识，但现场观众和艺人都很嗨，互动很好，我们也被打动。这个嘉年华已经办了十五届了，已成为花莲的一张名片。但震撼我的并不是演出本身，而是当地政府在开展文化活动方面展现出来的活力和能力。里面没有太多政治的成分，真正能让当地甚至周边的居民乐意参与，并且喜闻乐见，玩嗨玩好。我觉得这种思路大陆官员基本上是没有的。更厉害的是花莲的人口只有三十多万，在大陆绝对算是一个小城了，而我们的小城中又有多少文化活动，群众的参与度又是多少？
+花莲嘉年华现场 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+台湾公民的素质普遍较高，还常常能遇见一些动人的细节。例如在台湾，高铁或者景点中出售的盒饭、饮料和城市里的价格是一样的，除了兰屿等离岛会有一个公开的涨价幅度。这在大陆是不可想象的，甚至连铁道部这样的国家队都是迫于压力才推出15元的高铁盒饭。在台湾路边的奶茶店，自带杯子可以打八折；停车场几乎都有孕妇专用车位；不允许带宠物的商店会专门标注导盲犬可以入内等等。店员都很和气，谢谢常挂嘴边；民宿老板对游客也很信任，入住退房几乎都是自助的。还有一件事非常奇怪，台湾的路边垃圾桶实在太少了，但马路却很干净。花莲同住一间民宿的东北老大爷感叹“这里的文明程度大陆再过20年也赶不上”。
+导盲犬贴纸 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+旅途中接触了一些台湾的年轻人，他们的一些选择在我看起来也挺有趣。例如在兰屿民宿有个从台北来打工换宿的小姑娘。跟老板联系好后自己一个人就来了，一待一个月，帮老板打扫卫生，接待住客，老板提供食宿；闲的时候就自己在岛上玩。她并不是一个特例，在岛上的饭店、民宿很多这样的年轻人。有些人干脆长期待在小镇，例如前面提到恒春的波波厨房，就是几个对美食有追求的年轻人一起经营的。近几年这种事情在大陆也越来越多，我觉得是好的趋势。我们还在各地遇到许多为了办一场活动筹款的小学和中学生，他们在大街上立着募捐箱，然后用自己的才艺表演吸引路人。在花莲的海边有一对小姐弟，打架子鼓，除了募捐他们的牌子上还写着Facebook粉丝达到多少时爸爸就会带他们去韩国，希望大家点赞。我觉得这些小朋友都好棒，他们这么小就敢于追逐自己的梦想，也用自己的实际行动积累资源，一步一步达成目标。这种自主、自立的精神我觉得在大陆是比较缺乏的。
+小朋友们的募捐活动 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+食住行 说起台湾的美食，据说高晓松都控制不住自己，但整个体验下来并没有太多让我惊喜的地方。
+先说夜市。我们去了各地的多个夜市，夜市卖的食物大多是煎炸烤的做法，烤肉、蚵仔煎、炸鱿鱼、炸鸡排、烤猪蹄等等。既不太符合我的饮食倾向，似乎大陆也见得多了，没什么新鲜感。还有一些比较有特色的例如大肠包小肠、鱼蛋、淡水阿给等等也没有特别打动我。我印象最深的是在花莲吃的春卷，当时铺位里是几个年轻人，一次做十来个，面饼一字排开，放上不同口味的馅料，卷饼手法娴熟。夜市、小吃店都不乏年轻经营者的身影，这好像和大陆有一些差别。
+春卷 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+然后说日常餐饮，有米饭类几大金刚：肉燥饭，卤肉饭，封肉饭，排骨饭，可以搭配各类汤；还有各色牛肉面，担仔面，米线等等。街边店比较便宜，大概80台币以内就可以吃饱，但有字号的店铺就贵很多了。例如台北永康街的牛肉面卖130台币一碗，但我觉得除了肉多吃起来还没有街边65一碗的牛肉面好吃。
+此行的住宿除了垦丁、兰屿和花莲是民宿外，其他都是旅馆，都是在agoda定的，平均下来每晚标间大概300左右。总体住宿体验还不错，但感觉agoda并没有提供最优惠的价格，若准备时间充足可多做功课对比一下各大订房平台。
+行在台湾也是比较方便的。对于城市间转移，在西岸可以选择高铁，快速宽敞，东岸只能选择台铁。台铁有不同的车型，速度不同。需要注意的是高铁站往往离城区较远，一般还需要乘接驳车或打车。但我们在台中出了高铁站之后乘接驳车是免费的，令人感动。若在城市里，台北有发达的捷运系统，相当于地铁。台北地铁给我的印象实在太好了，车身比北京地铁宽至少百分之三十，车站也很宽敞漂亮。结合台北不到三百万的人口，你应该可以想象乘车体验有多好，即使在上下班高峰也丝毫没有拥挤的情况。公交车也类似，坐了几次公交基本都有座位，而且台北公交的座位实在太舒服了。打车比较贵，但体验很好，台湾的的士都保养的很棒，车体干净到发亮，都是皮座椅，不会像大陆一样包裹肮脏的布垫，中控台也不会安装各种毫无设计感的仪器。
+在台南和高雄我们还体验了台湾的共享单车，既有政府运营的有桩车，也有类似ofo的OBike，体验都不错，非常适合用于除台北外的其他城市游览。有桩车虽然要在指定地点借还，但会提供车锁，非常人性化。说到这强烈建议到台湾之后买一张当地手机卡，例如租单车这种服务都是需要短信验证码的。
+台南有桩共享单车，可变速，车头有车锁 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+在台湾唯一比较麻烦的是大部分消费都得用现金完成，便利店中只有全家可以用支付宝。游玩时请保证身上有足够的台币。
+台湾与大陆 台湾毕竟只是个小岛，自身人口少，市场体量小。近些年随着大陆工业的发展，逐渐丧失原有优势，四小龙的经济活力已大不如前。小英上台以后陆客大量减少，旅游业又受到重创，我们在台湾十几天都没有遇到大规模的旅游团。从经济上来说，依靠大陆已经是她几乎唯一的选择。
+在情感上可能岛内人民分歧比较大。兰屿的民宿老板刚见面就说自己祖籍南京，后来聊天又跟我们讲了更多家里的故事。他的父亲今年93岁了，直到前几年他奶奶去世，每年还去南京探母。他奶奶去世之后，父亲年纪也大了，走不动了，换他的三叔每年从南京飞到台湾探望他的父亲，他的三叔今年也有86岁了。老板说，大陆他陪父亲去过很多次，也是有感情的，“统一了最好”。他又指着他还年幼的儿子说，台湾已经没什么发展，有能力的年轻人都流向海外，若他儿子留在台湾，他更加希望两岸交好，“万一有一天真的打起来，难道我要看着我的儿子上前线跟大陆打吗？有什么好打？难道不可笑吗？”而对于没有现实顾虑的年轻人，似乎较少深入思考这些问题，当然也没有和他们深入地交流，印象很深的是有被问到过“你们真的认为台湾是中国的一部分吗？”
+结语 十四天的台湾之行结束，我马上将参加工作，踏上新的人生旅程。在大陆天天讲发展，人人逐名利的背景下，台湾就像一个世外桃源。桃源之中虽无摄人心魄的壮美之景，但它却可以让人放松、平静。龙应台在《大江大海一九四九》的卷首写道
+正因为，他们在跌倒流血的地方，重新低头播种，我们这一代，得以在和平中，天真而开阔地长大 抛开政治分歧不谈，台湾人民在这个弹丸小岛上辛勤耕耘的精神和对待生活认真的态度是值得我们学习的。衷心希望海峡两岸都越来越好。</description>
+    </item>
+    <item>
+      <title>台湾游记之行程</title>
+      <link>https://www.yuanhao.site/post/review/2017-08-21-trip-to-taiwan-1/</link>
+      <pubDate>Mon, 21 Aug 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-08-21-trip-to-taiwan-1/</guid>
+      <description>乘着毕业，终于把期待了很久的台湾之行落地了。本来光哥想在台北看一场周日的话剧，因此我们把行程定成了14天。虽然话剧没看成，但是十四天给了我们充足的时间环岛。
+第一天 7.4 我们是7月四日上午8点多厦门飞台北的飞机，但出门不顺，直到十一点多才起飞。到了台北已是下午一点，一路来到住所放下行李便开始执行我们半天的游玩计划。我们住台北车站，附近就有不少景点，当天下午是一路向西。首先步行来到了总督府（现总统府），卫兵不多，比较有意思的是有一个老人家庄严站在总统府前，面朝外侧举起自己的一只手像在向着空气演讲。
+演讲老人 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+而后来到中正纪念堂，这真是个纪念“堂”，大堂里面就有一个蒋先生的雕塑，很空旷。在前面的自由广场上正巧遇到在训练的仪仗队，当时下着大雨，他们仍然照常训练。等雨渐小，我们就出发前往象山，看101大楼。后面101大楼的景色证明冒雨爬一小时的山是非常值得的，我也拍到了此行最满意的几张照片之一。晚上逛了逛诚品书店就回去休息了。
+黄昏时的101大楼 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+第二天 7.5 今天基本是沿着捷运淡水线往北游览。第一站是士林官邸，这是此行印象比较深刻的人文景点。官邸内装潢朴素，家具也不算奢华，但在但在电子导览温柔的声音和蒋宋二人的故事衬托下显得格外温馨。宋美龄的化妆室可是“梦幻的粉色系”，即使贵为第一夫人也还有一颗少女心，颇为有趣。接着是台北故宫博物院，重点看了瓷器、玉器、书画展厅。特别是在瓷器展厅里真是感受到了精致的古代工艺品带来的震撼和冲击。可惜里面的空调实在太给力，中午又冷又饿的我们便没有再继续参观。
+下午来到了淡水，周董的故乡。沿着老街走了一圈，比较普通。周董母校不让参观，只得在门外留个影，然后便去了旁边的真理大学、红毛城等景点，最后再走到著名的渔人码头，静静地看了看海，听了听歌。
+渔人码头 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+晚上乘捷运回到市里，去逛了逛大稻埕以及繁华的西门町，最后回到酒店。
+第三天 7.6 这天主要是往南，先去了龙山寺、国立台湾大学，然后去了个艺术村”宝藏岩“（基本工作室都没有开门，感觉略坑），接着去了康永街，吃了牛肉面和芒果冰，附近的师大也顺便逛了逛。基本没有什么特别出彩的景点。下午我们便从台北出发前往台中。
+我们到台中酒店放下行李后就近逛了逛“逢甲夜市”。
+第四天 7.7 这天游览台中，台中其实景点不多，游客来此多半是因为要去日月潭或清境农场。我们上午去了东海大学，这是一所教会大学，日式风格的校园特别漂亮，最出彩的当然是贝聿铭大师设计的这个路思义教堂。下午的时候我们买了个当地旅游项目，拼车前往高美湿地。湿地的卖点是“最美落日”，可惜当日下着小雨，云层厚重，我们无缘得见。
+路思义教堂 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+晚上回到市区，我们便乘火车站前往嘉义。
+第五天 7.8 最终我们在日月潭和阿里山中选择了后者，而到嘉义纯粹是为了去阿里山。阿里山其实就是个森林公园，原来日本人为了砍伐山中的林木资源修建了一条铁路，但由于我们功课做得不够，没提前买上火车票。公园里主要看一些“神木”即树龄很长的树木。是个亲友郊游的好去处，但从旅客的角度我觉得可玩性不高。
+当晚我们从嘉义乘火车前往台南。晚上乘着去洗衣服夜游了一下古城
+第六天 7.9 台湾的开始在台南 台南真是一个充满历史感的小城市。除了城市本身，我们恰好入住了一个极其古老的酒店，装潢、设施可以让你感觉时光倒流了四五十年，打开抽屉里面还放着《圣经》和星云大师写的《献给旅行者》；而酒店对面的电影院外墙海报居然是手绘的，这个电影院本身就像在一部老电影里。离开台南时光哥还专程去买了一张手绘的《爱乐之城》明信片。
+电影院 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+台南的人文景观主要有赤坎楼、安平古堡、大天后宫、孔庙等等。整个城市遍布庙宇，偶尔还能看到教堂，估计宗教人口占很大比例。赤坎楼和安平古堡最初均为荷兰人所建，台湾在近代百余年先后受到荷兰、日本、美国的影响，加上本身原住民以及49年后涌入的外省人，也算是个多元文化交织的地区。
+大半天台南就逛完了，下午我们又坐火车前往台湾第二大城市——高雄。
+到高雄时还不到傍晚，我们走路到附近的六合夜市简单吃了点东西，又来到稍远一点的瑞丰夜市。然后去了小巨蛋，又去了”爱之河“，一通暴走后回到酒店。
+第七天 7.10 高雄虽然是台湾第二大城市，但我们给他的分配的时间也只有大半个白天。上午我们往西子湾方向游览，先到了驳二艺术特区。这里有点像北京的七九八，是由海边仓库改建而成的，整片区域有许多有趣的雕塑，仓库内的展览我们并没有参观。离开驳二之后，我们去了附近的国立中山大学。这所学校依山傍海而建，房子几乎是红色的，配上绿树蓝天，画风非常鲜艳。学校的海景简直无敌，大陆的大学我去不过少，论景色几乎没有可与厦大相提并论的，今天在宝岛终于帮它找到了个对手。
+中山大学 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+从高雄开始，我们开始领略到台湾湛蓝的海水。下午，我们坐出租车前往台湾最南端——垦丁。
+到垦丁的民宿住下后，最重要的事就是租电动车。我们实际上住在恒春，是一个古城，离垦丁骑车还有二十分钟的路程。这片大区域景点分散，没有交通工具是根本不行的。
+当天我们先去了猫鼻头公园，在山顶可以遥望垦丁大街，面朝大海的话眼前就是一片湛蓝。这种感觉真的有一种让你安定的力量，相比起来大陆浑浊海水的效果就要大打折扣了。从猫鼻头出来我们去了一个沙滩，台湾人民还是比较奔放，有不少比基尼MM，:P，也有一些传统水上项目比如摩托艇之类的。大约计算号时间，我们便前往台湾第二处适合看日落的地方，号称“全球十二大日落”的关山日落。虽然今天天气很好，但是天边的云朵又一次让我拍日落的想法落空了。
+关山日落 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+晚上吃了伙计冬粉鸭，其实冬粉鸭是配角，主角是卤味。老伯切卤味的刀法了得，但感觉卤味比较一般。
+第八天 7.11 这天主要在垦丁瞎逛，鹅銮鼻、龙磐公园、风吹沙之类的地方。清华的朋友们如果因为学校不让骑电动车而不爽可以来垦丁释放一下。我们骑了一整天，除了收获美景外，还收获了一双晒伤的膝盖。。就问你意不意外惊不惊喜？
+下午还了车晚上就在恒春城里瞎逛，看到了跳高级广场舞的大妈们，路过了海角七号里阿嘉的家，然后去了一个叫波波厨房的文艺小店买了第二天的早餐。
+第九天 7.12 这天的主要安排是前往光哥心心念念的离岛——兰屿。早上起来天气大好，我们的心情也大好。兰屿上住的是达悟族，因为捕捉飞鱼而著名，但七月其实飞鱼季已过。从垦丁后壁湖码头乘船到兰屿要两个多小时。我们在兰屿游玩后将直接乘船前往台东，这是一个效率最大化的旅行线路，船票是通过到垦丁的出租车司机提供的电话买到的，简直太巧了。由于船票买的晚，兰屿的住宿我们也没有提前订好。到了岛上第一件事就是找民宿，兰屿有个旅游网站叫兰色大门，我们在上面很快找到了住所，真的很幸运。民宿老板还提供了机车租赁、潜水、拼板舟体验等一系列活动的预定服务。岛上只能用现金交易，我们biaji花了1万多台币，好在有一个取款机。</description>
+    </item>
+    <item>
+      <title>人类时代的谢幕？</title>
+      <link>https://www.yuanhao.site/post/2017-05-29-%E4%BA%BA%E7%B1%BB%E6%97%B6%E4%BB%A3%E7%9A%84%E8%B0%A2%E5%B9%95/</link>
+      <pubDate>Mon, 29 May 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2017-05-29-%E4%BA%BA%E7%B1%BB%E6%97%B6%E4%BB%A3%E7%9A%84%E8%B0%A2%E5%B9%95/</guid>
+      <description>去年看了《人类简史》，留下了很深的印象。今年初便买了续作《未来简史》，没想到在王者荣耀的干扰下五月底才看完。本书内容延续了前作的高质量，也给我带来了很大的冲击。想写这偏文章还因为一些巧合。一个是与这本书类似的话题居然不断地在其他地方被提起，包括锵锵三人行和前不久看的《攻壳机动队》。另一个是看完这本书的日期，2017年5月26号，是柯洁完败于AlphaGo的日子，天才少年的眼泪再一次给这本书的一些观点加上了生动的注脚。
+按先后顺序先从《攻壳机动队》讲起吧。这部95年上映的电影被认为开启了包括《黑客帝国》在内的科幻新篇章。电影的高潮部分AI讲述自己的心路历程，并认为目前的自己和人类（还是生命？）唯一的差别只是它不会死亡。相呼应的是墙上的壁画，长长的进化树上人类雄踞顶端，充满了无上的优越感。如果有一天算法真的进化出了意识，它是否应该得到人类的尊重？又或者它们和人类是否真的有差别？
+《未来简史》里作者的观点是明确的，没有差别。不是因为AI有多厉害，而是人类本身就是一堆生化算法的集合。你所谓的意识、思想只是一些生化反应的结果。你的行为、欲望也只是身体器官对这些生化反应的感受罢了。如果非要在人类的框架下讨论，作者又提出了“意识”和“智能”脱钩的观点。我们的算法，就像AlphaGo，已经在智能这方面超过人类，但可能他们没有人类的意识。然而意识真的重要吗？在数据足够多的情况下，智能可以比你更了解你的意识。如果能测量你紧张时上升的心率，愉悦时释放的多巴胺，你的所谓“意识”在智能面前清晰地就像一张流程图，不再有神秘感，也就不再显得神圣。又或者通过各种药物或者装置可以直接控制你的精神，喜怒哀乐全变成不同颜色的药丸。而这一切的确在伴随着传感器和生命科学的发展一步步变成现实。到那个时候，人类也许真的不再是这个世界上唯一的主角。
+如果上面的场景还略显遥远的话，科技对人类内部造成的影响却已经真实地发生了。掌握资源的人可以更轻易地获得更多资源，其中一些甚至可以让他们摆脱一些看似“名中注定”的事情。例如锵锵三人行中讲到印度每年有大量的妇女为欧美的同类代孕。他们就像是一台台血肉机器，为大洋彼岸的人们生产另类的产品。想像一下如果有一类女性将来只能靠为另一类女性代孕活下去，这样的世界是你想要的吗？
+不想要可能也无济于事了，“没有人知道刹车在哪里”。其实以上的问题已经完全超出个人的控制范围，除了静观其变我们也别无选择。但我还是很感谢作者，知道这些东西对我们有限的生命还是有一定的帮助。首先就是可以更豁达，当你意识到自己只是一些在运行的算法，对很多事应该可以想开一点吧。然后是方法论，昨天吃饭时盛哥说以后学会使用机器学习框架应该会像现在学会编程一样重要，在座各位都深以为然。应该尽早学会利用这些无意识的智能，它们一定可以在各个领域都大放异彩，而作为个人也能在竞争中保持主动。
+历史开始于人创造神，历史终结于人成为神。 2017.5.29</description>
+    </item>
+    <item>
+      <title>用makefile编译tensorflow</title>
+      <link>https://www.yuanhao.site/post/review/2017-03-20-tensorflow2/</link>
+      <pubDate>Mon, 20 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-03-20-tensorflow2/</guid>
+      <description>官方指南见 https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/makefile
+前几天已经用bazel编译了一遍tensorflow，但是如果想在嵌入式平台例如树莓派上使用这个框架这条路可能行不通。因为受限于平台资源，可能无法用Bazel来编译（github已经有人成功了）。但已经有人提供了用makefile来进行编译的方案，可以编译出一个不含python绑定和gpu支持的静态库，非常适合在嵌入式平台使用。目前可用的目标平台有
+iOS OS X (macOS) Android Raspberry-PI 准备工作 clone tensorflow repo到本地 以下所有的命令都应在在仓库的根目录下执行。首先执行tensorflow/contrib/makefile/download_dependencies.sh下载所需的依赖项。文件保存在tensorflow/contrib/makefile/downloads/目录下。如果是编译Linux版本，这步可以不执行，原因后面会提到。 编译Linux版本 安装必要的包sudo apt-get install autoconf automake libtool curl make g++ unzip zlib1g-dev git python
+执行编译，运行tensorflow/contrib/makefile/build_all_linux.sh。整个编译的过程用了一小会儿。README里说需要先执行download_dependencies.sh，其实在这个脚本里会清空downloads文件夹并重新下载一遍。。
+验证。执行以下命令下载inception模型
+mkdir -p ~/graphs curl -o ~/graphs/inception.zip \ https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip \ &amp;amp;&amp;amp; unzip ~/graphs/inception.zip -d ~/graphs/inception 再执行以下命令，注意graph=后面有引号！
+tensorflow/contrib/makefile/gen/bin/benchmark \ --graph=&amp;#34;~/graphs/inception/tensorflow_inception_graph.pb&amp;#34; 应该就成功了，如果提示找不到网络的话自己检查一下路径。
+在树莓派上编译 tensorflow/contrib/makefile/download_dependencies.sh #跟之前一样，下载依赖库 sudo apt-get install -y autoconf automake libtool gcc-4.8 g++-4.8 #安装编译工具 以下编译protobuffer
+cd tensorflow/contrib/makefile/downloads/protobuf/ ./autogen.sh ./configure make CXX=g++-4.8 sudo make install sudo ldconfig # refresh shared library cache，很重要 然后可以验证一下</description>
+    </item>
+    <item>
+      <title>编译安装Tensorflow</title>
+      <link>https://www.yuanhao.site/post/review/2017-03-10-tensorflow/</link>
+      <pubDate>Fri, 10 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-03-10-tensorflow/</guid>
+      <description>如果采用官方包安装Tensorflow的话，有许多针对平台的优化都没有打开，会导致性能下降。因此，最佳的安装Tensorflow的方法是从源码编译。整个过程大概如下。
+安装Bazel 安装JDK8 $ sudo add-apt-repository ppa:webupd8team/java $ sudo apt-get update $ sudo apt-get install oracle-java8-installer 下载安装包的时候速度极慢，打开VPN快了许多。。
+安装其他依赖项 sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel 我还修改了系统的默认python到python3版本 ##配置安装Tensorflow 下载Tensorflow的git仓库
+git clone https://github.com/tensorflow/tensorflow 进到目录里，checkout正确的版本
+git checkout r1.0 生成编译配置
+$ cd tensorflow # cd to the top-level directory created $ ./configure 编译pip文件
+bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package 这步执行完后会生成一个脚本，用它可以生成whl包。执行
+bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg 生成包，包存在/tmp/tensorflow_pkg里，包名是自动的。然后再用pip安装这个包
+sudo pip install /tmp/tensorflow_pkg/***.whl 其中***就是生成的包名，到刚才的目录下看一下就知道了。
+##测试
+既然tensorflow可以直接用pip方便地安装，为什么要千辛万苦编译呢？因为官方编译好的软件包为了提高通用性基本不可能发挥硬件的全部性能，很多优化开关都没有打开。而我们自己编译的版本则会根据硬件进行优化。为了测试性能差别，用以下简单的卷积网络在MNIST数据集上进行实验。
+import tensorflow as tf import time def weight_variable(shape): initial = tf.</description>
+    </item>
+    <item>
+      <title>2016总结</title>
+      <link>https://www.yuanhao.site/post/2017-01-01-2016%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2017-01-01-2016%E6%80%BB%E7%BB%93/</guid>
+      <description>不知不觉又到了新的一年，上午帮老师做总结ppt的时候借机回顾了一下自己这一年。感觉还是值得写下来。
+坏的开头 今年从刚开始就很艰难，刚开学到实验室就赶紧把行走的论文改完，2月19号改投到了JMR。然后22号在本该合家团圆的元宵佳节就发生了非常令人沮丧的事情。那种无力感是不曾体会过的，真的太难受了。希望它的影响能早点消退，大家都能回到正常的生活轨道上去。经历了这件事，除了让我对自己的看法有了很大的改变，我对我们民族的一些东西也变得反感。大家都给自己和别人背负太多的东西，真的好累。
+两篇论文 三四月份开始整人机交互的论文，承蒙组里各位照顾，很快就做好了实验。文章是在ICRA拒稿的基础上改的，git仓库里4月6号是第一次commit，4月16号的commit message写的是submit，应该就是那几天提交的论文。于此同时一边为了项目验收在设计传感器，画电路板。
+五月底的时候两篇论文相继回来了审稿意见，都比较正面，但都有个别比较刁钻的审稿人问题。没办法，两篇论文同时修改，JMR的回稿日期是5月24日，我居然六月5日就交了修改稿。Sensors是五月22日回的稿，七月5日提交的修改稿。这里最感谢的是付老师，好几个晚上都和我讨论到十一点多了，帮我出主意，给我提意见。那段时间过得也确实比较苦逼，不过有一次我很晚回宿舍的时候回头望了一眼李兆基，几乎每个房间的灯都还是亮的。有的时候真的想不明白为什么大家都这么忙，我们到底在忙些什么？七月22和七月29两篇论文相继被接收，也算给这个忙碌的学期画上了比较完美的句号。不过比较对不住跟着我做毕设的本科生。在他答辩前我们也没整出一个稳定的传感器。
+实习 大概在二三月份的时候，我在水木上看到英特尔招机器人实习生的广告，就去面了一下。但跟老师商量后他不建议我学期中去实习，也就没去了。后来临近暑假觉得还是实习下比较好，便又开始折腾。记得投了微软、阿里、腾讯，年轻的我做在线笔试都不敢用搜索引擎，更逗的是迷之自信居然投MSRA的研究岗。
+MSRA和腾讯都挂了，阿里进了面试，映像也比较深刻。第一轮电面聊得还比较欢，问我一学机械的干嘛投产品，我大概回答他感觉技术会被刷，还问我一些关于笔试的问题等等。到了第二面，画风突变，问我最喜欢什么app，为什么，它哪里还可以改进还有三年后希望自己变什么样之类的。好多题是一面问过的，但这位面试官直接跟我说觉得我不适合做产品经理。后面想想其实不是我不适合，只是我真的没有准备。什么app怎么好该怎么改我只能捡了个熟悉的微信扯了扯。互联网节奏这么快，你没有任何准备别人自然也不会给你任何机会。包括前面的微软，我在笔试前都没刷过题，而且居然还用c++，只拿130分也是应该的。
+虽然没拿到offer，但这些失败以及面试官的意见倒真的让我开始思考自己想做什么。清华机械真真是通识教育，念到研究生，什么都会一点但什么都不专精，而且学校项目和实际市场脱节比较严重。再加上我对机械的兴趣本来就不大，在仔细思考之后将方向定在了：
+控制算法 机器学习 传感器 三个方向中1、3对应比较传统的制造业。2主要对应互联网企业。
+找工作 找工作真的是今年比较重要的一件事了，但真的蛮幸苦的。由于有去互联网的想法，所以我比身边的同学早许多就开始了。八月份的时候通过100offer去了一家创业公司面试，技术总监是个清华电机系毕业的师兄，也让我第一次有机会近距离跟技术大牛过招。那次从简单的语言问题聊到算法甚至聊到波士顿动力的机器人，一场面试下来感觉自己真的好弱，要走的路还很长。最后由于我没法去实习他们也没给我offer，不过师兄的一句“你想做AI为什么不用Python”倒是点醒了我，于是开始了leetcode上python刷题之旅。
+虽说前面已经梳理了自己的方向，但真的到投简历的时候还是会有“什么都想要，什么都感觉不错”的心理。看了下我的记录，我最后大概投了快40份简历，涵盖的领域远比之前的3个多。这也导致参加了好多好多笔试面试，占用了大量的时间。
+拿到的第一个正式offer也是100offer推荐的阿里系创业公司天壤，AI岗，工资超过25w。电面的时候和创始人聊得蛮欢的，面完十分钟就给我发了offer。有了第一个offer就会比较有信心，吹水的时候也更煞有介事。但考虑以我目前的状态可能还不太适合去创业公司，就给回绝了。要是某天突然看到这个公司变得巨牛逼不知道会不会后悔，哈哈。第二个offer应该是海康威视，终面之后加面了总监。总监说我是个图像领域的新兵，给special不太合适，把我推给了机器人部门，还给了我一张名片，说后期可以再联系他，若有机会可以给我发SP。之后机器人部门面试比较顺利，待遇比天壤还高一些，可惜岗位在杭州，和我去一线城市的定位不符，最后也没去。后来还面了恒生电子，明知道他在杭州，却还是去面了，搞不懂自己怎么想的。
+面试体验最好的是微软，每一轮的面试官都很nice，会引导你解决他们给出的问题，甚至跟你一起review你的代码，帮你找问题。说真的，这才是模拟真正的工作状态：怎么跟人沟通，寻求别人帮助，一起解决问题。当时面了整整一天，中午饭很好吃。下午是AA面，见到了互联网工程院院长王永东博士。大叔气质真的很好，很有气场。出的题是HMM相关的，刚好项目里学过，解得比较轻松。最后也顺利拿到微软的offer，不过是在苏州，因此也拒了。但就在前几天上海HR打电话说有当地云计算的位置，无奈已经涉及毁约，也就没有去了。错过微软还是蛮可惜的。
+微软午饭
+后来有一波汽车行业的offer，主机厂、供应商、研究院都有。最后综合考虑决定去上汽做AI，风险其实挺大，看命了。。
+经历这次找工作我感觉知道自己想干什么实在太重要了，特别是能力强的人，最后比的基本就是方向和耐力了。还有就是你想在哪，一线城市固然好，但紧抱着不放也确实是没有必要了。不过比较神奇的是本科班同学们这波找工作没有一个留在北京，嗯，把北京留给博士们吧。
+在线课程和志愿者 其实很早就有上在线课程了，一开始在清华自己的学堂在线上过几门，去年开始接触Coursera，上了吴恩达老师的Machine Learning。今年大概暑假的时候感觉要充充电，上了宾大GRASP实验室开的几门机器人课程。包括Estimation and Learning,Perception,Computational Motion Planning和Mobility。其中和实验室最贴近的是Mobility，不得不佩服他们的研究水平，很多应该知道的东西我们真的不知道。和我项目最接近的是Estimation and Learning，只可惜讲得比较粗浅。内容最扎实的是Perception，视频贼多，作业也挺花时间。在年底的时候又上了Hinton教授主讲的Neural Networks for Machine Learning。这课真的好，比较全面地介绍了神经网络这门科学。也不得不佩服Hinton教授，一直坚持自己的研究，从ANN的低谷一直坚持到了最近深度学习爆发，一举又成为引领潮流的人物。所以，还是那句话，方向和坚持真的太重要了。
+终身学习从我还小的时候就开始讲了，但真正做的人并不是很多。在线教育平台上已经有非常多优质的资源，涵盖面也很广，是非常值得尝试的。
+在上机器人系列课程的时候发现没有中文字幕，于是就起了翻译的念头。先是打入中文翻译者社区GTC，然后找到了愿意合作的LC，就开始翻译起来。所以暑假期间基本把自己安排满了，实习、刷题、上课、翻译，还得做实验室的项目。说来也巧，LC也是清华校友，居然还是学机器人的，辈分颇大，目前人在加州做IT行业。除了合作翻译，他还给了我一些职业建议，也是一位非常nice的人。
+最终我几乎自己翻译完了Estimation and Learning，后来还当了Perception的组长，招募了一些志愿者一起翻译。这种和世界各地的朋友通过网络协作是从来没有经历过的，感觉很奇妙。可惜后来找工作忙起来又碰上GTC换翻译平台翻译就暂停了，寒假我会争取把Perception弄完的。
+奖学金 从没想到自己能拿国奖，不过国庆节收到申请邮件时付老师建议一定要试一试。于是就开始整理材料，有两篇论文打底，加上研一两学期的助教和一次学术会议，东拼西凑还真有点东西。初选的时候排在所里第三，一共三个名额，可能性还挺大的。
+答辩的时侯我讲了一些自己上在线课和翻译的事情，没想到老师们都还挺感兴趣，问我感觉国外的课和清华的有什么差别。不留情面地讲，清华有的课实在是太水了，特别是研究生阶段，对教学没有足够的重视，学到的知识太少，做得project太多，作业设计也缺乏参与感。近几年引进的老师越来越多，希望可以带回来优秀的课程设计模式，别把这些好苗子都白瞎了。
+答辩之后的最后成绩居然变成了第二名，顺利拿到了国家奖学金，金额可观，名声也好。付出了就会有回报，这句话真是不假，就看你能不能坚持到回报到来的那一天了。
+略显混乱的年末 忙完国奖的事就到十月底了，工作也基本定了，寻思着该回到实验室搞搞项目的事情，于是从英特尔离职（九月以后就去的非常少了）。实验室这边有了做SLAM的新任务，还有之前的工作要继续推进，老师也把新招到的本科生派给了我。
+为了上海户口求稳，十二月和黄丝一起专程去天津参加了计算机二级考试。报的c++，感觉对自己比较有用。之前都是瞎写，半吊子水平，这次乘着这个机会好好翻了一下《C++ Premier》，还是学到了一些东西的。刚查了成绩，89，差一分优秀，随他去吧。
+还有就是这个网站咯，其实从八月份就开始写了，后来忙起来又断了。十一月写了一些，到了十二月底临近元旦放假又来了兴致，咔咔咔连写了好几天，终于基本像个样子。
+一些杂事 被超哥等人带入了德扑大门，他们打得挺大的，一群人拿着钱猜手中的两张牌比对手大还是小，一个冲动甚至可以押上几百上千，这种纯粹的赌博的确是一种全新的体验。但打多了感觉这个游戏不太和我胃口，我不明白这样有什么意义，说输钱也很开心我是不相信的，但你赢了就有人要输，应该是个零和的游戏。而且真的会有一种无所谓的感觉，不再珍惜你的钱，感觉这样挺可怕的。真想娱乐和吴老师光头他们打打一毛钱的娱乐局就好了。
+统计了一下今年只看了大概25部影视作品。其中比较出彩的是三部电视剧：《信号》，《黑镜》和《西部世界》。书倒是看了几本，《三体》，《人类简史》，《必然》和《思维的形状》都挺不错的。还能静下心来读书是挺值得骄傲的事情。
+今年比较遗憾的是基本哪都没去，五一国庆都回家了。倒是去了好几次天津，感觉天津其实还是很不错的。可能是因为来自南方的缘故，感觉一条海河让这座城市有了灵气。
+海河沿岸
+写在最后 不知不觉写了好长，就这样吧。 2017，希望家人朋友一切都好。</description>
+    </item>
+    <item>
+      <title>山西游记</title>
+      <link>https://www.yuanhao.site/post/review/2015-10-23-trip-to-shanxi/</link>
+      <pubDate>Fri, 23 Oct 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2015-10-23-trip-to-shanxi/</guid>
+      <description>感觉上大学以来国庆五一几乎没有出去游玩过，顶天了也就是回趟家，只不过家离北京可是有两千多公里。其实之前不出去玩除了本身上没有足够兴趣，还有一个重要原因也是不太愿意花家里钱。上研究生后这两个情况都有了些变化，一方面是认识到行万里路的重要性，另一个也是多了些收入，有了些闲钱。正好杨刚来北方也想出去走走，我们就决定借着假期小游一发。可惜计划得有点晚，只能选个近点的地方，看了一圈也就山西最符合要求，花了一个晚上买好车票住宿，就等着三号出发了。
+我们是十月三号上午出发，先乘高铁去平遥。无奈买的是站票，一路都在盯着哪有空闲的位子，最后所幸坐在车厢尾部的小旮旯里，还好路程不长，将就一下也就过去了。一下高铁可傻了眼，这雾霾比北京还吓人！出了火车站准备乘公交去古城，又傻眼一回，车子全是一样的路线编号，可路线却不同。一开始上错了车，票钱也退不了，也只好作罢，乖乖坐另一辆去。坐在公车上看平遥县，真是有些破败，路上没几辆好车，路边楼房都灰头土脸，窗户上门上都贴着大大的广告字，更添了几分土气。接近古城，交通也开始混乱起来各种大巴小车挤在路上，路口的交通灯只是一通乱闪，也没见人听它的。下了车就去找酒店，算是个民宿，房间很小，床也很小，总之条件一般。午饭点了个特色小吃“碗秃”，这东西其实有点像家里的米果，没吃出什么特别的。下午就是逛古城了，古城里人可是极多的，和人一样多的是满地卖的沙棘汁、牛肉和王老吉。平遥的牛肉我之前没怎么听说过，但肯定是很有名的，粉粉的一大块就堆在桌上卖。晚饭时我们特意点了一盘，味道不是很重，可能是吃惯了家里做法，觉着没有我们那的牛肉巴好吃。平遥可以说是个金融之城，早年间票号开遍了全国，城里自然也有了和票号配套的镖局等等。听几个导游说平遥的票号当时可是富可敌国的，但这些大财主显然不太懂生活，房子都不大，也没有亭台楼阁园林假山。相比之下还是官老爷比较气派，平遥县衙面积比这些个票号都大，里面有大院子、小花园，住着肯定比那些小院舒服多了。还有一处比较好的古建是平遥文庙，房子很高，视野很好，院子里面绿树成荫，很有一些静谧的感觉。有个什么楼里还藏着某位状元的殿试答卷，答的内容我们是无心细看了，不过一卷蝇头小楷可真是赏心悦目。吃过晚饭天就黑了，屋檐下的红灯笼都亮了起来。相比白天，游客的年龄好像也小了些，多了些靓丽的身影。平遥的这些古街真是有些被过度开发了，光是卖非洲鼓或是陶笛的店铺就都不止一处，还有大量什么上海香皂啊，手绘明信片啊之类的看似文艺的店铺。就像我朋友圈里写的，这样古街真的到处都是了，没有任何特色，也不会想来第二次。不过平遥还是留下了个遗憾——我们居然没有登上保存完好的城楼去看一看。
+第二天一早，我们就坐上了前往乔家大院的班车。乔家大院就在某条很宽的公路边上，路边就立着巨大的牌坊，告诉你已经来到了这个因为电视剧被全中国熟知的地方。从外面看整个院子俨然一座小城堡，可以感受到乔氏家族往日的兴盛。这个院子和平遥那些票号不太一样，首先面积就大了许多。一大家族应该每个男子都有自家的一个小院子，还有私塾、花园等配套公共设施。房屋也比较气派，有一些小高层，雕梁画栋很是精美，不过房檐下也和平遥似的都挂着大大的红灯笼。院子虽大，但建筑风格其实也挺重复的，光看房子一定会略感无聊。所以在房间里布置有一些展览，介绍婚丧嫁娶各种风俗，但也没什么新鲜感。《乔家大院》这部电视剧我没看过，猜想应该是讲晋商的故事，从平遥和这里的确可以隐约感受到晋商当年开拓进取最终纵横全国的辉煌。
+从大院出来接近中午，略作等待之后我们就上了一辆大巴，奔赴我们的第三站，太原。太原是山西的省府，可我们刚进入太原地界却首先感受到一丝肃杀——好几个楼盘没有完工就拆了脚手架赤裸裸地呆立在街边，应该是烂尾了。但随着车逐渐进入市区，景象也渐渐有所改观。当我们从汽车站坐上公交一路向北穿过太原市，车窗外已经丝毫没有之前荒凉的氛围，大量的楼盘密密麻麻一直延伸到视野尽头，还有很多工地正热火朝天施着工。到酒店安顿好后，我们也不想闲着，打个车就往晋祠去了。路上还问了问的哥太原的房子多贵好不好卖，大概最贵的房子也超过一万了，而且的哥对楼市乐观的很，他说太原房子不愁卖，大家有钱爱买房。到了晋祠有点晚了，差点就被忽悠坐车，好在我们坚定信念可以赶在停止售票前走到正门口。晋祠离市区真的是极远，但是这真是一个很大的公园，绿化非常好，一下子就和之前的景区拉开了距离。晋祠里面古建很多，什么鱼梁飞沼，圣母殿据杨说都是大名鼎鼎的建筑。院内还有参天的古树，据说树龄已过两千年，一眼名为“不老泉”的泉水也充满了故事。整个晋祠感觉非常的幽静，总给我一种照片里日本的感觉。虽然门票贵路途远，但却实值得一游。晚上还暴走逛了逛太原著名的商圈柳巷，我们的杨同学还饶有兴致地考察了IDo的专卖店，看到十几万的钻戒后默默立下攒钱的宏愿~路上碰见一个老头孤零零地站在路边演奏《歌唱祖国》，小提琴声悠扬婉转，穿过喧闹的街道飘进耳里，又适逢国庆，还真能激起一些平静的爱国情怀。
+在山西的第三天一早，我们就坐上绿皮火车前往大同。大同是总哥主场，他国庆又正好回家，我们也就有机会感受了一次总哥无微不至的地主之谊。总哥大中午带着美味的猪肉脯、蟹黄瓜子和矿泉水来接站，一下火车又带我们品尝了大同名食东方刀削面，为我们下午的云冈石窟之旅打下了坚实的基础。大同的物价是令人感动的，出租车七块起步，刀削面不到十块，让我这个北京穷学生都有了点大款的感觉~打的来到云冈石窟，在大门口顺便报名了第二天的恒山一日游，就往里走了。景区的前奏是一堆今人建造的庙宇、步道、佛塔等等。快快地掠过它们，我们就来到了真真正正北魏时期的云冈石窟。不得不说，云冈石窟给我的震撼是巨大的，特别是其中的几个保存完好五六窟和昙曜五窟。五六窟内满壁都是小佛像，还有彩绘，置身其中让你有一种特别强烈的神圣、净化的感觉。杨也感叹，若是坏人来此该直接吓得跪在地上把。与五六窟的精美、规模大不同，昙曜五窟则是以大取胜。十六窟主像释迦摩尼高13.5米，幸亏之前埋藏与山石之下，成了整个云冈石窟唯一保有眼珠的佛像。北魏真的是一个很遥远的朝代了，对于我这个历史盲更是几乎等于一片空白，此前也没关注过造像艺术，但石窟里这些带着异域风情的佛真的太美了。参观之前没做功课，以为石窟是信徒们自发雕凿的，让我对这些菩萨更加肃然起敬。脑海中总是浮现出虔诚的善男信女在一斧一锤雕凿信仰，即使在荒凉的山丘风餐露宿也毫不畏惧的画面。但是后来才了解到这原来是皇家工程，从全国各地征召能工巧匠才完成这个宏伟的工程，不知背后有多少背井离乡妻离子散的故事，不免唏嘘一番。差点忘了说，晚上总哥请我们去了一家比较有特色的餐馆，我们三人还喝了点小酒，气氛很棒。很有意思的是这个参观点菜是可以点半份的，这还是我头一次见，对这个设计真的是要点无数个赞！不仅避免浪费食物又可以帮客人省下不必要的开支，太人性化了！
+六号其实是正式旅行的最后一天，原本计划是恒山和悬空寺。上午游览的是恒山，恒山主峰高2601米，山上多寺庙道观，但景致并没有什么特别的地方。从山腰停车场爬上去再下来大概花了两个多小时，其实并不是很困难，如果各位有机会去不妨也用脚走，不要坐缆车。下山就在路边小摊吃了浑源县著名的凉粉，食物还不错，不过小摊的卫生条件实在是比较堪忧。比较逗的一件事是同团的一位虔诚的老人家跟家人走丢了，上演了一出真实版的“爸爸去哪儿”，我们一车人也只好等着，最终也没等到他，就前往悬空寺去了。在爬恒山的时候就想，这五岳也算是开了个头，希望能早日把剩下的四个也游历一下。悬空寺在国庆假期之初就出现了落石伤人的情况，因此整个假期都关闭了，只能在下面远观，挺遗憾的。不过整个寺庙确实精奇，也难怪李白会写“危楼高百尺，手可摘星辰”。回到大同在住所附近品尝了一下凯鸽涮羊肉，再次被美味的食物和温柔的物价感动到。
+其实说真的，越往北对山西的印象越好，没有裸露的黄土，没有糟糕的空气，也看不见想象里脏兮兮的煤矿。大同周边就连一座座石头山都在人工覆盖的土壤上种上了树木，回北京的高速路旁边也都有成片的树林和荒草滩，风机和五颜六色的树叶还将景致装点得有了些许姿色。说来也讽刺，越往北京空气越糟，在六环就已经置身乌烟瘴气之中。刚到大同总哥就夸家乡好，在短暂体验后证实他说得是事实。总的来说这次的行程还是偏紧凑，准备也不是特别充分，但好在好友结伴又在他乡有同学照应，还是非常愉快的。</description>
+    </item>
+    <item>
+      <title>美国游记——上</title>
+      <link>https://www.yuanhao.site/post/review/2015-08-18-trip-to-us-1/</link>
+      <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2015-08-18-trip-to-us-1/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://wuyhthu.oss-cn-beijing.aliyuncs.com/postIMGS/%E7%BE%8E%E5%9B%BD%E6%B8%B8%E8%AE%B0/timesquare.jpg&#34; alt=&#34;timesquare&#34;  /&gt;
+
+时代广场
+{: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}&lt;/p&gt;
+&lt;p&gt;图片加强版请戳：&lt;a href=&#34;http://user.qzone.qq.com/297542513/blog/1438659227&#34;&gt;http://user.qzone.qq.com/297542513/blog/1438659227&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&#34;725&#34;&gt;7.25&lt;/h1&gt;
+&lt;p&gt;今天我的美国东部游就正式开始了，上午师兄把我拉到机场，出发前往纽约。冶哥打了辆uber来接我，不一会便回到了他的住所。他住在jessry，其实和纽约都不是一个州，但和曼哈顿只隔着一条Hudson River，打开窗就能看见曼哈顿摩天大楼构筑的迷人的天际线。房间虽小，租金不少，900美金在北京也能住到一个至少40平的房子了吧~&lt;/p&gt;
+&lt;p&gt;刚到泽西感觉这里超级像厦门，植物很热带，不过人可比厦门少多了。放好行李我们就前往一个叫聚缘（还是福忘了，美国中餐馆超多叫类似名字的）轩的中餐馆吃午饭，居然能吃到空心菜真是感动得我眼泪掉下来。吃饱喝足之后也懒得休息，就出发前往大纽约了！路上有个地方在搞活动，音响震天，一帮黑哥黑姐载歌载舞，烧烤摊青烟缕缕，散发出诱人的香味，简直让你感觉回到了中国= =&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>美国游记——下</title>
+      <link>https://www.yuanhao.site/post/review/2015-08-18-trip-to-us-2/</link>
+      <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2015-08-18-trip-to-us-2/</guid>
+      <description>云门 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+8.1 上午吃到了涛哥亲自下厨做的早饭。美国同学们的早饭其实都挺类似的。牛奶加上粗粮做成一碗粥，配上面包饼干之类的，还可以煮个鸡蛋来点水果；或者在波士顿耀子舍友是水果加牛奶榨汁，面包片夹水果和火鸡肉之类的东西做成三明治。今天在家还和老爹聊起早饭，他们得早上一大早起来就煮稀饭，还得炒菜啥啥的，效率确实比较低，而且感觉有点太偏重淀粉，营养不是很均衡。
+饭间还和涛哥聊起他们的日常生活，在普渡读博的涛哥住在西拉法叶一个小区里，三个同学合租一个小别墅。一楼是厨房餐厅，还有一个超大的party空间，地下室有游戏机，二楼是卧室。这里比芝加哥和纽约便宜多了，他们每个人每月的房租只有400美金左右。这里公共交通比较挫，都是开车上学，开车到普渡得10分钟。他说们每天9点左右到办公室，然后五点就下班回家。中午吃个外卖什么的，应该也不怎么休息。勤劳的涛哥一家回家之后自己做晚饭，从准备到吃完打理好厨房餐厅得花2个小时，晚上也就不再去学校了。其实到了国内学校的食堂真是帮广大学生处理了一大堆的琐事，节省了很多时间。感觉在美国因为房子大，有车，吃饭也比较麻烦，你在料理生活上要花费比国内多不少的时间，加上住的比较远，可能很多研究生在实验室宅的时间远没有国内多。即使这样，涛哥还是准备4年就博士毕业了。我们的科研效率确实比较堪忧啊。
+吃完饭我们便往普渡校园出发了。普渡建校的历史我觉得挺有意思，以下摘自百度百科。1862年时，美国总统林肯签署了由佛蒙特州参议员贾斯汀摩利尔（Justin Smith Morrill）所提出的土地拨赠法案（Morrill Land-Grant Colleges Act），联邦政府按照众议员的数目给各州拨地，而这些土地出售后的资金，用来建设以传授农业和机械知识为主的大学。1865年，印第安那州政府收到拉法叶地区的商业领袖和慈善家约翰·普渡所捐赠的十五万美元，包括Tippecanoe郡既有的五万美元经费及由拉法叶居民提供的150亩土地，在1869年时在拉法叶市郊的这片土地上正式设立普渡大学。普渡大学在1874年9月16日正式开始授课，初期的普渡大学只有三栋建筑物、六位教师及39个学生，并在1875年正式颁发第一个学位。同年，普渡大学招收第一个女性学生。1883年时，普渡大学学生人数增加至350人。在廿世纪初期，普渡大学开始在学术、教学及设备三方面快速扩张，并逐渐成为全世界知名的理工科大学。土地拨赠法案的百度百科词条评价该法案奠定了美国现今高等教育的基础。而普渡的故事我觉得更是国家和民众互动的非常正面的例子，好的大学不可能仅仅由国家一方主导便可建立，应该给民众更广泛的参与的权利和机会。
+普渡校园有快3000英亩，非常大。主要的教学研究建筑倒是比较集中，风格也非常统一——红砖墙加红屋顶，比较朴素，有些建筑非常像红色版的北大。普渡建校于1869年，历史也算悠久了，立校时以教授农学与机械为主，据涛哥说农业是全美第一的专业哦。普渡有自己的机场，有飞机驾驶课可以选修，费用不到3000美金；它还是培养美国宇航员最多的大学，阿姆斯特朗也是普渡校友，还有一座楼是已他名字命名的。涛哥带我参观了他们ME的系馆，里面陈设有他们玩具设计课的优秀作业，还有一个过山车模型，据说该校有过山车设计专业。因为正值暑假，校园里基本是空的，偶尔能看到一些前来报道的新生。中午外面太晒，就先在union里和楷哥越洋扯淡，下午按照游览指南又走了一遍，还特意去看了他们的stadium，可惜假期封住了进不去。橄榄球真是美国国球，在OSU时忘了拍他们stadium，据说可以坐10万人，一到重要比赛场外都是为看球搭起的帐篷。之前我觉得清华已经很大了，到美国才发现它其实一点也不大，之前的俄亥俄州立和普渡都数倍于我校的面积；而且一些学校虽然比如西北大学campus看着小，但他们的住宿楼都是散落在所在城市里的，所以可用的面积也并不小。可能更悲剧的一点是，比如中国的顶尖大学大多都在主要城市之中，很可能还在繁华地段，几乎难再扩张了。从这个角度看，建一些分校还是有道理的。或者像中科大这样撤离北京，从长远来看不见得是一个坏事。
+傍晚出发回芝加哥了。这次时间还比较早，印第安纳的风光一路在夕阳下一览无遗。大平原让他们有了自动化农业的条件，一路看到很多巨大的喷灌装置。还有一大片风力发电机，也非常美。在高速路上时不时就有从车窗伸出手向我们竖大拇指的人，更有一个疯狂的家伙从车窗里爬出来挥舞着手中的酒瓶向我们致敬。昭牛说这辆viper可是美国唯一的手工超跑，人们对它充满了民族自豪感。可见美国的汽车文化真不是盖的，懂车的人很多；另一方面他们的企业也能造出让自己的国民兴奋、自豪的产品。这样的场景还真是挺能激发我的使命感，但愿景归愿景，还是要把功夫花到实处。国家已经比之前富裕不少，我们这一代有条件也应该有能力做出一些厉害的东西。
+8.2 这已经是在美国的最后一天了，下午就要出发回国。上午起床先把东西一收，把脏衣服床单拿到楼下洗衣房洗。美国的洗衣房通常是洗衣机加烘干机的组合，正是有了烘干机的存在，才让我有可能在出发当天洗衣服。第一次用烘干机是在耀子家，烘完之后的衣服很软，还温温的，连洗带烘只要不到两个小时。想想只要两小时就能把一件脏衣服干干净净地重新穿身上，效率真是非常高。但也不见得这就是先进的，在不需要急用的场合用太阳光显然是更加环保的做法。其实在节能环保上，国人真是大大地走在了美国人的前面。烘干机，大量使用的卫生纸，温度低到令人发指的空调，这些东西我们真的不一定要向美国人学习。
+在洗衣房对面有一个游戏室，里面就像个幼儿园教室，都是给小朋友准备的玩具之类的东西，在游戏室的门外还有一个迷你游乐园，有一些滑滑梯。这些统统都是给研究生的小孩准备的！在昭牛这住了这么多天，时常在电梯里碰到一家几口同时出现的外国人，在地下车库里也有好些婴儿车。我觉得这一点美国学校真是大大大大地比国内先进，他们是真的为学生创造各种各样的便利条件，非常人性化。想想在国内，应该没有一个大学有为博士生的小孩准备设施的吧。关于这点还有一个细节，在这个宿舍楼内有一些常用标志是用多国语言写的，有中文，日文，韩文之类的，我看到后觉得奇怪，能来这读书的看这些英语标识肯定是没问题的啊，昭牛说这是为家属准备的。听后当时心里真的是感到一股暖流啊。想想紫荆宿舍，不能留宿，收个快递还必须到14号楼，办个换房间手续还层层审批。。。总之有各种各样仔细想想站不住脚的规定，后勤总是把自己想成管理者，而不是服务者，总想用简单的一刀切的办法来降低自己的管理成本，我是感觉在人性化服务方面我们还有很多进步的空间，而率先做到极致用户体验的人必将在未来成为市场的赢家。
+既然说到这了，再提提我看到的美国博士们的待遇。他们的工资一般是2000美金，如果乘上汇率那在中国可是高薪了。但事实是不能这么算，我在美国吃过的最便宜的饭是7美金，当然你要是在家跟人搭伙做应该会便宜一点。房租基本月付，怎么得也要400左右，在一些大一点的城市700到900是要的。住的远可以省一些房费，但车就成了必需品，车本身不贵，几千刀的二手车通勤足矣，但每月保险又得花你几百块。其实算下来也留不下什么钱。不过这里国内贵的一些东西比如衣服啊，电子产品啊反而相对便宜，衣服几十块已经可以买大品牌了，iphone一台也不过几百块。我很一直在找一个坐标系来评估一下中美的生活成本和收入水平，最后发现大件商品是比较合适的，算上汇率国内外差价不大，所以基本结论是东西差不多贵，但是他们赚的比我们多（美国家庭年收入中位数约为5万美金，差距应该就是汇率了），不过外面吃饭确实比较贵。所以国内博士们的钱其实已经还行了，当然如果还能再提高点没有人会拒绝，毕竟优质大学主要集中在几个大城市，消费太高了。但要是一说到房子，那国人就比较惨了，我们的房子真的已经和美国一样贵，很可能更贵了。这一点我尤其欣赏美国区域平衡发展的程度，很多的厉害大学就是在偏远的小镇，不是所有好资源都放在纽约。中小城市能提供一些高级的例如大学教授这样的工作机会，大家就不会争着往几个城市挤了，房子价钱合理，生活水平也高，也难怪人家容易出成果。你说一个清华教授，也得住房子孩子也得上学，不花时间赚点钱能行吗？
+中午又去了尖沙咀，点了和来芝加哥时一模一样的牛肉火锅，不过这次饭后终于吃上了昭牛力荐的Andy&amp;rsquo;s冰淇淋，点了一个mint chip concrete，简单点说就是薄荷冰淇淋。味道还是不错的，就是巧克力有点太甜了。下午到机场居然走错了航站楼，奥黑尔机场的小火车又因为大风暂停工作了好一会儿，有一个白人姑娘直接在人群中昏厥过去，应该是第一次见人晕倒，没想到是在美国。紧赶慢赶到了T3，发现飞机延误了，身边是一伙101中学的初中生，他们刚结束暑假的游学也准备返回北京。想想来的时候也是一伙初中生和我一班飞机，不过那时是景山学校。
+上了飞机，坐在一个华人大叔旁边，得知他是从波士顿去上海出差的，趁着飞机还没起飞，就和他聊了起来。大叔非常斯文，来美国已经有16年了，大儿子已经上中学，小女儿还上小学，在波士顿做了一家太阳能电池板相关仪器的创业公司，这次去中国是想开拓下业务，看看他们的传感器能不能用在其他领域。得知我只在波士顿游玩了一天，他挺可惜的，说波士顿其实可玩的地方很多，比如有个科学博物馆非常值得一去之类的，这没办法，只好下次再来了。他对我们这行也挺了解的，知道HughHerr教授，说听过一次他的真人演讲，当时穿着假肢来了一个空翻，把大叔震住了，在飞机上还一直说amazing。大叔之前在TI旗下某子公司干技术，我问是否会感觉到有天花板，他说其实还好，但做技术的永远不可能赚的跟做管理的一样多，因为“管的事情就没那么多，凭什么给你那么多钱”。
+后来问了比较多偏向旅美生活的问题，比如他们的孩子中文学得怎么样，他说基本上的第二代是无法用中文流利交流的。后来又问看到子女变成和自己有着不同的文化会不会怪怪的，我说我作为一个南方人想到若是留在北京以后小孩一口京片子都会一阵蛋疼，大叔教育我说你有孩子了想法就会改变的，你会希望你孩子首先掌握在当前环境下生存下去的技能，然后才是传承文化。当被问到退休之后会不会想回国时，大叔说也不知道自己什么时候能退休，现在若是父母还在回去还有个念想，但“妈妈死了兄弟姐妹就都成了亲戚”，回去就得付出比较大的代价了。
+其实第一代的迁徙者确实是挺辛苦的，新老文化和关系在他们身上撕扯地最厉害。大叔去上海出差却因为机票贵买了飞北京的航班，这飞机一晚点他只好在机场随便休息下了，明早六点还得赶去上海的班机。
+后记 这次去美国前后两周，收获还是很大的。这篇断断续续的游记居然也已经写了一万多字。其实能有机会到地球的另一边去看看是非常幸运的事情，特别是在家乡这种小县城，很多人一辈子都不会有这种机会，这也是我写这些的一个很重要原因。这次去最大的一个作用我认为是消除神秘感，不管是在科研方面还是社会文化方面，终于能亲身感受一下最先进的美国到底是如何在运行的。而且你会发现在很多地方我们相差已经没那么大，常常会觉得，原来美国的**也就这样啊。但差距还是有的，例如前面说了很多的房子啊教育啊还有环境之类的，前几天在厦门就感觉这海为什么一点都不蓝，这楼为什么盖得这么凌乱。但差距之外还有差别，两国的文化有太多的不同，而这种不同不一定是可以简单用好或坏来评价的，我们要找一条适合我们的路径来发展。总之，你会对“社会主义初级阶段”这样的词有一个更全面的认识，你会知道中级或者高级可能是一个什么样子。
+两周的时间毕竟也很难深入了解美国，有些地方难免写得比较主观，大家看看就好。 嗯，现在有点后悔没有让昭牛带我去脱衣舞俱乐部了- -</description>
+    </item>
+    <item>
+      <title>暑期学校见闻</title>
+      <link>https://www.yuanhao.site/post/2015-06-20-%E6%9A%91%E6%9C%9F%E5%AD%A6%E6%A0%A1%E8%A7%81%E9%97%BB/</link>
+      <pubDate>Sat, 20 Jun 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2015-06-20-%E6%9A%91%E6%9C%9F%E5%AD%A6%E6%A0%A1%E8%A7%81%E9%97%BB/</guid>
+      <description>端午小长假的第一天，去听了一天中科院和宾大合办的暑期模式识别培训班，上午下午各四个讲座。开场第一个是prof. Dan Lee，他的简历简直酷炫，讲的是智能机器。主要分了三个部分，感知、轨迹规划和运动控制，基本是关于学习算法在机器人上的应用。第一个例子印象比较深，是做声音定位，现场还请了个同学做示范，非常明晰地把背后的道理讲出来了。感觉他做得这些研究至少看上去并不是遥不可及艰深无比，但是都很有趣。还有一个很重要的是他们都用的是成熟的平台，从声音定位的aibo狗，到降维轨迹规划的RP2，再到push recovery的hubo，全都是著名的机器人平台。我想通过有效利用现有成熟平台，他们就可以把更多的精力和时间用在原理和机制的探究上，从而让自己的研究看上去更立体，更有层次感。
+第二个讲的是北航的文力老师，做的是类鲨鱼皮仿生材料，合作单位有哈佛和一个别的什么美国大学。研究很厉害，上了nature hightlight，回来一查，老师本人也很厉害，10年博士毕业，得了个什么会的最佳学生论文，短短五年已经副教授加nature论文加身。工作本身很有意义，而且他们长期做下来就有越挖越深，越做越广的效应，最终形成了这种标志性的研究。所以研究这种东西，还是得钻进去，进去了才能发现里面的广阔天地。
+下午第一场本以为是以助老机器人为主题，结果上来是将低成本机器人。Mark Yim老师头发长长的，白发很多，很有日本学者的感觉。他的研究路线我觉得很有趣，第一个案例是电机，他们发现好（贵）电机与差电机的差别主要在smooth这项指标上，于是加入一些传感器和控制，在差电机上达到了好电机的效果。然后降到飞行机器人，说旋翼的成本中IMU占很大比重，于是想能不能不要测量环节，实现被动稳定，结果用很机械的方法成功了。后来有讲通过控制桨叶转动达到削减直升机电机数的案例。期间还有一些比如自制laser传感器，自制手爪，自制万向移动平台之类的东西。都是用一些看似简单的方法，实现低成本的机器人，而且结论还有借鉴意义。虽然这些东西看上去并不高大上，老师也说了，低成本的追求在很多人看来不应该来自科学家，更偏向于工程应用，但他得到的结果我觉得是富有启发性的。老师在台上伸出手像孩子模拟开飞机一样讲解被动平衡的样子特别触动我，他真的是沉醉在自己的研究中，这种状态应该是很多人梦寐以求的吧。</description>
+    </item>
+    <item>
+      <title>动力学一：约束，虚位移和虚功</title>
+      <link>https://www.yuanhao.site/post/robotics/2015-06-04-dynamics/</link>
+      <pubDate>Thu, 04 Jun 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/robotics/2015-06-04-dynamics/</guid>
+      <description>与运动学研究轨迹、速度不同，动力学是研究力和运动关系的学问，主要的对象是力和加速度。在高中我们都学过的牛顿第二定律就是典型的动力学定律，但是当运动复杂之后，这种方法就比较麻烦且容易出错了。所以，在机器人这种典型的多刚体运动领域，常用分析力学的方法，核心自然就是拉格朗日方程了。
+这篇文章算是一个分析力学入门读物吧，讲一讲里面的约束，虚位移和虚功。
+约束的字面意思大家都懂的，在分析力学里是指对质点位置、速度的限制，用数学的话说就是
+[ f_s(r_1,r_2,&amp;hellip;,v_1,v_2,&amp;hellip;,t)=0 ]
+其中r表示质点的位置，v表示质点的速度。这里用等于号表示双面约束，其实只考虑这种情况就够了。
+更特别的，如果这个函数里不含v了，那就是说只限制了位置，这种情况称为几何约束。对于几何约束和积分后可以写成几何约束的其他约束（微分约束），称他们为完整约束。
+再来说虚位移，虚位移就是在某一瞬时，在不破坏约束的情况下质点的任意可能位移。比如一个平面上放着一个木块，假设他们始终接触（这就是约束），那么在特定时刻木块是可以沿着板做任何运动的，然而真实的运动肯定只能是众多虚位移中的一个。质点$P_s$的虚位移通常用$\delta r_s$表示。
+力在虚位移上做的功就叫做虚功。如果作用在质点$P_s$上的约束反力$N_s$在任意虚位移上做的虚功之和为0，即
+[ \sum_{s=1}^{n}N_s\cdot \delta r_s=0 ]
+则称次约束为理想约束。我们其实基本上只考虑理想双面完整约束。
+最后讲两个重要的原理。第一个是虚位移原理，讲的是手主动力$F_s$作用的质点的可能平衡位置是真实平衡位置的判据，其充要条件是
+[ \sum_{s=1}^{n}F_s\cdot \delta r_s=0 ]
+即主动力在任一组虚位移上所做虚功为0。
+另一个是达朗贝尔原理，说的是质点系的每一个质点所受主动力、约束反力、惯性力构成平衡力系。即
+[ F_s+N_s-m_s\ddot{r_s}=0 ]</description>
+    </item>
+    <item>
+      <title>坐标变换与空间旋转</title>
+      <link>https://www.yuanhao.site/post/robotics/2015-05-15-%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC/</link>
+      <pubDate>Fri, 15 May 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/robotics/2015-05-15-%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC/</guid>
+      <description>&lt;p&gt;这一部分是机器人运动学的基础，在其他领域也有广泛的应用，比如飞行器控制、三维运动捕捉等等。&lt;/p&gt;
+&lt;h2 id=&#34;1-问题提出&#34;&gt;1 问题提出&lt;/h2&gt;
+&lt;p&gt;首先介绍一下问题的来由。&lt;/p&gt;
+&lt;p&gt;不论是机器人还是飞行器还是人体，通常自身的结构都是相对固定的，在这个固定的结构上描述一些位置是非常方便的。例如，我说我在右手手腕关节上戴着一块手表，那么无论我在什么地方无论我的右手摆出了什么姿势，手表相对我的右手小臂的位置都不会改变。如果我精确一点，在右手小臂上建立一个坐标系，那么手表在这个坐标系中的坐标就是不变的。右手小臂坐标系就是我们通常说的固连坐标系，或刚体坐标系。&lt;/p&gt;
+&lt;p&gt;固连坐标系虽然简单，但却是不方便的，因为坐标系的形态老是在变化。例如虽然手表一直在我手腕上的固定位置，但是它在地球上的位置却随着手臂的变化而变化。所以常常会有一个参考坐标系或者叫世界坐标系。这个坐标系是不动的，所以里面的对象可以很方便地描述相对位置。&lt;/p&gt;
+&lt;p&gt;那么问题来了，例如我知道了手表在手臂坐标系的位置和手臂的位置和姿态，如何求它在世界坐标的位置呢？抽象一点就是如何表示两个坐标系的关系，并求出一个坐标中的位置在另一个坐标系中的表示。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>DH方法</title>
+      <link>https://www.yuanhao.site/post/robotics/2015-05-07-dh-method/</link>
+      <pubDate>Thu, 07 May 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/robotics/2015-05-07-dh-method/</guid>
+      <description>&lt;p&gt;DH（Denavit–Hartenberg）方法是用来描述串联机器人构型的有力工具，但是由于涉及到的参数比较多，要搞清楚需要下一定功夫。我也算是先后在3门课里学过DH方法了，但直到最近一次德国外教的课上才算对这套体系有了比较直观的理解。&lt;/p&gt;
+&lt;p&gt;首先，机器人都可以抽象成是由许多的关节和连杆构成的，连杆奇形怪状可长可短，关节也有平动转动。DH方法就是用一套参数化的描述方式来对机器人进行建模，得到&lt;strong&gt;基座&lt;/strong&gt;到&lt;strong&gt;末端执行机构&lt;/strong&gt;的齐次变换矩阵。有了这个矩阵就可以做很多事了，比如：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;末端是一个相机，知道一个物体在相机坐标系中的位置，通过变换矩阵我就能直到该物体与基座的相对位置；&lt;/li&gt;
+&lt;li&gt;知道各个关节的运动状态（转角、位移等）就能知道末端执行器在空间的位置。
+对于一个串联机构，我们可以想象每一级关节连杆是从上一级上长出来的。DH用四个基本的变换（两个平动，两个转动）来描述当前级和上级的关系。最终再把所有的变换合成起来，便得到了从末端到基座的变换。&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+  </channel>
+</rss>

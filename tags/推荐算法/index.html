@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>推荐算法 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="推荐算法" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="推荐算法"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    推荐算法
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">协同滤波和它的子孙们
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>2022年Q4，在项目里接触了一些跟召回相关的工作，但坦白讲做的比较匆忙。整好最近在家带娃，空余时间比较系统地学习了一下，这篇小作文做个总结。
+本文总结的算法都有一个共同的发端，就是大名鼎鼎的协同滤波（collaborative filtering，CF）算法。这个协同只看字面也看不出个所以然，维基百科的解释如下
+协同过滤（collaborative filtering）是一种在推荐系统中广泛使用的技术。 该技术通过分析用户或者事物之间的相似性（“协同”），来预测用户可能感兴趣的内容并将此内容推荐给用户。
+经典CF 最早的CF算法是user CF。这种算法包含两个主要步骤
+对于当前用户，在所有用户中寻找与他最相似的一些用户 用相似用户对item的评价来作为当前用户对item的评价 我做的几个召回渠道也是基于CF的。如果把这个技术用在召回里，就是对于当前user，返回在与之相似的用户中受欢迎的item。这里面用户相似度的评价方式比较重要，例如通过计算两个用户交互过item的Jaccard距离来作为相似度。这种做法在用户集合很大时计算复杂度相当高。在早期的系统里，item的数量可能远远少于用户的数量，并且用户的相似度会随着用户行为的变化而变化。所以有人提出在item与item之间直接计算相似度，这种相似度相对稳定，离线计算好一个相似度关系表之后在线可以直接使用，这样就可以避免相似用户计算这个耗时的步骤，这种做法称为item CF。
+矩阵分解 Matrix Factorization 上面的经典CF算法实际是个间接推荐的方法，人们发现可以从用户和item的交互历史中得到用户和item的关系，从而进行直接推荐。基本的思路是将user-item交互矩阵近似为user矩阵和item矩阵的乘积。具体来说，若用户数为N，item数为M，则交互矩阵为N*M，希望把它近似为N*K和M*K两个矩阵的乘积。K可以远小于N和M，这样相似度的计算复杂度将比jaccard大大降低。实际上也就是获得了K维的user和item的embedding。交互矩阵通常是0,1矩阵（称为implicit feedback data），上面的操作实际上要让有交互的user和item embedding之间的点积接近1，没有交互的embedding点积远离1。
+以下图为例，我们获得了4个用户和5部电影的交互矩阵，右边是矩阵分解之后的结果。左边4*2的矩阵为用户矩阵，在一个二维空间对用户进行表征，上面5*2的矩阵是电影矩阵，在同一个二维空间对电影进行表征。右边的大矩阵是这两个矩阵相乘的结果，和左侧0,1矩阵是比较接近但不完全一致的（毕竟降维了）。对于一个user未交互过的item，我们可以拿user的embedding和item embedding做点积来预测用户发生交互的概率。
+{: .align-center style=“width:80%”} Matrix Factorization示意图 {: .align-caption style=“text-align:center;font-size:smaller”}
+这个算法实际上优化的是下面这个目标
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} |A - U V^T|_F^2. $$
+学过数值分析的话会知道矩阵分解有一些经典算法，例如SVD。但这个交互矩阵A实在是太稀疏且太大了，经典算法比较难处理，因此实用的损失函数是这样
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} \sum_{(i, j) \in \text{obs}} (A_{ij} - \langle U_{i}, V_{j} \rangle)^2 &#43; w_0 \sum_{(i, j) \not \in \text{obs}} (\langle U_i, V_j\rangle)^2....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-23 10:25:03 +0000 UTC'>December 23, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 协同滤波和它的子孙们" href="https://www.yuanhao.site/post/2022-12-23-cf/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

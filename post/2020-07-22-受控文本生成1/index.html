@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>受控文本生成1 | 多头注意力</title>
+<meta name="keywords" content="NLG, NLP">
+<meta name="description" content="关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。
+受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。
+名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}
+文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。
+受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。
+相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。
+Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。
+这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。
+DRG的四种迁移方法 {: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}
+这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。
+$$ s(u,v)=\frac{\text{count}(u, \mathcal{D}v)&#43;\lambda}{(\sum{v&rsquo;\in \mathcal{V},v&rsquo;\neq v}\text{count}(u, \mathcal{D}_{v&rsquo;}))&#43;\lambda} $$
+围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。
+Delete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。
+Retrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。
+Generate 这是最后一步，即获得最终的结果。文章里有四种策略
+Retrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c&#43;a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="受控文本生成1" />
+<meta property="og:description" content="关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。
+受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。
+名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}
+文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。
+受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。
+相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。
+Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。
+这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。
+DRG的四种迁移方法 {: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}
+这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。
+$$ s(u,v)=\frac{\text{count}(u, \mathcal{D}v)&#43;\lambda}{(\sum{v&rsquo;\in \mathcal{V},v&rsquo;\neq v}\text{count}(u, \mathcal{D}_{v&rsquo;}))&#43;\lambda} $$
+围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。
+Delete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。
+Retrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。
+Generate 这是最后一步，即获得最终的结果。文章里有四种策略
+Retrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c&#43;a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2020-07-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-22T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="受控文本生成1"/>
+<meta name="twitter:description" content="关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。
+受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。
+名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}
+文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。
+受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。
+相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。
+Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。
+这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。
+DRG的四种迁移方法 {: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}
+这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。
+$$ s(u,v)=\frac{\text{count}(u, \mathcal{D}v)&#43;\lambda}{(\sum{v&rsquo;\in \mathcal{V},v&rsquo;\neq v}\text{count}(u, \mathcal{D}_{v&rsquo;}))&#43;\lambda} $$
+围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。
+Delete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。
+Retrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。
+Generate 这是最后一步，即获得最终的结果。文章里有四种策略
+Retrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c&#43;a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://www.yuanhao.site/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "受控文本生成1",
+      "item": "https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "受控文本生成1",
+  "name": "受控文本生成1",
+  "description": "关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。\n受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。\n名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=\u0026ldquo;text-align:center;font-size:smaller\u0026rdquo;}\n文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。\n受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。\n相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。\nDelete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。\n这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。\nDRG的四种迁移方法 {: .align-caption style=\u0026ldquo;text-align:center;font-size:smaller\u0026rdquo;}\n这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\\mathcal{D}_v$是某种风格的所有语料，$\\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。\n$$ s(u,v)=\\frac{\\text{count}(u, \\mathcal{D}v)+\\lambda}{(\\sum{v\u0026rsquo;\\in \\mathcal{V},v\u0026rsquo;\\neq v}\\text{count}(u, \\mathcal{D}_{v\u0026rsquo;}))+\\lambda} $$\n围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。\nDelete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\\text{src}})$，即不含AM的句子内容。\nRetrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。\nGenerate 这是最后一步，即获得最终的结果。文章里有四种策略\nRetrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\\text{src}})$替换成$a(x^{\\text{tgt}}, v^{\\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\\text{tgt}}, v^{\\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c+a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。",
+  "keywords": [
+    "NLG", "NLP"
+  ],
+  "articleBody": "关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。\n受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。\n名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=“text-align:center;font-size:smaller”}\n文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。\n受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。\n相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。\nDelete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。\n这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。\nDRG的四种迁移方法 {: .align-caption style=“text-align:center;font-size:smaller”}\n这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\\mathcal{D}_v$是某种风格的所有语料，$\\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。\n$$ s(u,v)=\\frac{\\text{count}(u, \\mathcal{D}v)+\\lambda}{(\\sum{v’\\in \\mathcal{V},v’\\neq v}\\text{count}(u, \\mathcal{D}_{v’}))+\\lambda} $$\n围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。\nDelete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\\text{src}})$，即不含AM的句子内容。\nRetrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。\nGenerate 这是最后一步，即获得最终的结果。文章里有四种策略\nRetrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\\text{src}})$替换成$a(x^{\\text{tgt}}, v^{\\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\\text{tgt}}, v^{\\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c+a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。\n论文针对做测试的三个数据集给出了一些生成结果的例子，我感觉效果还是可以的，毕竟还是RNN，也没有预训练啥的。\nDRG的风格迁移结果 {: .align-caption style=“text-align:center;font-size:smaller”}\nPlug and Play Language Models: A Simple Approach to Controlled Text Generation 来自Uber在ICLR 2020上发表的文章，文章很新，但已经有13次引用。\n跟上一篇文章不同，这篇文章利用一个Attribute Model在概率空间对输出进行操作。\nPPLM方案 {: .align-caption style=“text-align:center;font-size:smaller”}\n标准的语言模型在生成句子时是在每个时间步交替进行下面两步：\n生成输出向量和历史隐向量：$o_{t+1},H_{t+1}=\\text{LM}(x_t, H_t)$ 将输出向量映射成词库概率分布并采样：$x_{t+1}\\sim p_{t+1}=\\text{Softmax}(Wo_{t+1})$ 总体来看，PPLM的方案相比于上一篇文章更简洁一些，简而言之就是在生成器的每个时间步，将历史隐向量往更接近目标风格的方向拉，从而使得新生成的token更符合目标的风格。\n和很多基于梯度的操作一样（例如对抗攻击），这个“拉”的操作是迭代完成的。指引方向的是attribute model，它可以根据输入判断句子含有某种attribute的概率，即$p(a|x)$。在每一次迭代，都将待修改的隐变量往$p$增大的方向拉。用公式写出来就是\n$$ \\Delta H_t \\leftarrow \\Delta H_t+\\alpha \\frac{\\triangledown_{H_t }\\text{log} p(a|H_t+\\Delta H_t)}{\\left | \\triangledown_{H_t }\\text{log} p(a|H_t+\\Delta H_t) \\right |^\\gamma} $$\n使用上面的方法修改$H_t$可以提升$p(a|x)$，但可能会影响生成语言的通顺性。论文采用了两种方法来补救：\n第一种是最小化修改前后$H_t$的KL散度，实际上市在上面的公式上增加了一项，如下图所示； 第二种是融合修改前后的输出概率（post-norm fusion)，即$x_{t+1}\\sim \\frac{1}{\\beta}(\\tilde{p}{t+1}^{\\gamma{gm}}p_{t+1}^{1-\\gamma_{gm}})$。其中$p_{t+1}$和$\\tilde{p}_{t+1}$是修改前后的$H_t$产生的词库概率分布。 PPLM同时考虑增大$p(a|x)$和$p(x)$ {: .align-caption style=“text-align:center;font-size:smaller”}\n文中还提到特性模型除了可以用来更新隐空间向量$H_t$外还可以直接用来指导在文字空间的采样，以获得更好的生成样本。文章里还介绍了如何克服重复生成的问题，与主题关系较小，就不展开了。\n介绍完整体框架现在介绍一下特别重要的特性模型（attribute model）。文中提到了两种。第一种是简单的词袋（BOW）模型，对于给定的关键词${w_1,…,w_k}$，$p(a|x)$计算公式如下：\n$$ \\log p(a|x) =\\log (\\sum_i^k p_{t+1}[w_i]) $$\n第二种就是直接训练一个判别模型了，其实做法很多，在此也不展开。最后来看一下PPLM的生成结果。\nPPLM的生成结果，深红色词是词袋中的词 {: .align-caption style=“text-align:center;font-size:smaller”}\n这篇论文的思路应该是很实用的，正文14页，附录有20页，很多细节都写在附录里，有兴趣的话可以读一读。\n下一期将会介绍更复杂的在隐空间进行控制的方法，下期见👋\n",
+  "wordCount" : "151",
+  "inLanguage": "en",
+  "datePublished": "2020-07-22T00:00:00Z",
+  "dateModified": "2020-07-22T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "多头注意力",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.yuanhao.site/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/post/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      受控文本生成1
+    </h1>
+    <div class="post-meta"><span title='2020-07-22 00:00:00 +0000 UTC'>July 22, 2020</span>&nbsp;·&nbsp;1 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#delete-retrieve-generate-a-simple-approach-to-sentiment-and-style-transfer" aria-label="Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer">Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer</a><ul>
+                        
+                <li>
+                    <a href="#delete" aria-label="Delete">Delete</a></li>
+                <li>
+                    <a href="#retrieve" aria-label="Retrieve">Retrieve</a></li>
+                <li>
+                    <a href="#generate" aria-label="Generate">Generate</a></li></ul>
+                </li>
+                <li>
+                    <a href="#plug-and-play-language-models-a-simple-approach-to-controlled-text-generation" aria-label="Plug and Play Language Models: A Simple Approach to Controlled Text Generation">Plug and Play Language Models: A Simple Approach to Controlled Text Generation</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。</p>
+<p>受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。</p>
+<p><img loading="lazy" src="/assets/control_gen/prisma.png" alt="名噪一时的Prisma是图像风格迁移的代表性应用"  />
+
+名噪一时的Prisma是图像风格迁移的代表性应用
+{: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}</p>
+<p>文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个<a href="https://github.com/fuzhenxin/Style-Transfer-in-Text" title="A Paper List for Style Transfer in Text">Repo</a>。</p>
+<p>受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。</p>
+<p>相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。</p>
+<h4 id="delete-retrieve-generate-a-simple-approach-to-sentiment-and-style-transfer">Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer<a hidden class="anchor" aria-hidden="true" href="#delete-retrieve-generate-a-simple-approach-to-sentiment-and-style-transfer">#</a></h4>
+<p>来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。</p>
+<p>这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。</p>
+<p><img loading="lazy" src="/assets/control_gen/drg.png" alt="DRG的四种迁移方法"  />
+
+DRG的四种迁移方法
+{: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}</p>
+<p>这篇文章的思路很简单，因为它基于一个假设：<strong>通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。</strong> 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。</p>
+<p>$$
+s(u,v)=\frac{\text{count}(u, \mathcal{D}<em>v)+\lambda}{(\sum</em>{v&rsquo;\in \mathcal{V},v&rsquo;\neq v}\text{count}(u, \mathcal{D}_{v&rsquo;}))+\lambda}
+$$</p>
+<p>围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：<code>delete</code>, <code>retrieve</code>和<code>generate</code>。</p>
+<h5 id="delete">Delete<a hidden class="anchor" aria-hidden="true" href="#delete">#</a></h5>
+<p>Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。</p>
+<h5 id="retrieve">Retrieve<a hidden class="anchor" aria-hidden="true" href="#retrieve">#</a></h5>
+<p>这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。</p>
+<h5 id="generate">Generate<a hidden class="anchor" aria-hidden="true" href="#generate">#</a></h5>
+<p>这是最后一步，即获得最终的结果。文章里有四种策略</p>
+<ul>
+<li><strong>Retrieve Only</strong> 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。</li>
+<li><strong>Template Based</strong> 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。</li>
+<li><strong>Delete Only</strong> 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。</li>
+<li><strong>Delete And Retrieve</strong> 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。</li>
+</ul>
+<p>前两种方法是不需要训练的，后两种则需要训练。对于<strong>Delete Only</strong>，使用<strong>重建句子</strong>任务（即训练一个自编码器）来训练。对于<strong>Delete And Retrieve</strong>则复杂一些，为了防止特征迁移的能力退化成句子拼接（c+a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。</p>
+<p>论文针对做测试的三个数据集给出了一些生成结果的例子，我感觉效果还是可以的，毕竟还是RNN，也没有预训练啥的。</p>
+<p><img loading="lazy" src="/assets/control_gen/1result.png" alt="DRG的风格迁移结果"  />
+
+DRG的风格迁移结果
+{: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}</p>
+<h4 id="plug-and-play-language-models-a-simple-approach-to-controlled-text-generation">Plug and Play Language Models: A Simple Approach to Controlled Text Generation<a hidden class="anchor" aria-hidden="true" href="#plug-and-play-language-models-a-simple-approach-to-controlled-text-generation">#</a></h4>
+<p>来自Uber在ICLR 2020上发表的文章，文章很新，但已经有13次引用。</p>
+<p>跟上一篇文章不同，这篇文章利用一个Attribute Model在概率空间对输出进行操作。</p>
+<p><img loading="lazy" src="/assets/control_gen/pplm.png" alt="PPLM方案"  />
+
+PPLM方案
+{: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}</p>
+<p>标准的语言模型在生成句子时是在每个时间步交替进行下面两步：</p>
+<ul>
+<li>生成输出向量和历史隐向量：$o_{t+1},H_{t+1}=\text{LM}(x_t, H_t)$</li>
+<li>将输出向量映射成词库概率分布并采样：$x_{t+1}\sim p_{t+1}=\text{Softmax}(Wo_{t+1})$</li>
+</ul>
+<p>总体来看，PPLM的方案相比于上一篇文章更简洁一些，简而言之就是在生成器的每个时间步，将历史隐向量往更接近目标风格的方向拉，从而使得新生成的token更符合目标的风格。</p>
+<p>和很多基于梯度的操作一样（例如对抗攻击），这个“拉”的操作是迭代完成的。指引方向的是attribute model，它可以根据输入判断句子含有某种attribute的概率，即$p(a|x)$。在每一次迭代，都将待修改的隐变量往$p$增大的方向拉。用公式写出来就是</p>
+<p>$$
+\Delta H_t \leftarrow \Delta H_t+\alpha \frac{\triangledown_{H_t }\text{log} p(a|H_t+\Delta H_t)}{\left | \triangledown_{H_t }\text{log} p(a|H_t+\Delta H_t) \right |^\gamma}
+$$</p>
+<p>使用上面的方法修改$H_t$可以提升$p(a|x)$，但可能会影响生成语言的通顺性。论文采用了两种方法来补救：</p>
+<ul>
+<li>第一种是最小化修改前后$H_t$的KL散度，实际上市在上面的公式上增加了一项，如下图所示；</li>
+<li>第二种是融合修改前后的输出概率（post-norm fusion)，即$x_{t+1}\sim \frac{1}{\beta}(\tilde{p}<em>{t+1}^{\gamma</em>{gm}}p_{t+1}^{1-\gamma_{gm}})$。其中$p_{t+1}$和$\tilde{p}_{t+1}$是修改前后的$H_t$产生的词库概率分布。</li>
+</ul>
+<p><img loading="lazy" src="/assets/control_gen/pplm2.png" alt="PPLM同时考虑增大$p(a|x)$和$p(x)$"  />
+
+PPLM同时考虑增大$p(a|x)$和$p(x)$
+{: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}</p>
+<p>文中还提到特性模型除了可以用来更新隐空间向量$H_t$外还可以直接用来指导在文字空间的采样，以获得更好的生成样本。文章里还介绍了如何克服重复生成的问题，与主题关系较小，就不展开了。</p>
+<p>介绍完整体框架现在介绍一下特别重要的特性模型（attribute model）。文中提到了两种。第一种是简单的词袋（BOW）模型，对于给定的关键词${w_1,&hellip;,w_k}$，$p(a|x)$计算公式如下：</p>
+<p>$$
+\log p(a|x) =\log (\sum_i^k p_{t+1}[w_i])
+$$</p>
+<p>第二种就是直接训练一个判别模型了，其实做法很多，在此也不展开。最后来看一下PPLM的生成结果。</p>
+<p><img loading="lazy" src="/assets/control_gen/pplm_result.png" alt="PPLM的生成结果，深红色词是词袋中的词"  />
+
+PPLM的生成结果，深红色词是词袋中的词
+{: .align-caption style=&ldquo;text-align:center;font-size:smaller&rdquo;}</p>
+<p>这篇论文的思路应该是很实用的，正文14页，附录有20页，很多细节都写在附录里，有兴趣的话可以读一读。</p>
+<p>下一期将会介绍更复杂的在隐空间进行控制的方法，下期见👋</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://www.yuanhao.site/tags/nlg/">NLG</a></li>
+      <li><a href="https://www.yuanhao.site/tags/nlp/">NLP</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>受控文本生成2</span>
+  </a>
+  <a class="next" href="https://www.yuanhao.site/post/2020-07-08-tweet/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Tweet Sentiment Extraction比赛总结</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 受控文本生成1 on x"
+            href="https://x.com/intent/tweet/?text=%e5%8f%97%e6%8e%a7%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%901&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f&amp;hashtags=NLG%2cNLP">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 受控文本生成1 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f&amp;title=%e5%8f%97%e6%8e%a7%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%901&amp;summary=%e5%8f%97%e6%8e%a7%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%901&amp;source=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 受控文本生成1 on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f&title=%e5%8f%97%e6%8e%a7%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%901">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 受控文本生成1 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 受控文本生成1 on whatsapp"
+            href="https://api.whatsapp.com/send?text=%e5%8f%97%e6%8e%a7%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%901%20-%20https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 受控文本生成1 on telegram"
+            href="https://telegram.me/share/url?text=%e5%8f%97%e6%8e%a7%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%901&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 受控文本生成1 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%e5%8f%97%e6%8e%a7%e6%96%87%e6%9c%ac%e7%94%9f%e6%88%901&u=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2020-07-22-%25E5%258F%2597%25E6%258E%25A7%25E6%2596%2587%25E6%259C%25AC%25E7%2594%259F%25E6%2588%25901%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

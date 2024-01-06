@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>MIPS | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/mips/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/mips/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="MIPS" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/mips/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MIPS"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    MIPS
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">最近邻搜索，MIPS，LSH和ALSH
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上一篇介绍REALM的文章对文中提到的Maximum Inner Product Search没有作充分的介绍。发出去的标题已经没法改了，这篇文章介绍一下MIPS和最近邻搜索问题，以及两个相关的算法。
+问题定义 MIPS的定义很简单，假设你有一堆d维向量，组成集合X，现在输入了一个同样维度的查询向量q(query)，请从X中找出一个p，使得p和q的点积在集合X是最大的。用公式写出来就是
+$$p=\mathop{\arg\max}_{x \in X}x^Tq$$
+这个问题和最近邻问题很像，最近邻问题只要把上面的定义改成找一个p使得p和q的距离最小，假设这个距离是欧氏距离，则
+$$p = \mathop{\arg\min}_{x \in X}\left |q-x\right|^2=(\left | x \right |^2 – 2q^Tx)$$
+如果X中的向量模长都一样，那两个问题其实是等价的。然而在很多实际场景例如BERT编码后的句向量、推荐系统里的各种Embedding等，这个约束是不满足的。
+最近邻搜索其实应用非常广泛，如图片检索、推荐系统、问答等等。以问答匹配为例，虽然我们可以用BERT这样的大型模型获得很好的准确度，但如果用BERT直接对语料库中的所有问题进行计算，将耗费大量的时间。所以可以先用关键词检索或者向量检索从语料库里召回一些候选语料后再做高精度匹配。
+朴素的算法 对于MIPS问题，一个直观的蛮力算法就是计算出所有相关的内积，然后将内积排序，找到最大的那个。对于最近邻问题其实也类似，即使X中向量模长各不相同，也可以提前计算出来，并不会增加排序的时间复杂度。
+内积的计算可以转换成一个矩阵乘法，在CPU和GPU上都有大量的高效实现。当X中有N个向量时，时间复杂度是O(Nd)，当N不大的时候是可以接受的，但是通常在工业界的大规模系统中，X的规模往往很大，朴素算法就显得力不从心。
+Locality-sensitive hashing 对于某些距离度量（例如欧式距离，cosine距离）下的最近邻问题，可以使用LSH算法来解决。LSH的思路就像下图示意的那样，用hash函数把高维空间的点分到几个桶里去，从而减少距离的计算量。
+跟普通的哈希函数不同，这个哈希函数是Locality-sensitive的。具体地说就是它有一个神奇的特点：在空间中离得近的点被分到同一个桶的概率大，离得远的点则大概率被分到不同的桶里去。或者说对于两个点x和y，他们被哈希函数分到同一个桶的概率随着距离的增大单调递减。
+这样在查询的时候，只需要精确地比较和查询向量q处在同一个桶里的那些x。如果桶足够多，那便可以将N大大降低，从而提高查询速度。但需要注意的是，LSH是一个近似算法，有可能产生桶内的向量其实都不是最优解的情况，不同哈希函数发生这种情况的概率都不一样，也是作为评价哈希函数好坏的重要依据之一，对这部分感兴趣的朋友可以读参考文献。
+下面举一个具体的例子来解释一下LSH。假设某个最近邻问题考虑的距离度量是cosine距离，有一个满足要求的LSH函数（变换），称为Random Projection。
+如上图所示，其过程很好理解：
+随机取一个空间中的超平面将空间分为两半，X内位于某一半的点标为0，其他标为1； 重复第一步K次。 完成之后，X中的每个点便得到了一个由K个0，1组成的表示（signature）。例如重复了K=32次，那每个点都被分到了一个用一个int32类型的整数编号的桶里。如果这些点在空间中分布足够均匀，那么我们将可以期望每个桶里只有N/2^K个点，当K～logN，则查询的时间复杂度就约为O(dlogN)。整个过程构建出了一张哈希表，由于LSH可能会错过最优解，一个可行的增强鲁棒性的做法是用同样的方法多构造几张哈希表，借助随机的力量来降低犯错的概率。这里有一个讲解LSH的视频，可谓短小精悍，直观易懂，推荐给大家。
+LSH看上去相对于朴素算法确实前进了一大步。但别高兴得太早，要达到O(dlogN)的效果必须服从那个很强的假设。而点在空间中分布足够均匀往往是不太现实的。除此之外，一个LSH只能适用于某些距离度量，对于MIPS，找不到符合要求的LSH。
+Asymmetric LSH(ALSH) 论文里证明了找不到可用于MIPS问题的LSH函数，但他们发现对LSH稍作点改动即可将MIPS问题转变为欧式距离下的最近邻搜索问题。改动的关键就在于Asymmetric这个词。在LSH算法中，对查询向量q和X中的向量做的是同样（对称） 的变换，而在ALSH中作者对两者使用了 不同（非对称） 的变换。简单起见，假设查询向量q的模长是1。对于X，先做一个放缩变换使得X中所有向量x的所有元素都小于1。然后对X中的向量进行变换P(x)，对查询向量q做变换Q(x)，P和Q的定义如下：
+$$P(x) = [x; \left | x \right |_2^{2^1}; \left | x \right |_2^{2^2},…,\left | x \right |_2^{2^m}]\ Q(x) = [x;\frac{1}{2};\frac{1}{2},…,\frac{1}{2}]$$
+可以发现，P和Q虽然变换不同，但都会使输入向量增加m维。进一步观察可以得到
+$$Q(q)^TP(x)=q^Tx&#43;\frac{1}{2}(\left | x \right |_2^{2^1}&#43; \left | x \right |_2^{2^2}]&#43;…&#43;\left | x \right |_2^{2^m})\ \left | P(x) \right |_2^2=\left | x \right |_2^{2^1}&#43; \left | x \right |_2^{2^2}]&#43;…&#43;\left | x \right |_2^{2^{m&#43;1}}$$...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-03-07 00:00:00 +0000 UTC'>March 7, 2020</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 最近邻搜索，MIPS，LSH和ALSH" href="https://www.yuanhao.site/post/2020-03-07-mips/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

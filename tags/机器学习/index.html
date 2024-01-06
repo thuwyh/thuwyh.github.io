@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>机器学习 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="机器学习" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="机器学习"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    机器学习
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">协同滤波和它的子孙们
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>2022年Q4，在项目里接触了一些跟召回相关的工作，但坦白讲做的比较匆忙。整好最近在家带娃，空余时间比较系统地学习了一下，这篇小作文做个总结。
+本文总结的算法都有一个共同的发端，就是大名鼎鼎的协同滤波（collaborative filtering，CF）算法。这个协同只看字面也看不出个所以然，维基百科的解释如下
+协同过滤（collaborative filtering）是一种在推荐系统中广泛使用的技术。 该技术通过分析用户或者事物之间的相似性（“协同”），来预测用户可能感兴趣的内容并将此内容推荐给用户。
+经典CF 最早的CF算法是user CF。这种算法包含两个主要步骤
+对于当前用户，在所有用户中寻找与他最相似的一些用户 用相似用户对item的评价来作为当前用户对item的评价 我做的几个召回渠道也是基于CF的。如果把这个技术用在召回里，就是对于当前user，返回在与之相似的用户中受欢迎的item。这里面用户相似度的评价方式比较重要，例如通过计算两个用户交互过item的Jaccard距离来作为相似度。这种做法在用户集合很大时计算复杂度相当高。在早期的系统里，item的数量可能远远少于用户的数量，并且用户的相似度会随着用户行为的变化而变化。所以有人提出在item与item之间直接计算相似度，这种相似度相对稳定，离线计算好一个相似度关系表之后在线可以直接使用，这样就可以避免相似用户计算这个耗时的步骤，这种做法称为item CF。
+矩阵分解 Matrix Factorization 上面的经典CF算法实际是个间接推荐的方法，人们发现可以从用户和item的交互历史中得到用户和item的关系，从而进行直接推荐。基本的思路是将user-item交互矩阵近似为user矩阵和item矩阵的乘积。具体来说，若用户数为N，item数为M，则交互矩阵为N*M，希望把它近似为N*K和M*K两个矩阵的乘积。K可以远小于N和M，这样相似度的计算复杂度将比jaccard大大降低。实际上也就是获得了K维的user和item的embedding。交互矩阵通常是0,1矩阵（称为implicit feedback data），上面的操作实际上要让有交互的user和item embedding之间的点积接近1，没有交互的embedding点积远离1。
+以下图为例，我们获得了4个用户和5部电影的交互矩阵，右边是矩阵分解之后的结果。左边4*2的矩阵为用户矩阵，在一个二维空间对用户进行表征，上面5*2的矩阵是电影矩阵，在同一个二维空间对电影进行表征。右边的大矩阵是这两个矩阵相乘的结果，和左侧0,1矩阵是比较接近但不完全一致的（毕竟降维了）。对于一个user未交互过的item，我们可以拿user的embedding和item embedding做点积来预测用户发生交互的概率。
+{: .align-center style=“width:80%”} Matrix Factorization示意图 {: .align-caption style=“text-align:center;font-size:smaller”}
+这个算法实际上优化的是下面这个目标
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} |A - U V^T|_F^2. $$
+学过数值分析的话会知道矩阵分解有一些经典算法，例如SVD。但这个交互矩阵A实在是太稀疏且太大了，经典算法比较难处理，因此实用的损失函数是这样
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} \sum_{(i, j) \in \text{obs}} (A_{ij} - \langle U_{i}, V_{j} \rangle)^2 &#43; w_0 \sum_{(i, j) \not \in \text{obs}} (\langle U_i, V_j\rangle)^2....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-12-23 10:25:03 +0000 UTC'>December 23, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 协同滤波和它的子孙们" href="https://www.yuanhao.site/post/2022-12-23-cf/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">面向Meta全公司工程师的AI优化平台解析
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>原作者：Igor Markov, Norm Zhou
+人工智能是使现代软件系统和产品尽良好运行的一个重要部分，从改善用户体验到使计算基础设施更有效率都能看见AI的影子。无论是减少延迟，提高视频流的质量，还是精简界面以满足特定人的需求，今天的人工智能往往比人类精心构建的启发式策略更有效。但是，为了在我们的产品中更有效地利用人工智能，我们需要解决几个挑战：系统必须适应没有机器学习背景的软件工程师；它必须提供机制，为许多不同的产品目标进行优化，这可能不同于封闭形式的机器学习损失函数；它必须区分数据中的因果关系；它必须有效地扩展，以训练、托管和监测大量的人工智能模型。
+为了满足Meta公司的这些需求，我们建立了一个端到端的人工智能平台，名为Looper，具有易于使用的优化、个性化和反馈收集的API。Looper支持整个机器学习的生命周期，从模型训练、部署和推理一直到产品的评估和调整。与其围绕人工智能模型重建我们现有的产品，Looper使我们能够升级它们，使用人工智能进行个性化优化。Looper平台目前承载了700个AI模型，每秒产生400万个AI输出。
+让智能策略为应用程序所用 Meta的不同服务每天有数十亿人在使用，每个人都有不同的兴趣和偏好。Looper使我们能够以前所未有的规模定制其中的许多 “开箱即用 “的服务，而不需要复杂的专业代码。
+让使用产品的人在用户界面菜单上有几十个选择，会使产品失去吸引力，无论它提供多少价值。但不同的人对菜单的偏好是不同的。同样，适时地将可能被用户浏览的内容预取到移动设备上，可能会极大地改善我们产品的用户体验，但要做到这一点而不使设备的硬件资源不堪重负，需要准确地预测什么会是最感兴趣的。
+为了以可扩展的方式支持实时智能策略，Looper提供了几个功能。
+Looper的目标是为具有适度数据规模和模型复杂性的用例提供易用性和快速部署模型。 它支持各种模型类型，托管和训练众多模型和决策策略。 它通过使用监督学习或强化学习，支持广泛的机器学习任务（分类、估计、价值和序列预测、排序、planning）。结合模型管理基础设施，我们的自动化工具（AutoML）选择模型和超参数以平衡模型质量、大小、推理时间等。Looper涵盖了从数据源到产品影响的范围，通过因果实验进行评估和优化。 它是一个声明式的人工智能系统，这意味着产品工程师只需要声明他们想要的功能，系统就会根据声明来填充软件的实现。在内部，Looper依赖于我们的策略蓝图抽象，它将特征、标签、模型和决策策略的配置合二为一，并维护这种联合配置的多个版本。这支持更全面的优化，捕捉不同版本之间的兼容性，并实现智能策略的整个生命周期的免编码管理。蓝图能够使用强大的实验优化系统对黑盒产品指标进行垂直优化。 其他人工智能平台通常以批处理模式进行离线推理，而Looper则是实时操作。 许多人工智能系统使用统一的数据工作，如像素或文本，但不同的产品往往有非常不同的元数据，往往来自不同的来源。此外，元数据的模式变化很快，需要定期在新数据上重新训练人工智能模型。 A/B测试，以评估许多不同类型的模型和决策规则，包括那些由上下文bandit使用的模型，以模拟一个或多个目标的预测的不确定性；或强化学习，以优化长期、累积的目标。 与传统的端到端人工智能系统不同，Looper使Meta公司的工程师和其他人能够跟踪一个模型在软件栈中的实际使用情况，并对建模框架的所有方面进行实验–从指标选择到策略优化的所有过程。为了做到这一点，Looper将常见的端到端定义扩展到软件层，这样，模型架构、特征选择参数可以在模型质量和计算资源之间进行多目标权衡优化。为了优化长期的产品目标，工程师可以调整在做实时决策时对不同输入的重视程度。我们的平台使得使用应用于整个管道的AutoML技术来优化这些和其他参数成为可能。 用于部署智能策略的Looper平台 与用于视觉、语音和自然语言处理的重量级人工智能模型不同的是，Looper使用的是可以重新训练并在共享基础设施上快速大量部署的模型，这些模型有利于离线推理和批量处理。我们的平台将用户互动和系统互动的元数据解释为监督学习的标签或强化学习的奖励。
+Looper追求的是快速上线、稳健部署和低能耗的多种智能策略的维护，其中的积极影响是直接在应用方面进行测量和优化。应用程序代码与平台代码分离，Looper利用现有的水平AI平台，如PyTorch和Ax，为机器学习任务提供可互换的模型。
+为了使智能策略获得成功，我们需要一种方法来评估它们，并在结果不够好时加以改进。这种评估是基于产品指标进行的。在某些情况下，每个决策都可以被检查，因此，好的和差的决策可以作为智能策略学习的例子（通过监督学习）。然而，有些产品指标追踪的是长期目标（如每日活跃用户），无法追踪到具体的决策。这两种情况都可以由Looper来处理，而使用实时数据则尤为重要。访问Meta的监控基础设施有助于发现不可预见的副作用。在我们的平台上，产品开发者定义决策空间，允许平台自动选择模型类型和超参数设置。在不影响用户的情况下，对模型进行训练和评估，并对其进行改进，直至可以部署。在产品使用前，新训练的模型会被关起来（部署在影子流量上）–这种模型在记录的特征和观测值的抽样子集上进行评估，并计算出离线质量指标（例如回归任务的MSE）。这有助于避免在部署较新的模型时降低模型质量。
+智能策略的应用和影响 我们的垂直机器学习平台承载了来自水平平台的中等规模的模型，以便改善软件系统的各个方面。这些模型的部署只需很少的工程努力，并且不需要特定模型的基础设施来维护。Looper目前被Meta公司的90多个产品团队使用，这些团队部署了690个模型，每秒进行400万次预测。
+应用案例可分为五类，按频率递减排列：
+个性化体验是根据用户的参与历史而定制的。例如，一个产品可能只向那些可能使用它的人突出显示与购物有关的内容（但这种内容所有用户都可以通过菜单访问）。 排名对项目进行排序，以提高用户的效用，例如，为浏览者提供个性化的候选项目。 根据预测的使用可能性，预取/预计算数据/资源（4.1节）。 通知/提示可以只发送给认为有帮助的用户。 值估计预测回归任务，例如，数据查询的延迟或内存使用。 下图按资源类别对活跃的Looper用例的资源消耗（Y轴上的服务器数量）进行了比较。
+各个产品团队的人工智能专业知识各不相同，从初学者到经验丰富的人工智能工程师都有。而使用Looper平台的团队中只有15%为人工智能工程师。对于没有生产人工智能经验的团队来说，一个易于使用的人工智能平台往往是采用的决定性因素，而人工智能的投资在证明有用后继续进行。我们的平台在高级服务背后处理关于软件升级、日志、监控等问题，并释放出巨大的生产力改进。对于有经验的人工智能工程师来说，智能策略平台通过自动化重复性的耗时工作来提高生产力：编写数据库查询，实施数据管道，设置监控和警报。与专精型的系统相比，它可以帮助产品开发人员推出更多的AI用例。无论之前是否有人工智能经验，成功的平台采用者在短短几天内就配置了最初的机器学习模型，迅速开始收集训练数据，然后在短短几个月内完善他们的模型并推出新产品。
+让工程师和产品开发人员更容易实现规模化的人工智能 将产品决策的自我优化智能策略嵌入到软件系统中，从而提高用户体验，优化资源利用，并支持新的功能，这其中存在巨大的机会。我们的人工智能平台Looper解决了产品驱动的端到端机器学习系统的复杂性，促进了智能策略的大规模部署。它在数据可用性、简易配置、明智地使用可用资源、减少工程努力和确保产品影响方面提供了直接、切实的好处。平台采用者尤其被通过因果推理和资源开销测量对产品影响评估的广泛支持所吸引。
+Looper使软件工程师更容易获得智能策略，并使产品团队能够以自我服务的方式建立、部署和改进人工智能驱动的能力，而无需人工智能专业知识。我们将继续开发这个平台，以便我们能够以新的方式利用人工智能来改善Meta的产品和服务。</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-04-24 10:25:03 +0000 UTC'>April 24, 2022</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 面向Meta全公司工程师的AI优化平台解析" href="https://www.yuanhao.site/post/2022-04-24-looper/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

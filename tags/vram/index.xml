@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>VRAM on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/vram/</link>
+    <description>Recent content in VRAM on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 15 Apr 2021 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/vram/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Training large model with your GPU</title>
+      <link>https://www.yuanhao.site/post/2021-04-15-save-vram/</link>
+      <pubDate>Thu, 15 Apr 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-04-15-save-vram/</guid>
+      <description>In the last post, I shared my story of the Kaggle Jigsaw Multilingual Toxic Comment Classification competition. At that time, I only had a 1080Ti with 11G VRAM, and this made it impossible for me to train the SOTA Roberta-XLM large model which requires larger VRAM than what I had. In this post, I want to share some tips about how to reduce the VRAM usage so that you can train larger deep neural networks with your GPU.</description>
+    </item>
+  </channel>
+</rss>

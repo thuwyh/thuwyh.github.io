@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cookbook on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/cookbook/</link>
+    <description>Recent content in cookbook on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 04 May 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/cookbook/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenAI官方出品的ChatGPT调校指南你读了吗</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</link>
+      <pubDate>Thu, 04 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</guid>
+      <description>作为一名Prompt Engineer，每天都在跟GPT打交道，时常被他惊艳，也看过很多模型失效的案例。在不精调的情况下，prompt基本上是影响效果的唯一因素了，虽然网上有很多Prompt编写指南，但我认为OpenAI出品的这份，你一定要看一下。
+这篇文章就给大家划一下重点。
+ChatGPT基操 主要包含在How to work with large language models这个文档里，同时适合网页和API用户。首先，介绍了向ChatGPT提问的三种主要范式，一种是直接给指令，例如
+Extract the name of the author from the quotation below. “Some humans theorize that intelligent species go extinct before they can expand into outer space. If they&amp;#39;re correct, then the hush of the night sky is the silence of the graveyard.” ― Ted Chiang, Exhalation 模型将会输出
+Ted Chiang 另一种是将指令转化为一个补全(completion)问题，例如上面那个指令改为
+“Some humans theorize that intelligent species go extinct before they can expand into outer space.</description>
+    </item>
+  </channel>
+</rss>

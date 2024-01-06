@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>运动学 on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/%E8%BF%90%E5%8A%A8%E5%AD%A6/</link>
+    <description>Recent content in 运动学 on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 15 May 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/%E8%BF%90%E5%8A%A8%E5%AD%A6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>坐标变换与空间旋转</title>
+      <link>https://www.yuanhao.site/post/robotics/2015-05-15-%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC/</link>
+      <pubDate>Fri, 15 May 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/robotics/2015-05-15-%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E4%B8%8E%E7%A9%BA%E9%97%B4%E6%97%8B%E8%BD%AC/</guid>
+      <description>&lt;p&gt;这一部分是机器人运动学的基础，在其他领域也有广泛的应用，比如飞行器控制、三维运动捕捉等等。&lt;/p&gt;
+&lt;h2 id=&#34;1-问题提出&#34;&gt;1 问题提出&lt;/h2&gt;
+&lt;p&gt;首先介绍一下问题的来由。&lt;/p&gt;
+&lt;p&gt;不论是机器人还是飞行器还是人体，通常自身的结构都是相对固定的，在这个固定的结构上描述一些位置是非常方便的。例如，我说我在右手手腕关节上戴着一块手表，那么无论我在什么地方无论我的右手摆出了什么姿势，手表相对我的右手小臂的位置都不会改变。如果我精确一点，在右手小臂上建立一个坐标系，那么手表在这个坐标系中的坐标就是不变的。右手小臂坐标系就是我们通常说的固连坐标系，或刚体坐标系。&lt;/p&gt;
+&lt;p&gt;固连坐标系虽然简单，但却是不方便的，因为坐标系的形态老是在变化。例如虽然手表一直在我手腕上的固定位置，但是它在地球上的位置却随着手臂的变化而变化。所以常常会有一个参考坐标系或者叫世界坐标系。这个坐标系是不动的，所以里面的对象可以很方便地描述相对位置。&lt;/p&gt;
+&lt;p&gt;那么问题来了，例如我知道了手表在手臂坐标系的位置和手臂的位置和姿态，如何求它在世界坐标的位置呢？抽象一点就是如何表示两个坐标系的关系，并求出一个坐标中的位置在另一个坐标系中的表示。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>DH方法</title>
+      <link>https://www.yuanhao.site/post/robotics/2015-05-07-dh-method/</link>
+      <pubDate>Thu, 07 May 2015 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/robotics/2015-05-07-dh-method/</guid>
+      <description>&lt;p&gt;DH（Denavit–Hartenberg）方法是用来描述串联机器人构型的有力工具，但是由于涉及到的参数比较多，要搞清楚需要下一定功夫。我也算是先后在3门课里学过DH方法了，但直到最近一次德国外教的课上才算对这套体系有了比较直观的理解。&lt;/p&gt;
+&lt;p&gt;首先，机器人都可以抽象成是由许多的关节和连杆构成的，连杆奇形怪状可长可短，关节也有平动转动。DH方法就是用一套参数化的描述方式来对机器人进行建模，得到&lt;strong&gt;基座&lt;/strong&gt;到&lt;strong&gt;末端执行机构&lt;/strong&gt;的齐次变换矩阵。有了这个矩阵就可以做很多事了，比如：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;末端是一个相机，知道一个物体在相机坐标系中的位置，通过变换矩阵我就能直到该物体与基座的相对位置；&lt;/li&gt;
+&lt;li&gt;知道各个关节的运动状态（转角、位移等）就能知道末端执行器在空间的位置。
+对于一个串联机构，我们可以想象每一级关节连杆是从上一级上长出来的。DH用四个基本的变换（两个平动，两个转动）来描述当前级和上级的关系。最终再把所有的变换合成起来，便得到了从末端到基座的变换。&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+  </channel>
+</rss>

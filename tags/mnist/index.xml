@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MNIST on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/mnist/</link>
+    <description>Recent content in MNIST on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 09 Mar 2022 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/mnist/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>围观特斯拉总监把玩MNIST</title>
+      <link>https://www.yuanhao.site/post/2022-03-09-%E5%9B%B4%E8%A7%82%E7%89%B9%E6%96%AF%E6%8B%89%E6%80%BB%E7%9B%91%E6%8A%8A%E7%8E%A9mnist/</link>
+      <pubDate>Wed, 09 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-09-%E5%9B%B4%E8%A7%82%E7%89%B9%E6%96%AF%E6%8B%89%E6%80%BB%E7%9B%91%E6%8A%8A%E7%8E%A9mnist/</guid>
+      <description>最近大名鼎鼎的特斯拉AI总监Andrej Karpathy发了篇博客（看来写博客是个好习惯），叫Deep Neural Nets: 33 years ago and 33 years from now。饭后花了点时间围观了一下，写得确实挺有意思。
+他先尝试复现了一下深度学习开山模型LeNet，然后尝试利用这33年人类的新知识去改进模型的效果。他干了这么几个事情：
+Baseline. eval: split train. loss 4.073383e-03. error 0.62%. misses: 45 eval: split test . loss 2.838382e-02. error 4.09%. misses: 82 把原文的MSE loss换成如今多分类的标配Cross Entropy Loss eval: split train. loss 9.536698e-06. error 0.00%. misses: 0 eval: split test . loss 9.536698e-06. error 4.38%. misses: 87 首战失败，怀疑SGD优化器不给力，换成了AdamW，并使用“大家都知道”的最优学习率3e-4，还加了点weight decay eval: split train. loss 0.000000e+00. error 0.00%. misses: 0 eval: split test .</description>
+    </item>
+  </channel>
+</rss>

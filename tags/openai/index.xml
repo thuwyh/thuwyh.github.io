@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OpenAI on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/openai/</link>
+    <description>Recent content in OpenAI on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 04 May 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/openai/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenAI官方出品的ChatGPT调校指南你读了吗</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</link>
+      <pubDate>Thu, 04 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</guid>
+      <description>作为一名Prompt Engineer，每天都在跟GPT打交道，时常被他惊艳，也看过很多模型失效的案例。在不精调的情况下，prompt基本上是影响效果的唯一因素了，虽然网上有很多Prompt编写指南，但我认为OpenAI出品的这份，你一定要看一下。
+这篇文章就给大家划一下重点。
+ChatGPT基操 主要包含在How to work with large language models这个文档里，同时适合网页和API用户。首先，介绍了向ChatGPT提问的三种主要范式，一种是直接给指令，例如
+Extract the name of the author from the quotation below. “Some humans theorize that intelligent species go extinct before they can expand into outer space. If they&amp;#39;re correct, then the hush of the night sky is the silence of the graveyard.” ― Ted Chiang, Exhalation 模型将会输出
+Ted Chiang 另一种是将指令转化为一个补全(completion)问题，例如上面那个指令改为
+“Some humans theorize that intelligent species go extinct before they can expand into outer space.</description>
+    </item>
+    <item>
+      <title>今天被OpenAI爆了</title>
+      <link>https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/</link>
+      <pubDate>Tue, 28 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/</guid>
+      <description>今天第一次体验到来自大语言模型的压力。
+最近在做一个语义匹配的小任务，选择的方案是用2021年的SOTA模型SimCSE在我们的领域数据上先进一步预训练，然后再用任务数据finetune降维。前几天的时候还自我感觉良好，因为比之前的模型效果好，还修复了老语言模型的一些明显badcase。
+但是今天，我们用openai的embedding模型也试了一下，recall指标直接翻了一倍。当时看到结果我都惊呆了。这个模型一千个token只要0.0004美元，相当的便宜，而且开箱即用。
+之前我看到网上帖子说NLP工程师失业啥的还觉得有点夸张，现在感觉还真有可能。
+首先这个事情是有正反馈的，作为一款公开的产品，而且这么便宜，你不用别人也会用，你如果没法超过他（现在看起来确实不容易），那就只能也用，不然产品竞争力就会出问题。
+一旦大规模用，那很多NLP问题的处理范式真的会改变，以前大家在不同场景finetune类似bert这样的小模型，但现在可能会变成在OpenAI embedding基础上finetune最上面的输出层，例如分类层。一个底座可以支撑好几个上层需求。这样的话需要的人力大大减少，公司的inference负担也大大降低。虽然在OpenAI那花了些钱，但算下来大概率是比原来划算的。
+当然这样的方案也有一些问题，例如公司的数据就都让OpenAI知道了，并且OpenAI目前不太稳定，稳定性上有点不可控。
+那作为公司，感觉除了之前大家都看到的在NLG上投入大模型这条独木桥，未来在NLU上投入大模型的应该会有很多。自己跑个10B量级的模型作为底座，做到OpenAI的8、9成应该是个比较好的选择。朋友们，赶紧学起来啊，不然真要成为纺织女工了。</description>
+    </item>
+    <item>
+      <title>ChatGPT在内容创作行业，依据现有的法律，它创作的内容是否享有著作权？如不能，如何界定内容的归属？</title>
+      <link>https://www.yuanhao.site/post/2023-02-03-chatgpt6/</link>
+      <pubDate>Fri, 03 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-03-chatgpt6/</guid>
+      <description>很实际的问题，之前并不是很了解。看了一些资料勉强答一波。
+首先，我国《著作权法》所保护的对象是“作品”，其定义在第3条进行了列明，即“文学、艺术和科学领域内具有独创性并能以一定形式表现的智力成果”。在这里跟本题最相关的一个作品属性是“独创性”。根据资料2的论述，法律界对目前AI的认识我感觉还是比较到位的，即当前的所谓AI并不具备创造性，因此ChatGPT之类的AI工具，性质为“帮助自然人进行创作活动的工具”，其自身无法自主思考，不是进行自主创作主体，AI软件对文章的生成是开发者意志的延伸。
+《著作权法》第2条规定了“中国公民、法人或者非法人组织的作品，不论是否发表，依照本法享有著作权”。因此著作权仅能由民事主体享有，但AI并不是民事主体，因此AI本身无法作为作品的作者，但使用AI的人是可以的。
+至于人是否可以享有AI生产作品的著作权，也要根据实际情况判定。主要的依据也是上面的独创性。
+下面是两个案例，第一个是不享有著作权的
+在北京知识产权法院于2020年审结的“北京菲林律所诉百度公司著作权侵权案”中，菲林律所发布的大数据报告被他人在未经同意的情况下转载至百度百家号，菲林律所由此认为百度公司侵犯了其著作权中的信息网络传播权，遂向百度公司主张侵权赔偿。法院经审理，认为菲林律所所提交的大数据报告仅是根据现有数据搜集并分析而形成，不具备独创性，不属于《著作权法》的保护范围。
+第二个是受著作权保护的
+2018年8月，腾讯公司在其下属网站中发布了一篇由腾讯旗下人工智能写作软件Dreamwriter生成的新闻，而该文在当日即被网贷之家转载，腾讯公司遂向法院起诉。法院经审理认为，相关文章“外在表现符合文字作品的形式要求，其表现的内容体现出对当日上午相关股市信息、数据的选择、分析、判断，文章结构合理、表达逻辑清晰，具有一定的独创性”，同时认为“该文章的表现形式是由原告主创团队相关人员个性化的安排与选择所决定的，其表现形式并非唯一，具有一定的独创性”，并最终确认该篇由人工智能软件生成的文章属于《著作权法》下的“文字作品”，受到我国法律的保护。
+最后，我想说，权利和义务是伴随的。ChatGPT之类的工具，经过大量语料训练，有一定概率会有侵犯他人著作权的情况出现。作为使用者，平常玩玩无所谓，一旦用于正式文本的产出一定要把好关。避免自己陷入侵权的窘境。
+参考资料
+https://www.sohu.com/a/592470873_398071
+http://www.anlilaw.com/100031/200
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>依据现有 AI 的发展速度，类似 ChatGPT 这样的产品，距诞生自我意识还有多远？</title>
+      <link>https://www.yuanhao.site/post/2023-02-03-chatgpt5/</link>
+      <pubDate>Fri, 03 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-03-chatgpt5/</guid>
+      <description>这个问题其实可以用两个著名的思想实验，从技术和哲学两个角度来回答。
+第一个是“中文房间”，是一个著名的思维实验。它是由美国哲学家约翰·赛尔在上世纪八十年代设计的。
+这个实验是说你想象一个只会说英语的人身处一个房间里，这个房间除了门上有个小窗户，其他地方全都是封闭的。这个人有一本用英语写成的书，里面指示了该如何处理接受到的中文信息，并且用中文进行回复。房间外面的人不停地向房间里塞进用中文写成的问题，房间里那个说英语的人查阅手边的那本指导书将合适的中文回答递出房间。
+虽然房间里的人可以和房间外的人对答如流，房间外的人以为房间里作着个懂中文的人，但实际上那个人只会说英语，只是那本包罗万象的指导书太牛逼了。
+套在这个问题里，ChatGPT就像那本指导书，如今的技术让人类真的可以造出这样的东西了。ChatGPT巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，然后给你一种无所不知的感觉，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。作为在屋外的人们，很有可能认为屋里的人有理解能力，甚至有意识。
+如果对技术有一定了解就会知道，当给定输入的时候，ChatGPT这样的模型做的最多的就是非常确定性的加减乘除等等数学运算，在某些环节，这些模型会输出一个概率分布，通过在这个输出的分布上进行随机采样，来达到一种丰富、随机应变的效果。
+关于生成式模型的输出采样，可以参考我之前的文章：https://zhuanlan.zhihu.com/p/114669778 和https://zhuanlan.zhihu.com/p/115076102。
+不夸张的说，如果把这种随机采样换成贪心采样，也就是每次都取概率最大的输出，那这个ChatGPT一下就会从牛逼闪闪变成木讷呆板。所以，从技术角度说，ChatGPT距离自我意识还相当遥远。
+另一个词是“图灵测试”。
+图灵测试的内容我直接摘抄维基百科
+1950年，图灵发表了一篇划时代的论文，文中预言了创造出具有真正智能的机器的可能性。由于注意到“智能”这一概念难以确切定义，他提出了著名的图灵测试：如果一台机器能够与人类展开对话（透过电传设备）而不被辨别出其机器身份，那么称这台机器具有智能。这一简化使得图灵能够令人信服地说明“思考的机器”是可能的。论文中还回答了对这一假说的各种常见质疑。图灵测试是人工智能哲学方面首个严肃的提案。
+或者是这样
+如果一个人（代号C）使用测试对象皆理解的语言去询问两个他不能看见的对象任意一串问题。对象为：一个是正常思维的人（代号B）、一个是机器（代号A）。如果经过若干询问以后，C不能得出实质的区别来分辨A与B的不同，则此机器A通过图灵测试。
+我相信当下的ChatGPT已经非常接近或者已经可以通过图灵测试了。那么从这个角度来说，机器已经相当与能思考，或者说有自我意识了。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>ChatGPT渗入到内容行业后，是否会造成剽窃、作弊成灾？会扼杀人类的内容创造力吗？</title>
+      <link>https://www.yuanhao.site/post/2023-01-31-chatgpt4/</link>
+      <pubDate>Tue, 31 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-31-chatgpt4/</guid>
+      <description>我的想法是剽窃、作弊成灾是会的，但扼杀人类的内容创造力是不会的。
+首先人工智能模型造成剽窃、作弊的现象是近几年才出现的新情况，这也是模型水平进步的一个表现。而且，这种模型导致的剽窃和作弊相比于原来的形式还有比较明显的差别。要理解这件事情，还需要稍微了解一下这些模型的训练方法。
+以ChatGPT为例，它最重要的一个环节是语言模型的预训练。它所依赖的语言模型是来自OpenAI的GPT-3.5。以他的前身GPT3来说，训练这个模型的数据来源如下
+来自https://en.wikipedia.org/wiki/GPT-3#GPT-3.5
+从表里可以看到，即使是让普通人觉得已经无所不包的维基百科只占到了训练数据的3%，可见训练一个顶级的语言模型需要多少数据。训练的过程有点像填字游戏，让模型看一小段文本，让它猜测后面接着的文本是什么。是不是有点像人类的背诵？
+而这么巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。它看过的这些文本，最终是形成了一个巨大的概率分布，例如看到“世界”，它会知道后面也许会跟着“杯”或者“地图”，它们有着不同的概率。
+所以这种模型的剽窃和作弊是隐性且抽象的，需要人类用问题把模型的知识“钩”出来。虽然稍微不一样的钩子就有可能从模型钩出很不一样的结果，但由于这写结果本质上都符合模型训练时语料的概率分布，所以很有可能就会触发剽窃和抄袭。这确实是一个两难的问题，如果没有这海量的训练数据，就没有令人惊艳的模型，但这么大量的数据要把版权问题搞得清清爽爽也绝不是一件易事。
+但对人类创造力的扼杀的担心我觉得大可不必。首先，模型暂时还没有实时进化的能力，ChatGPT的训练数据停留在2021年，它并不知道2022年底中国会突然放开防疫政策，那以此为题材的创作显然与他无缘。
+其次，真正的创造欲望和创造力哪会因为创作之后会有人剽窃就减弱？那是一种使命感，是不吐不快的感觉。
+大家都知道保护知识产权有利于激发社会创新创造，但近几十年来的开源运动也证明了这不是唯一的路径。在人人为我我为人人的开源软件世界，这种开放反而极大地促进了技术的进步和传播。说不定以后在AI模型领域也会有这样的运动，人们贡献出自己产生的语料供模型学习，然后用适当的license系统保证产出的模型可以被合理、公平地被使用。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>以 ChatGPT 为代表的「大模型」会是多大的技术革命？如果要发生技术革命需要具备哪些条件？</title>
+      <link>https://www.yuanhao.site/post/2023-01-30-chatgpt3/</link>
+      <pubDate>Mon, 30 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-30-chatgpt3/</guid>
+      <description>作为一个近几年语言模型大潮的经历者谈一谈自己的看法。
+ChatGPT is &amp;rsquo;not particularly innovative,&amp;rsquo; and &amp;rsquo;nothing revolutionary&amp;rsquo;, says Meta&amp;rsquo;s chief AI scientist
+上面一句话是Yann Lecun说的，虽然被网友群嘲柠檬精，但我是比较认同的。我感觉”大模型“确实是一个革命，但ChatGPT更适合作为这场革命阶段性胜利的一个里程碑。而其实这场革命的火种早就已经播下了。
+这场革命如果往早了说，我觉得可以追溯到连接主义的诞生。
+连接主义(connectionism)，又称为仿生学派或生理学派，其主要原理为神经网络及神经网络间的连接机制与学习算法。
+这一学派相信神经网络是实现人工智能的方式，上世纪40年代就出现了。但它的发展历程很曲折，经历过很多高光时刻，也多次陷入低谷
+我们先来看一组数据：
+人脑是一个极其复杂的器官，由大约1000亿个神经元、大致相同数量的非神经元细胞和数万亿个神经连接组成。
+如果你希望要用神经网络来实现人工智能，自然的想法就是神经网络的规模要跟人类大脑相当。也就是说足够”大“会是一个非常朴素的需求，他并不是最近才出现的。
+前几天横空出世的AI 爆款产品ChatGPT，可以聊天、写代码、解答难题、写小说，其技术底座正是GPT3.5 大模型，参数量多达1750 亿个。
+从上面的数据可以看出，目前牛逼的神经网络参数量已经跟人脑的神经元数量相当了。但了解神经网络的朋友应该会知道，上面所说的GPT3.5的参数量实际上是要跟人脑中的神经连接数进行类比，而不是神经元个数。也就是说目前最牛逼的神经网络容量和我们的脑容量还有数量级的差距。
+在当下，大部分人都会相信我们堆更大的模型用更多的数据还能够提高神经网络的能力。于是短短几年间，从BERT的1M参数已经进步到GPT3.5的175B参数。
+但在若干年前，这个事情还不是这样，人们想大也大不起来。因为没有找到合适的结构，也没有合适的训练方法，可能硬件也不够给力来让神经网络越大越好这件事成为现实。直到Transformers模型和基于掩码的非监督训练方式出现，事情才发生转机。所以往近了说，这场革命应该归功于这两件事，ChatGPT的祖宗GPT在2018年就出现了。
+要说这革命有多大，我感觉目前的结果还是不如前面第一和第二次工业革命大。那两次都是极大地改变了人类的生产方式，丰富了人类的物质生活，实现了例如探索宇宙这样之前无法办到的事情。现在的ChatGPT相比起来还差一些。但是AI4Science领域也有很多激动人心的结果，未来还有很大的潜力。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>目前ChatGPT 已应用到论文写作、剧本创作、媒体内容生产，是解放生产力的机会还是被AI支配的开始？</title>
+      <link>https://www.yuanhao.site/post/2023-01-30-chatgpt2/</link>
+      <pubDate>Mon, 30 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-30-chatgpt2/</guid>
+      <description>我感觉问题中的两个选项并不是互斥的，而且所谓被AI支配的开始甚至都不是一个合格的选项，为什么这个开始是ChatGPT，不是计算机的发明，甚至是二极管的发明呢？但是我认为说ChatGPT是“解放生产力的机会”还是比较靠谱的。
+它解放生产力的能力已经被大量的报道了，以剧本创作为例，假如你有一个绝妙的故事创意，你可以让ChatGPT快速地帮你产生好几个版本的剧本。这种机器辅助的模式可以极大地增加内容生产的效率。
+但ChatGPT并不是一个可以自主创作的人工智能，它是一个以对话机器人的形式呈现的算法模型。就像是一个从不主动说话，但几乎有问必答，且学富五车的人。要把它的知识或者创造力激发出来，需要有适合它的问题。而我一直觉得提问题是一个比回答问题更有难度、更体现创意的事情。还是以前面的剧本创作为例，正是因为你有了一个绝妙的故事创意，ChatGPT才能在此基础上写出一个好的剧本，你在这个创作中的贡献是无可替代的。
+以此展开，人类创作者还有很多能力是ChatGPT目前不具有的，例如ChatGPT没有情绪。他不会因失恋而难过，也没法因为看到一个漂亮的风景而开心。但很多时候，情绪才是创作的源头。
+也就是说，ChatGPT是一个次时代的工具，但创作的主动权，仍然在使用它的人类手上。或者可以说，ChatGPT只会作，而不会创。在内容生产领域如果说真的会被AI支配，我认为应该是被善于使用这种次时代工具的人支配。这也是我们大家可以在其中寻找的机会。如果一个人能够快速获取大量优质的prompt（也就是给ChatGPT的问题），那确实可以在内容生产这个行当里获得远高于一般人的经济回报。但我认为，在内容或者说创意行业，几乎不可能有个体或组织可以达到“支配”行业的程度。这是一个非常分散、个性化的行当，受众的喜好五花八门，萝卜青菜都有人爱。即使好莱坞再强，世界上的其他地方还是可以拍出叫好叫座的电影。
+反过来看，今天ChatGPT可以做的事情有多少是真正的创作呢？回答一些答案明确的问题？完成一些格式相对固定的文案？写一个常见功能代码？AI是面镜子，可以让人类反思到底哪些工作是真正的创意工作。当基于统计的模型（ChatGPT也是基于统计的模型）可以把一个问题解决得差不离，那它的创意属性基本上就消失殆尽了。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>也聊一下ChatGPT</title>
+      <link>https://www.yuanhao.site/post/2022-12-10-chatgpt/</link>
+      <pubDate>Sat, 10 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-10-chatgpt/</guid>
+      <description>最近ChatGPT火了，而且火出圈了。好多不是做技术的朋友都开始关注甚至转发相关文章。从广为流传的一些例子看，ChatGPT确实做出了让大家眼前一亮的效果。聊天机器人搞了这么些年，也终于有了一个让大家都比较认可的产品。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} ChatGPT的结果令人惊艳 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+小迷思 前几天几个小伙伴聊天，说起ChatGPT和OpenAI，纷纷感叹为什么国内没有这样的创新公司和突破性产品涌现。几个大厂的研究院，比如阿里达摩院、字节AI Lab虽然成果也很多，但跟deepmind、OpenAI比起来差距还是很大。其实ChatGPT背后的东西并不是有多难，但为什么做出来的是他们？
+今天在知乎上发现也有类似的问题，还挺火的。不少回答都从大环境的角度分析，有说我们还穷的，有说国内资源和人才不匹配的。这些固然对，但作为个体我们也可以从自己身上找找原因。前几天看到一个做AI架构的大佬在朋友圈感叹，18年就在某大厂实现了500块GPU并行训练transformer，但大家都不知道这东西能干嘛。所以有的时候并不全是资源不到位的问题。我不禁想起了马老师“因为相信，所以看见”的观点，我感觉就是差在这个境界上。从学校毕业五年多了，我感觉这也是自己目前比较大的一个问题，我们有把事情做好的能力，但却缺少真正相信且原意长期坚持的东西。
+ChatGPT背后的技术 还是聊回技术。ChatGPT还没有公开的论文，根据OpenAI的博客，基本上使用的技术和他们在今年早些时候公布的InstructGPT差不多。
+We trained this model using Reinforcement Learning from Human Feedback (RLHF), using the same methods as InstructGPT, but with slight differences in the data collection setup.
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} ChatGPT训练流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+上面是ChatGPT博客上的训练流程图，下面是早先InstructGPT论文里的训练流程图，嗯，可以说是一模一样，比较大的差别是基础语言模型从GPT3升级到了GPT3.5。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} InstructGPT训练流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+InstructGPT的介绍还有图例，更容易讲清楚ChatGPT是如何训练的。这个模型的训练分为3个步骤：
+从预训练语言模型出发，用标注者产生的数据fine tune一个根据提示（prompt）生成答案的模型，这一步称为SFT 用上一步训练的模型生成大量的答案，每一个prompt都生成多组，并让标注者对这些答案进行排序。用这样获得的数据训练一个奖励模型（Reward Model，RM）。这个模型会作为后续强化学习环节的世界模型。 强化学习训练。这一步有点左右互搏的意思，用RM模型作为世界模型，SFT之后的生成模型做agent，进行训练，让生成模型尽可能地在RM模型那里拿到高分。这一步使用的算法也来自OpenAI，为2017年发布的PPO算法。 {: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 强化学习基本流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+我对强化学习并不熟悉，只是稍微看了下PPO的介绍，这个算法的目标函数可以用下面的公式来概括，这个目标函数包含了三个部分，第一部分是标准的强化学习目标，即在reward model那得高分；第二部分是PPO的创新点，即KL惩罚，目的是让强化学习的每一步都不要更新太多（新模型和老模型的KL散度要小）；第三部分是针对语言模型精调新加的，为了防止语言模型在精调的时候退化，他们在精调时把语言模型loss也加了进来。三个部分通过两个超参数β和γ进行调节。</description>
+    </item>
+  </channel>
+</rss>

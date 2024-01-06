@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>深度学习 on 多头注意力</title>
+    <link>https://www.yuanhao.site/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</link>
+    <description>Recent content in 深度学习 on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 11 Jun 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>令人吃惊的M2芯片</title>
+      <link>https://www.yuanhao.site/post/review/2023-06-11-apple-m2/</link>
+      <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2023-06-11-apple-m2/</guid>
+      <description>最近拿到了一台14寸的MacBook Pro，搭载了M2 Pro芯片，内存为16GB。昨天心血来潮，在上面尝试训练了一个神经网络，感触挺深的。
+我训练的是一个BERT-base模型，当年也算是个”大模型“，但在现在看起来就是个小不点。训练数据不多，大概一万多条文本，平均长度应该接近模型的最大输入长度。 这个任务在我的A6000显卡上跑得飞快，不到十分钟就可以跑完三个epoch的训练。我一开始移植代码到MacBook上的时候没有注意到Huggingface Trainer有个控制是否使用M系芯片神经处理的开关，所以用的是CPU，进度条显示训练完要15个小时。 后来查阅文档，打开开关后，跑完训练的时间大幅下降到了1小时左右，提速了十几倍！(测试不严谨，但提速非常大是肯定的)
+不过遗憾的是，目前pytorch并不支持在M系列芯片上使用半精度数据类型，导致训练的显存消耗略大，batchsize上不去。但GitHub上有个帖子说M2其实只支持bf16的，估计不久的将来会有PR来支持这一特性，那又可以有一个速度的大提升。
+前几天苹果发布了缝合版处理器M2 Ultra，碰巧知乎上有个付费问题，我就去了解了一下相关知识。目前苹果的统一内存架构是在CPU和GPU之间共享内存，而且内存带宽极大。4090的内存带宽是1T/s，而M2 Ultra达到了800GB/s。M2 pro的带宽也有200GB/s，而M2 max是400GB/s。 统一内存架构在大模型时代感觉有极大的优势，我查阅了一下目前NV主流的移动显卡，显存大多只有8GB，而M2 pro笔记本的起跳内存就有16GB，32GB版本再花3000块就能买到。
+即使在不支持半精度的情况下，32GB的统一内存也足够塞下7B的模型，已经有很多东西可以玩了。京东上一个24GB的4090显卡也要一万多，加上七七八八配个台式机估计两万块也是要的。但是一个32GB版本的MacBook Pro也只要19000，简直太划算了！
+高考刚刚结束，有不少同学或者家长估计都在挑选新的电脑、手机等设备。在不差钱的情况下，我强烈建议搞一个MacBook，教育优惠可以打八五折，你可以尝试很多普通笔记本电脑没法带给你的东西。</description>
+    </item>
+    <item>
+      <title>Vicuna初体验</title>
+      <link>https://www.yuanhao.site/post/review/2023-05-07-vicuna-impression/</link>
+      <pubDate>Sun, 07 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2023-05-07-vicuna-impression/</guid>
+      <description>今天深入体验了下Vicuna,以下是我的takeaways:
+指令跟随的能力跟ChatGPT有点差距。最典型的就是下面的身份设定任务都经常失败（如下图）。模型会非常倔强地回复你他是Vicuna，是LMSYS训练的模型。 针对上面的问题我看了下代码，发现他们专门搞了好几个问身份的语料来训练模型图片，真的是把身份感刻在了骨子里。 fastchat迭代挺快的，今天试了下他们新加的API功能。整个使用体验几乎和openai的client一模一样，学习成本很低。但目前文档没怎么跟上，有时需要看看代码。例如我在异步环境里用chatCompletion.create失败，看代码才知道要用acreate。 试了下Vicuna-7b的embedding，能力非常一般，而且维度4096太大了，那算相似度可真费劲，而且在检索任务上被768维的Instructor Embedding秒杀了。 看了下lmsys的成员，好家伙，几乎全是中国人，感觉人才这块可能对于中文大模型不会是短板。 使用下来总体还可以，下面这个例子和GPT的能力确实差不多。最后一个图是我提供些knowledge给它后的回答，措辞稍微不达预期。 </description>
+    </item>
+    <item>
+      <title>OpenAI官方出品的ChatGPT调校指南你读了吗</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</link>
+      <pubDate>Thu, 04 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/</guid>
+      <description>作为一名Prompt Engineer，每天都在跟GPT打交道，时常被他惊艳，也看过很多模型失效的案例。在不精调的情况下，prompt基本上是影响效果的唯一因素了，虽然网上有很多Prompt编写指南，但我认为OpenAI出品的这份，你一定要看一下。
+这篇文章就给大家划一下重点。
+ChatGPT基操 主要包含在How to work with large language models这个文档里，同时适合网页和API用户。首先，介绍了向ChatGPT提问的三种主要范式，一种是直接给指令，例如
+Extract the name of the author from the quotation below. “Some humans theorize that intelligent species go extinct before they can expand into outer space. If they&amp;#39;re correct, then the hush of the night sky is the silence of the graveyard.” ― Ted Chiang, Exhalation 模型将会输出
+Ted Chiang 另一种是将指令转化为一个补全(completion)问题，例如上面那个指令改为
+“Some humans theorize that intelligent species go extinct before they can expand into outer space.</description>
+    </item>
+    <item>
+      <title>大力真的有奇迹</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-04-19-brute-force-is-miracle/</link>
+      <pubDate>Wed, 19 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-04-19-brute-force-is-miracle/</guid>
+      <description>在之前那篇颇受欢迎的卖惨小品【今天被OpenAI爆了】里，我讲述了被GPT embedding震撼的故事。但故事的最后，我们并没有采用openai的embedding接口，因为那样确实成本和产品稳定性都不好控制。
+我们在一番寻找之后，我们看到了一个叫Massive Text Embedding Benchmark (MTEB)的大型语义表征benchmark（在Huggingface上有最新的的榜单）。并且最终选择了榜单上排名第二的instructor-lg模型。
+Instructor-large模型的水平在这个榜单上超过了openai的ada-002，可见开源社区还是很能打的。这个模型基于的是谷歌的T5模型，然后用instruction finetuning的方法训练了一个可以适用多个场景的embedding模型。维度768，模型0.3b，推理速度很快，线上使用负担也比1536的ada-002低很多。这个跟之前我使用的21年SOTA Simcse模型（排在排行榜第30位）比，规模是三倍，在这个benchmark上的得分是61.59 vs 48.87，提升确实很明显。不过我猜Simcse large的得分应该也能超过50。总之instructor是个好模型，推荐大家在需要语义embedding的场景使用。
+但今天的主角并不是他，而是排在第14名的模型all-mpnet-base-v2。这个模型是sentence-transformers出品的一个模型，用的backbone是mpnet-base。它的规模和simcse相当，但得分是57.78，提升了很多。如果说前面的Instructor模型，甚至是GPT模型的提升很大程度来源于模型规模扩大，那这个同等规模模型的提升来自于哪里呢？mpnet这个稍显小众的网络可能比bert、roberta是强一些，但这不是主要的。因为有一个名字很类似的模型all-MiniLM-L12-v2，以及它的缩小版all-MiniLM-L6-v2，的得分分别是56.x。这两个模型的维度更小，是384维，而L6模型的层数甚至也只有bert-base的一半。主要的提升点来自于前缀all。model card里是这么说的
+We use the concatenation from multiple datasets to fine-tune our model. The total number of sentence pairs is above 1 billion sentences. We sampled each dataset given a weighted probability which configuration is detailed in the data_config.json file.
+十亿句子对训练，没错，是十亿。拿一个小小的6层模型，在大量数据上训练，就可以获得一个比两年前的SOTA好很多的模型。这种暴力美学真的令我叹为观止。看到他们数据集的时候突然感觉自己的格局或者想象力真的太小了。什么叫对深度学习有信仰，这种玩法大概就是吧。其实OpenAI也是很类似的，因为相信大模型，大数据，所以能搞成。而且就sentence-transformers用的数据来说，都是公开可获取的，能跑得动这个训练的人应该有很多，但真这么跑的却很少。
+不止是NLP领域，CV界不也是这样吗，前段时间Meta的SAM也是用史无前例的大数据集训练的。对比一下，之前的预训练模型用的常用数据集COCO才328K张图片，是SAM数据集的3%。
+SAM is trained on a massive dataset of 11 million images and 1.1 billion masks, which is the largest segmentation dataset to date.</description>
+    </item>
+    <item>
+      <title>今天被OpenAI爆了</title>
+      <link>https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/</link>
+      <pubDate>Tue, 28 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/</guid>
+      <description>今天第一次体验到来自大语言模型的压力。
+最近在做一个语义匹配的小任务，选择的方案是用2021年的SOTA模型SimCSE在我们的领域数据上先进一步预训练，然后再用任务数据finetune降维。前几天的时候还自我感觉良好，因为比之前的模型效果好，还修复了老语言模型的一些明显badcase。
+但是今天，我们用openai的embedding模型也试了一下，recall指标直接翻了一倍。当时看到结果我都惊呆了。这个模型一千个token只要0.0004美元，相当的便宜，而且开箱即用。
+之前我看到网上帖子说NLP工程师失业啥的还觉得有点夸张，现在感觉还真有可能。
+首先这个事情是有正反馈的，作为一款公开的产品，而且这么便宜，你不用别人也会用，你如果没法超过他（现在看起来确实不容易），那就只能也用，不然产品竞争力就会出问题。
+一旦大规模用，那很多NLP问题的处理范式真的会改变，以前大家在不同场景finetune类似bert这样的小模型，但现在可能会变成在OpenAI embedding基础上finetune最上面的输出层，例如分类层。一个底座可以支撑好几个上层需求。这样的话需要的人力大大减少，公司的inference负担也大大降低。虽然在OpenAI那花了些钱，但算下来大概率是比原来划算的。
+当然这样的方案也有一些问题，例如公司的数据就都让OpenAI知道了，并且OpenAI目前不太稳定，稳定性上有点不可控。
+那作为公司，感觉除了之前大家都看到的在NLG上投入大模型这条独木桥，未来在NLU上投入大模型的应该会有很多。自己跑个10B量级的模型作为底座，做到OpenAI的8、9成应该是个比较好的选择。朋友们，赶紧学起来啊，不然真要成为纺织女工了。</description>
+    </item>
+    <item>
+      <title>[大模型补课]模型及训练方法</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/</link>
+      <pubDate>Sat, 25 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/</guid>
+      <description>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 这是大模型补课的第三篇文章，主要关注模型及其训练方法。做算法的人往往最喜欢看模型相关的东西，这期包含的内容也确实很有趣，不需要技术背景也能看懂。
+Encoder vs Decoder 在模型层面，我认为大模型时代最重要的一个变化就是从前几年的Encoder为主变成了Decoder Only占据绝对的主流。相对应的，自然语言生成问题取代了自然语言理解问题成为了主流，并且是在用生成这种范式统一了理解问题。
+transformer编码器和transformer解码器的主要区别在于它们如何处理输入和输出序列。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 最开始的时候Transformer的Encoder和Decoder是成对出现的 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+Transformer编码器处理输入序列（例如句子），并将其转换为一组隐藏表示，以捕获序列的含义。编码器由一堆相同的层组成，每个层对输入序列应用自注意力机制和前馈神经网络。
+另一方面，Transformer解码器基于编码器产生的隐藏表示生成输出序列。它也由类似的层堆叠组成，但每个层还关注编码器产生的隐藏表示，以包含输入序列的信息。解码器还使用自注意力机制以自回归方式生成输出序列，这意味着它逐个标记地生成，条件是它已经生成的标记。
+总之，虽然transformer架构中的编码器和解码器都使用自注意力机制和前馈神经网络，但编码器处理输入序列，解码器通过关注编码器产生的隐藏表示来生成输出序列。
+当下火爆的大语言模型几乎都使用的是decoder only的结构。在知乎有一个问题为什么现在的LLM都是Decoder only的架构？，非常推荐大家阅读。GPT4发布之后，其处理context的能力从3.5的4k一下跃升到32k，不知道openai是不是又加入了encoder。
+涌现、Scaling Law和科学炼丹 模型的规模增大无疑是最近AI进步的重要推动力。目前像GPT3.5这样的语言模型包含了1750亿个参数，相比于人脑中的神经连接其实还小了差不多一个数量级。模型的大小和其能力的关系实际是一个非常有指导意义的值得研究的问题。
+涌现（emergent abilities）是在2022年中的论文Emergent Abilities of Large Language Models 提出的概念，是指在大模型中出现的而在小模型里没有出现的能力，用咱们熟悉的话说就是&amp;quot;量变引起质变&amp;quot;，而且这种现象是不可预测的。这种不可预测性给模型的开发带来了很大的麻烦，因为训练一个100B以上的模型成本是非常高昂的。这篇论文里列举了好几个任务里涌现的案例。
+Emergence is when quantitative changes in a system result in qualitative changes in behavior. &amp;ndash;Nobel prize-winning physicist Philip Anderson
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Few-shot任务里体现出来的涌现现象 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+实际上，早在几年前人们就训练过巨大的模型，但那时候并没有出现现在这么强的模型。例如可能是世界上最喜欢大模型的公司Nvidia，在2022年训练过一个530B的超大模型MT-NLG，但可能知道这个模型的人都很少。Deepmind的论文Training Compute-Optimal Large Language Models讨论了这个问题，并给出了结论：之前的模型都训练不充分，把数据量提上去小模型也会有大能力。还给出了一套算力消耗一定的情况下合理分配模型规模和训练数据多少的方法论。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 典型的大模型参数量及训练数据量，Chinchilla参数少得多但性能更强 {: .</description>
+    </item>
+    <item>
+      <title>[大模型补课]模型训练关键工具包</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/</link>
+      <pubDate>Sat, 25 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/</guid>
+      <description>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。
+并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种
+DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。
+TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP+TP+PP)。
+有关并行的介绍，推荐阅读Huggingface的这篇文档。
+Megatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。
+目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。
+全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵
+$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$
+这样 $$Y=X_1A_1+X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题
+$$GeLU(XA)\ne GeLU(X_1A_1+X_2A_2)$$
+所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到
+$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$
+整个过程可以用下图表示
+自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。
+上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。
+在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。
+We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15.</description>
+    </item>
+    <item>
+      <title>大规模语言模型的评价方法</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/</link>
+      <pubDate>Wed, 01 Mar 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/</guid>
+      <description>上一篇文章介绍了大模型是用什么数据训练的，这一篇文章重点来看大模型的评价方法。Chatgpt这轮出圈很大原因是对话这种评价方式非常直观，普通大众就可以从对话质量看出来现在的模型比之前的&amp;quot;人工智障&amp;quot;要强很多。但真正开发大模型肯定不能用这种方式，不仅效率低、价格高，还存在不小的主观因素。这篇文章就来总结一下大模型的评价方式。
+还是先来看LLaMA论文里使用的评价指标。LLaMA里一共使用了**20种数据集（或任务）**来评估和对比模型。这些任务可以分为两大设定：零样本任务和少样本任务，涵盖以下几个大类
+常识推断 闭卷问答 阅读理解 数学推理 代码生成 大规模多任务语言理解 下面一一来看。
+常识推断 这个任务用了8个数据集，分别是BoolQ、PIQA、SIQA、HellaSwag、WinoGrande、ARC easy, ARC challenge和OpenBookQA。不同数据集有不同的形式，包括填空、威诺格拉德模式挑战（英语：Winograd Schema Challenge，缩写WSC）、多选问答。这些数据集在评价中都属于零样本，就是让模型通过预训练来直接回答问题。
+一个威诺格拉德模式的例子为：“	市议会拒绝给示威者颁发许可，因为他们[担心/宣扬]暴力。	” 当这句陈述中使用“担心”一词时，前面的“他们”指的是市议会。而当使用“宣扬”一词时，“他们”所指的则变成了示威者。人类通过常识可以很简单地看出两种情况下“他们”所指分别为何，但对于机器而言这个问题则十分困难。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 不同模型常识推断结果比较。​这种常识问题现在的模型基本都能对个​六成以上。 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+闭卷问答 这个任务包括两个数据集Natural Questions和TriviaQA。所谓闭卷，是相对于数据集原来的设定来说的。已Natural Questions为例，原来的设定是模型可以访问相关维基百科文本，然后根据百科内容回答问题。然而在评价大语言模型的时候，就不给看这个维基页面了。闭卷问答包括zero shot和few shot两种设定。zero shot很好理解，跟上面的常识推断很像，下面是论文附录里few shot的例子，实际上就是列几个问答对作为context。我目前还不太懂这种无关问答对对模型回答问题有什么帮助。
+Context → Answer these questions: Q: Who sang who wants to be a millionaire in high society? A: Frank Sinatra Q: Who wrote the book the origin of species? A: Target -&amp;gt; Charles Darwin
+阅读理解 阅读理解和前面提到的开卷问答有一点像。只是常见的阅读理解数据集用于支撑问题回答的背景材料比较短（相比于NQ里的维基页面）。在LLaMA论文里，使用的是RACE数据集，这个数据集对于做过阅读理解的朋友一定不陌生，是为初高中中文学生设计的英语阅读理解题。</description>
+    </item>
+    <item>
+      <title>如何使用ChatGPT算命</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/</link>
+      <pubDate>Tue, 28 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/</guid>
+      <description>可能是网站slogan：AI算命，朋克养生的关系，最近我看google search console后台总是有很多&amp;quot;Chatgpt算命&amp;quot;这个查询导致的网站展现。 既然大家有这个需求，我就实践SEO里面的方法，上网搜索了一下如何使用chatgpt算命，总结在这个文章里。
+好多chatgpt算命的查询 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+基本上，这要用到chatgpt的**&amp;ldquo;角色扮演&amp;rdquo;**功能，让它站在算命者的角度回答你的问题。
+先从英文开始，英文里算命先生叫做fortune teller，那么我们可以这么问chatgpt
+Act like a coffee fortune teller, I can see a cat shape in the corner of the cup, what is its meaning?
+翻译成中文就是：
+像个算命先生一样回答我，我在杯子的角落看到了一个猫的形状，这意味着什么？
+英文版的回答是
+The cat shape in the corner of your cup is a sign of good luck and protection. It is a reminder to stay alert and to be aware of any potential danger or obstacles that may arise in your life.</description>
+    </item>
+    <item>
+      <title>大规模语言模型的基石数据集</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/</link>
+      <pubDate>Sun, 26 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/</guid>
+      <description>最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉有很多课需要补。恰好昨天Meta发了新的大模型论文，浏览了一下发现很适合作为补课的切入点。
+今天这部分是关于预训练使用的数据集，是重中之重，说数据是当代AI的基石一点也不为过。GPT3用的数据其实没有公开，Meta这次论文里提到的应该算是开源模型里一个最全的版本。他们使用的数据如下表所示，我们一一来看一下。
+Dataset Sampling prop. Epochs Disk size CommonCrawl 67.0% 1.10 3.3 TB C4 15.0% 1.06 783 GB Github 4.5% 0.64 328 GB Wikipedia 4.5% 2.45 83 GB Books 4.5% 2.23 85 GB ArXiv 2.5% 1.06 92 GB StackExchange 2.0% 1.03 78 GB CommonCrawl 占比最大的数据集，他们的网站是https://commoncrawl.org/。我感觉这真是一个伟大的项目，7年时间爬了超多的互联网网页，涵盖了40种语言。
+CommonCrawl网站截图 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+根据他们博客的最新数据，2023年二月版的数据包含了400TB的数据（纯文本的数据是9个多tb），三十多亿个网页。
+The crawl archive for January/February 2023 is now available! The data was crawled January 26 – February 9 and contains 3.</description>
+    </item>
+    <item>
+      <title>ChatGPT未来会拥有自我情感和思维吗？</title>
+      <link>https://www.yuanhao.site/post/2023-02-16-chatgpt9/</link>
+      <pubDate>Thu, 16 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-16-chatgpt9/</guid>
+      <description>首先批评一下知乎，类似的问题翻来覆去提。感觉和上次的这个问题很像：https://www.zhihu.com/answer/2869775692
+我尝试问了下GPT以下问题，它的回答还挺乐观，哈哈。
+我：什么是情感？
+GPT：情感是一种心理状态，它指的是一种强烈的感情，如欢乐、悲伤、焦虑、愤怒、害怕、爱、厌恶等。它们可以由个人的生活经历、社会环境、文化和道德价值观等因素引起。
+我：语言模型，例如GPT是否具有情感？
+GPT：不具有情感。GPT（Generative Pre-trained Transformer）是一种预训练的自然语言处理模型，它可以帮助机器理解和生成自然语言，但它本身并不具有情感。
+我：为什么说语言模型不具有情感？能说得具体一些吗？
+GPT：语言模型本身并不具有情感，因为它们只是一种机器学习模型，它们可以帮助机器理解和生成自然语言，但不能感受和理解情感。语言模型的输出仅仅反映了输入的语义，它不能表达情感，也不能理解和识别情感。
+我：未来有可能让语言模型具有情感吗？
+GPT：是的，未来有可能让语言模型具有情感。随着技术的发展，许多机器学习技术和深度学习技术已经可以用来识别和理解情感，而语言模型也可以通过这些技术来学习情感，从而具有情感。
+就像GPT自己回答的一样，语言模型目前是没有情感的，本质上还是对文本之间概率分布的刻画。但因为人是有情感和思维的，对语言模型表现出来的一些能力，会不由自主地认为它具有情感或者思维。所以从“我要我觉得，不要你觉得”的角度，这个问题没啥讨论的意义。一千个观众眼里有一千个GPT。
+在上面那个回答里，我还举了两个思维实验来说明这个观点。但评论区网友上来就给我一顿喷。讲真我当时心理是有点小波澜，但我现在学乖了，多利用GPT来回答问题，被网友骂成狗也没啥心理负担。
+我个人认为，按照目前的技术方向，未来也无法获得思维和情感。但这不是个经济的想法。应该像GPT一样，大声说会就完了，然后再说一堆车轱辘话。毕竟未来的事，谁知道呢。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>ChatGpt能成为恋爱大师吗？</title>
+      <link>https://www.yuanhao.site/post/2023-02-16-chatgpt8/</link>
+      <pubDate>Thu, 16 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-16-chatgpt8/</guid>
+      <description>我认为能也不能。
+我问GPT：什么是恋爱大师？恋爱大师具有哪些特点和能力？
+GPT回答：恋爱大师是一种专业的恋爱咨询师，专门帮助人们解决恋爱问题。恋爱大师通过提供心理咨询、情感指导和婚姻咨询等服务，帮助人们解决恋爱中的问题，提高恋爱关系的健康水平。恋爱大师具有较强的心理学知识和专业能力，能够从恋爱关系的心理学角度出发，从客观的角度分析恋爱关系中出现的问题，并给出有效的解决方案。
+让我们再来试试他能不能“分析恋爱关系中出现的问题，并给出有效的解决方案”。
+我问GPT：我的女朋友老是迟到，跟她沟通过几次都没有效果，现在说她她还会生气，我该怎么办？
+GPT回答：
+首先，你要明确你的期望，并且要清楚地告诉她，你希望她能够准时到达。 然后，你可以给她一些实际的激励，比如说，如果她能够准时到达，你会给她一个小惊喜。 再者，你可以尝试一些不同的沟通方式，比如用短信或者电话来提醒她，或者在约定的时间前几分钟来接她。 最后，你可以给她一些支持，告诉她你理解她的情况，并且希望她能够改变，但也要表达出你的期望。 我再次追问：那万一我这么做之后她还是没有改变呢？我要和她分手吗？
+GPT回答：如果你采取了上述措施之后，她仍然没有改变，你可以再次和她沟通，让她明白你的期望，并且表达出你的失望。如果她仍然不能改变，你可以考虑是否要分手，但是你也可以尝试一些其他的方式，比如让她参加一些时间管理的课程，或者帮助她制定一些有助于准时到达的计划。
+对上面的回答，作为用户我是会满意的，给出了一些具有可行性的方法。这种人际沟通中的问题往往是有最佳或者较佳实践的。这方面博览群书的GPT可以给出一些不错的建议，对没有经验的小年轻可以有不小的积极作用。
+但感情的事又很复杂，而对感情的处理方式是没有标准答案的。如果上面那个爱迟到的女朋友就是屡教不改你要怎么办呢？你可以选择扬长而去，也可以选择包容承受。但毫无疑问，你考虑的肯定不只是迟到这个问题。她的性格、颜值、知识、财富、你们相处的每个瞬间都可能影响你最后的决定。但这么多的信息，目前甚至是无法通过prompt传递给GPT模型的（GPT模型只能处理一定长度的输入）。这个层面看，它跟人类心理咨询师还是有很大的差距。
+It has a token limit, which I believe is 4097. The total number of tokens used is equal to your message and GPT&amp;rsquo;s response combined. You can see how many tokens your prompt uses here: https://beta.openai.com/tokenizer
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>ChatGPT在内容创作行业，依据现有的法律，它创作的内容是否享有著作权？如不能，如何界定内容的归属？</title>
+      <link>https://www.yuanhao.site/post/2023-02-03-chatgpt6/</link>
+      <pubDate>Fri, 03 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-03-chatgpt6/</guid>
+      <description>很实际的问题，之前并不是很了解。看了一些资料勉强答一波。
+首先，我国《著作权法》所保护的对象是“作品”，其定义在第3条进行了列明，即“文学、艺术和科学领域内具有独创性并能以一定形式表现的智力成果”。在这里跟本题最相关的一个作品属性是“独创性”。根据资料2的论述，法律界对目前AI的认识我感觉还是比较到位的，即当前的所谓AI并不具备创造性，因此ChatGPT之类的AI工具，性质为“帮助自然人进行创作活动的工具”，其自身无法自主思考，不是进行自主创作主体，AI软件对文章的生成是开发者意志的延伸。
+《著作权法》第2条规定了“中国公民、法人或者非法人组织的作品，不论是否发表，依照本法享有著作权”。因此著作权仅能由民事主体享有，但AI并不是民事主体，因此AI本身无法作为作品的作者，但使用AI的人是可以的。
+至于人是否可以享有AI生产作品的著作权，也要根据实际情况判定。主要的依据也是上面的独创性。
+下面是两个案例，第一个是不享有著作权的
+在北京知识产权法院于2020年审结的“北京菲林律所诉百度公司著作权侵权案”中，菲林律所发布的大数据报告被他人在未经同意的情况下转载至百度百家号，菲林律所由此认为百度公司侵犯了其著作权中的信息网络传播权，遂向百度公司主张侵权赔偿。法院经审理，认为菲林律所所提交的大数据报告仅是根据现有数据搜集并分析而形成，不具备独创性，不属于《著作权法》的保护范围。
+第二个是受著作权保护的
+2018年8月，腾讯公司在其下属网站中发布了一篇由腾讯旗下人工智能写作软件Dreamwriter生成的新闻，而该文在当日即被网贷之家转载，腾讯公司遂向法院起诉。法院经审理认为，相关文章“外在表现符合文字作品的形式要求，其表现的内容体现出对当日上午相关股市信息、数据的选择、分析、判断，文章结构合理、表达逻辑清晰，具有一定的独创性”，同时认为“该文章的表现形式是由原告主创团队相关人员个性化的安排与选择所决定的，其表现形式并非唯一，具有一定的独创性”，并最终确认该篇由人工智能软件生成的文章属于《著作权法》下的“文字作品”，受到我国法律的保护。
+最后，我想说，权利和义务是伴随的。ChatGPT之类的工具，经过大量语料训练，有一定概率会有侵犯他人著作权的情况出现。作为使用者，平常玩玩无所谓，一旦用于正式文本的产出一定要把好关。避免自己陷入侵权的窘境。
+参考资料
+https://www.sohu.com/a/592470873_398071
+http://www.anlilaw.com/100031/200
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>依据现有 AI 的发展速度，类似 ChatGPT 这样的产品，距诞生自我意识还有多远？</title>
+      <link>https://www.yuanhao.site/post/2023-02-03-chatgpt5/</link>
+      <pubDate>Fri, 03 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-02-03-chatgpt5/</guid>
+      <description>这个问题其实可以用两个著名的思想实验，从技术和哲学两个角度来回答。
+第一个是“中文房间”，是一个著名的思维实验。它是由美国哲学家约翰·赛尔在上世纪八十年代设计的。
+这个实验是说你想象一个只会说英语的人身处一个房间里，这个房间除了门上有个小窗户，其他地方全都是封闭的。这个人有一本用英语写成的书，里面指示了该如何处理接受到的中文信息，并且用中文进行回复。房间外面的人不停地向房间里塞进用中文写成的问题，房间里那个说英语的人查阅手边的那本指导书将合适的中文回答递出房间。
+虽然房间里的人可以和房间外的人对答如流，房间外的人以为房间里作着个懂中文的人，但实际上那个人只会说英语，只是那本包罗万象的指导书太牛逼了。
+套在这个问题里，ChatGPT就像那本指导书，如今的技术让人类真的可以造出这样的东西了。ChatGPT巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，然后给你一种无所不知的感觉，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。作为在屋外的人们，很有可能认为屋里的人有理解能力，甚至有意识。
+如果对技术有一定了解就会知道，当给定输入的时候，ChatGPT这样的模型做的最多的就是非常确定性的加减乘除等等数学运算，在某些环节，这些模型会输出一个概率分布，通过在这个输出的分布上进行随机采样，来达到一种丰富、随机应变的效果。
+关于生成式模型的输出采样，可以参考我之前的文章：https://zhuanlan.zhihu.com/p/114669778 和https://zhuanlan.zhihu.com/p/115076102。
+不夸张的说，如果把这种随机采样换成贪心采样，也就是每次都取概率最大的输出，那这个ChatGPT一下就会从牛逼闪闪变成木讷呆板。所以，从技术角度说，ChatGPT距离自我意识还相当遥远。
+另一个词是“图灵测试”。
+图灵测试的内容我直接摘抄维基百科
+1950年，图灵发表了一篇划时代的论文，文中预言了创造出具有真正智能的机器的可能性。由于注意到“智能”这一概念难以确切定义，他提出了著名的图灵测试：如果一台机器能够与人类展开对话（透过电传设备）而不被辨别出其机器身份，那么称这台机器具有智能。这一简化使得图灵能够令人信服地说明“思考的机器”是可能的。论文中还回答了对这一假说的各种常见质疑。图灵测试是人工智能哲学方面首个严肃的提案。
+或者是这样
+如果一个人（代号C）使用测试对象皆理解的语言去询问两个他不能看见的对象任意一串问题。对象为：一个是正常思维的人（代号B）、一个是机器（代号A）。如果经过若干询问以后，C不能得出实质的区别来分辨A与B的不同，则此机器A通过图灵测试。
+我相信当下的ChatGPT已经非常接近或者已经可以通过图灵测试了。那么从这个角度来说，机器已经相当与能思考，或者说有自我意识了。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>ChatGPT渗入到内容行业后，是否会造成剽窃、作弊成灾？会扼杀人类的内容创造力吗？</title>
+      <link>https://www.yuanhao.site/post/2023-01-31-chatgpt4/</link>
+      <pubDate>Tue, 31 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-31-chatgpt4/</guid>
+      <description>我的想法是剽窃、作弊成灾是会的，但扼杀人类的内容创造力是不会的。
+首先人工智能模型造成剽窃、作弊的现象是近几年才出现的新情况，这也是模型水平进步的一个表现。而且，这种模型导致的剽窃和作弊相比于原来的形式还有比较明显的差别。要理解这件事情，还需要稍微了解一下这些模型的训练方法。
+以ChatGPT为例，它最重要的一个环节是语言模型的预训练。它所依赖的语言模型是来自OpenAI的GPT-3.5。以他的前身GPT3来说，训练这个模型的数据来源如下
+来自https://en.wikipedia.org/wiki/GPT-3#GPT-3.5
+从表里可以看到，即使是让普通人觉得已经无所不包的维基百科只占到了训练数据的3%，可见训练一个顶级的语言模型需要多少数据。训练的过程有点像填字游戏，让模型看一小段文本，让它猜测后面接着的文本是什么。是不是有点像人类的背诵？
+而这么巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。它看过的这些文本，最终是形成了一个巨大的概率分布，例如看到“世界”，它会知道后面也许会跟着“杯”或者“地图”，它们有着不同的概率。
+所以这种模型的剽窃和作弊是隐性且抽象的，需要人类用问题把模型的知识“钩”出来。虽然稍微不一样的钩子就有可能从模型钩出很不一样的结果，但由于这写结果本质上都符合模型训练时语料的概率分布，所以很有可能就会触发剽窃和抄袭。这确实是一个两难的问题，如果没有这海量的训练数据，就没有令人惊艳的模型，但这么大量的数据要把版权问题搞得清清爽爽也绝不是一件易事。
+但对人类创造力的扼杀的担心我觉得大可不必。首先，模型暂时还没有实时进化的能力，ChatGPT的训练数据停留在2021年，它并不知道2022年底中国会突然放开防疫政策，那以此为题材的创作显然与他无缘。
+其次，真正的创造欲望和创造力哪会因为创作之后会有人剽窃就减弱？那是一种使命感，是不吐不快的感觉。
+大家都知道保护知识产权有利于激发社会创新创造，但近几十年来的开源运动也证明了这不是唯一的路径。在人人为我我为人人的开源软件世界，这种开放反而极大地促进了技术的进步和传播。说不定以后在AI模型领域也会有这样的运动，人们贡献出自己产生的语料供模型学习，然后用适当的license系统保证产出的模型可以被合理、公平地被使用。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>以 ChatGPT 为代表的「大模型」会是多大的技术革命？如果要发生技术革命需要具备哪些条件？</title>
+      <link>https://www.yuanhao.site/post/2023-01-30-chatgpt3/</link>
+      <pubDate>Mon, 30 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-30-chatgpt3/</guid>
+      <description>作为一个近几年语言模型大潮的经历者谈一谈自己的看法。
+ChatGPT is &amp;rsquo;not particularly innovative,&amp;rsquo; and &amp;rsquo;nothing revolutionary&amp;rsquo;, says Meta&amp;rsquo;s chief AI scientist
+上面一句话是Yann Lecun说的，虽然被网友群嘲柠檬精，但我是比较认同的。我感觉”大模型“确实是一个革命，但ChatGPT更适合作为这场革命阶段性胜利的一个里程碑。而其实这场革命的火种早就已经播下了。
+这场革命如果往早了说，我觉得可以追溯到连接主义的诞生。
+连接主义(connectionism)，又称为仿生学派或生理学派，其主要原理为神经网络及神经网络间的连接机制与学习算法。
+这一学派相信神经网络是实现人工智能的方式，上世纪40年代就出现了。但它的发展历程很曲折，经历过很多高光时刻，也多次陷入低谷
+我们先来看一组数据：
+人脑是一个极其复杂的器官，由大约1000亿个神经元、大致相同数量的非神经元细胞和数万亿个神经连接组成。
+如果你希望要用神经网络来实现人工智能，自然的想法就是神经网络的规模要跟人类大脑相当。也就是说足够”大“会是一个非常朴素的需求，他并不是最近才出现的。
+前几天横空出世的AI 爆款产品ChatGPT，可以聊天、写代码、解答难题、写小说，其技术底座正是GPT3.5 大模型，参数量多达1750 亿个。
+从上面的数据可以看出，目前牛逼的神经网络参数量已经跟人脑的神经元数量相当了。但了解神经网络的朋友应该会知道，上面所说的GPT3.5的参数量实际上是要跟人脑中的神经连接数进行类比，而不是神经元个数。也就是说目前最牛逼的神经网络容量和我们的脑容量还有数量级的差距。
+在当下，大部分人都会相信我们堆更大的模型用更多的数据还能够提高神经网络的能力。于是短短几年间，从BERT的1M参数已经进步到GPT3.5的175B参数。
+但在若干年前，这个事情还不是这样，人们想大也大不起来。因为没有找到合适的结构，也没有合适的训练方法，可能硬件也不够给力来让神经网络越大越好这件事成为现实。直到Transformers模型和基于掩码的非监督训练方式出现，事情才发生转机。所以往近了说，这场革命应该归功于这两件事，ChatGPT的祖宗GPT在2018年就出现了。
+要说这革命有多大，我感觉目前的结果还是不如前面第一和第二次工业革命大。那两次都是极大地改变了人类的生产方式，丰富了人类的物质生活，实现了例如探索宇宙这样之前无法办到的事情。现在的ChatGPT相比起来还差一些。但是AI4Science领域也有很多激动人心的结果，未来还有很大的潜力。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>目前ChatGPT 已应用到论文写作、剧本创作、媒体内容生产，是解放生产力的机会还是被AI支配的开始？</title>
+      <link>https://www.yuanhao.site/post/2023-01-30-chatgpt2/</link>
+      <pubDate>Mon, 30 Jan 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2023-01-30-chatgpt2/</guid>
+      <description>我感觉问题中的两个选项并不是互斥的，而且所谓被AI支配的开始甚至都不是一个合格的选项，为什么这个开始是ChatGPT，不是计算机的发明，甚至是二极管的发明呢？但是我认为说ChatGPT是“解放生产力的机会”还是比较靠谱的。
+它解放生产力的能力已经被大量的报道了，以剧本创作为例，假如你有一个绝妙的故事创意，你可以让ChatGPT快速地帮你产生好几个版本的剧本。这种机器辅助的模式可以极大地增加内容生产的效率。
+但ChatGPT并不是一个可以自主创作的人工智能，它是一个以对话机器人的形式呈现的算法模型。就像是一个从不主动说话，但几乎有问必答，且学富五车的人。要把它的知识或者创造力激发出来，需要有适合它的问题。而我一直觉得提问题是一个比回答问题更有难度、更体现创意的事情。还是以前面的剧本创作为例，正是因为你有了一个绝妙的故事创意，ChatGPT才能在此基础上写出一个好的剧本，你在这个创作中的贡献是无可替代的。
+以此展开，人类创作者还有很多能力是ChatGPT目前不具有的，例如ChatGPT没有情绪。他不会因失恋而难过，也没法因为看到一个漂亮的风景而开心。但很多时候，情绪才是创作的源头。
+也就是说，ChatGPT是一个次时代的工具，但创作的主动权，仍然在使用它的人类手上。或者可以说，ChatGPT只会作，而不会创。在内容生产领域如果说真的会被AI支配，我认为应该是被善于使用这种次时代工具的人支配。这也是我们大家可以在其中寻找的机会。如果一个人能够快速获取大量优质的prompt（也就是给ChatGPT的问题），那确实可以在内容生产这个行当里获得远高于一般人的经济回报。但我认为，在内容或者说创意行业，几乎不可能有个体或组织可以达到“支配”行业的程度。这是一个非常分散、个性化的行当，受众的喜好五花八门，萝卜青菜都有人爱。即使好莱坞再强，世界上的其他地方还是可以拍出叫好叫座的电影。
+反过来看，今天ChatGPT可以做的事情有多少是真正的创作呢？回答一些答案明确的问题？完成一些格式相对固定的文案？写一个常见功能代码？AI是面镜子，可以让人类反思到底哪些工作是真正的创意工作。当基于统计的模型（ChatGPT也是基于统计的模型）可以把一个问题解决得差不离，那它的创意属性基本上就消失殆尽了。
+我在知乎的原回答</description>
+    </item>
+    <item>
+      <title>协同滤波和它的子孙们</title>
+      <link>https://www.yuanhao.site/post/2022-12-23-cf/</link>
+      <pubDate>Fri, 23 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-23-cf/</guid>
+      <description>2022年Q4，在项目里接触了一些跟召回相关的工作，但坦白讲做的比较匆忙。整好最近在家带娃，空余时间比较系统地学习了一下，这篇小作文做个总结。
+本文总结的算法都有一个共同的发端，就是大名鼎鼎的协同滤波（collaborative filtering，CF）算法。这个协同只看字面也看不出个所以然，维基百科的解释如下
+协同过滤（collaborative filtering）是一种在推荐系统中广泛使用的技术。 该技术通过分析用户或者事物之间的相似性（“协同”），来预测用户可能感兴趣的内容并将此内容推荐给用户。
+经典CF 最早的CF算法是user CF。这种算法包含两个主要步骤
+对于当前用户，在所有用户中寻找与他最相似的一些用户 用相似用户对item的评价来作为当前用户对item的评价 我做的几个召回渠道也是基于CF的。如果把这个技术用在召回里，就是对于当前user，返回在与之相似的用户中受欢迎的item。这里面用户相似度的评价方式比较重要，例如通过计算两个用户交互过item的Jaccard距离来作为相似度。这种做法在用户集合很大时计算复杂度相当高。在早期的系统里，item的数量可能远远少于用户的数量，并且用户的相似度会随着用户行为的变化而变化。所以有人提出在item与item之间直接计算相似度，这种相似度相对稳定，离线计算好一个相似度关系表之后在线可以直接使用，这样就可以避免相似用户计算这个耗时的步骤，这种做法称为item CF。
+矩阵分解 Matrix Factorization 上面的经典CF算法实际是个间接推荐的方法，人们发现可以从用户和item的交互历史中得到用户和item的关系，从而进行直接推荐。基本的思路是将user-item交互矩阵近似为user矩阵和item矩阵的乘积。具体来说，若用户数为N，item数为M，则交互矩阵为N*M，希望把它近似为N*K和M*K两个矩阵的乘积。K可以远小于N和M，这样相似度的计算复杂度将比jaccard大大降低。实际上也就是获得了K维的user和item的embedding。交互矩阵通常是0,1矩阵（称为implicit feedback data），上面的操作实际上要让有交互的user和item embedding之间的点积接近1，没有交互的embedding点积远离1。
+以下图为例，我们获得了4个用户和5部电影的交互矩阵，右边是矩阵分解之后的结果。左边4*2的矩阵为用户矩阵，在一个二维空间对用户进行表征，上面5*2的矩阵是电影矩阵，在同一个二维空间对电影进行表征。右边的大矩阵是这两个矩阵相乘的结果，和左侧0,1矩阵是比较接近但不完全一致的（毕竟降维了）。对于一个user未交互过的item，我们可以拿user的embedding和item embedding做点积来预测用户发生交互的概率。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Matrix Factorization示意图 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+这个算法实际上优化的是下面这个目标
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} |A - U V^T|_F^2. $$
+学过数值分析的话会知道矩阵分解有一些经典算法，例如SVD。但这个交互矩阵A实在是太稀疏且太大了，经典算法比较难处理，因此实用的损失函数是这样
+$$ \min_{U \in \mathbb R^{m \times d},\ V \in \mathbb R^{n \times d}} \sum_{(i, j) \in \text{obs}} (A_{ij} - \langle U_{i}, V_{j} \rangle)^2 + w_0 \sum_{(i, j) \not \in \text{obs}} (\langle U_i, V_j\rangle)^2.</description>
+    </item>
+    <item>
+      <title>也聊一下ChatGPT</title>
+      <link>https://www.yuanhao.site/post/2022-12-10-chatgpt/</link>
+      <pubDate>Sat, 10 Dec 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-12-10-chatgpt/</guid>
+      <description>最近ChatGPT火了，而且火出圈了。好多不是做技术的朋友都开始关注甚至转发相关文章。从广为流传的一些例子看，ChatGPT确实做出了让大家眼前一亮的效果。聊天机器人搞了这么些年，也终于有了一个让大家都比较认可的产品。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} ChatGPT的结果令人惊艳 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+小迷思 前几天几个小伙伴聊天，说起ChatGPT和OpenAI，纷纷感叹为什么国内没有这样的创新公司和突破性产品涌现。几个大厂的研究院，比如阿里达摩院、字节AI Lab虽然成果也很多，但跟deepmind、OpenAI比起来差距还是很大。其实ChatGPT背后的东西并不是有多难，但为什么做出来的是他们？
+今天在知乎上发现也有类似的问题，还挺火的。不少回答都从大环境的角度分析，有说我们还穷的，有说国内资源和人才不匹配的。这些固然对，但作为个体我们也可以从自己身上找找原因。前几天看到一个做AI架构的大佬在朋友圈感叹，18年就在某大厂实现了500块GPU并行训练transformer，但大家都不知道这东西能干嘛。所以有的时候并不全是资源不到位的问题。我不禁想起了马老师“因为相信，所以看见”的观点，我感觉就是差在这个境界上。从学校毕业五年多了，我感觉这也是自己目前比较大的一个问题，我们有把事情做好的能力，但却缺少真正相信且原意长期坚持的东西。
+ChatGPT背后的技术 还是聊回技术。ChatGPT还没有公开的论文，根据OpenAI的博客，基本上使用的技术和他们在今年早些时候公布的InstructGPT差不多。
+We trained this model using Reinforcement Learning from Human Feedback (RLHF), using the same methods as InstructGPT, but with slight differences in the data collection setup.
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} ChatGPT训练流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+上面是ChatGPT博客上的训练流程图，下面是早先InstructGPT论文里的训练流程图，嗯，可以说是一模一样，比较大的差别是基础语言模型从GPT3升级到了GPT3.5。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} InstructGPT训练流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+InstructGPT的介绍还有图例，更容易讲清楚ChatGPT是如何训练的。这个模型的训练分为3个步骤：
+从预训练语言模型出发，用标注者产生的数据fine tune一个根据提示（prompt）生成答案的模型，这一步称为SFT 用上一步训练的模型生成大量的答案，每一个prompt都生成多组，并让标注者对这些答案进行排序。用这样获得的数据训练一个奖励模型（Reward Model，RM）。这个模型会作为后续强化学习环节的世界模型。 强化学习训练。这一步有点左右互搏的意思，用RM模型作为世界模型，SFT之后的生成模型做agent，进行训练，让生成模型尽可能地在RM模型那里拿到高分。这一步使用的算法也来自OpenAI，为2017年发布的PPO算法。 {: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 强化学习基本流程 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+我对强化学习并不熟悉，只是稍微看了下PPO的介绍，这个算法的目标函数可以用下面的公式来概括，这个目标函数包含了三个部分，第一部分是标准的强化学习目标，即在reward model那得高分；第二部分是PPO的创新点，即KL惩罚，目的是让强化学习的每一步都不要更新太多（新模型和老模型的KL散度要小）；第三部分是针对语言模型精调新加的，为了防止语言模型在精调的时候退化，他们在精调时把语言模型loss也加了进来。三个部分通过两个超参数β和γ进行调节。</description>
+    </item>
+    <item>
+      <title>推荐系统金字塔</title>
+      <link>https://www.yuanhao.site/post/2022-11-16-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E9%87%91%E5%AD%97%E5%A1%94/</link>
+      <pubDate>Wed, 16 Nov 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-11-16-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E9%87%91%E5%AD%97%E5%A1%94/</guid>
+      <description>本文同样适合没有技术背景的朋友阅读
+遥想若干年前，今日头条和后来的抖音横空出世的时候，到处都可以看到关于他们推荐算法的讨论，个性化推荐对业务的重要性也被捧上了天。最近一年多，也算是亲身参与了一些推荐相关的项目，在实操之后，对这件事情也有一些自己的理解。
+开门见山，我认为好的推荐系统，或者说个性化系统有三层特点，从底向上分别是：
+有丰富的让用户感兴趣的物料 用户能够发现并表达兴趣 用户表达兴趣后能推荐高相关性的物料 就像一作金字塔。
+1 首先是【有丰富的让用户感兴趣的物料】，这实际上是所有推荐系统的基础：物料要丰富且高质量。物料就是要推荐的东西，电商应用里是商品，内容应用里视频、图文，社区应用是达人，各不相同。如果物料不丰富，那实际上没有推荐的必要，小卖部一般没有导购，有啥东西一目了然。物料如果质量不高，那后面的工作也很难做，用户很难在这种系统中留存下来，也就会导致推荐系统的另一个重要燃料用户行为数据的不足。这块一般和算法没什么关系，但实际确是重中之重。大的生态系统治理其实更像经济学问题，解决的是供给和需求的关系。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 京东平台在2015年就有两千多万件商品了，为推荐提供了舞台 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+2 接下来是【用户能够发现并表达兴趣】，这层开始跟算法有了一些关系，但更多还是通过产品和工程来解决。换比较专业的说法就是怎么做冷启动和试探。最理想的方法是把冷启动转变成热启动，例如说一个头条老用户来看抖音，好了，你在头条喜欢看啥我先给你看啥，大概率会比随机给你看点东西好。所以字节的产品矩阵在这方面就可以发挥很大的作用。但一般公司没这条件，那就只好尽量去挖可以用的先验信号，比如用户的地点、安装的app，甚至去爬其他的社交网络平台。
+如果这条路走不通，那就只好试探了，产品没做好的话大概率是自身生态里什么热门就给你试探什么，这里总归是要碰点壁的。所以大部分产品上来会让你选一下你感兴趣的话题或者分类，作为用户，这时候可以直接点告诉他们，让这些系统更好地为自己服务。
+{: .align-center style=&amp;ldquo;width:50%&amp;rdquo;} 常见的兴趣选择界面，让用户直接表达兴趣，顺利留存下来 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+还有些重要的用户表达兴趣的渠道，例如搜索。当一个系统的物料特别丰富，例如淘宝，什么东西都有，此时就很难试探，因为这个试探空间太大了。但好在买东西通常有目的性的，通常电商平台有50%的成交是搜索贡献的，用户会通过搜索功能来告诉平台自己想要什么。
+所以一个好产品一定要打通各种用户表达兴趣的渠道，尽量避免瞎猜。
+3 最后才是【用户表达兴趣后能推荐高相关性的物料】，也就是常说的推荐算法解决的问题。作为塔尖，它似乎吸引了最多的目光。举刚才搜索的例子，用户搜索“杯子”，ta已经表达了兴趣，你如果给他展示一堆碗，那肯定无法促成消费。
+这方面算法很多，比较常见的比如各种协同滤波（买了杯子的人还会买啥？）以及现在流行的各种序列建模（每个月都买米这个月应该也会买米）等等。当系统往大了发展，我感觉工程的重要性又会超过算法：这么多的用户行为怎么存？这么多的训练数据怎么跑？虽然每年新结构、新网络层出不穷，但实际上常用的还是那几个经典的。以Criteo数据集为例，多年下来各种模型迭代导致的auc提升不到3个百分点（但不是说3%不重要，以大公司的体量还是很可观的）。但实际上推荐系统的发展早已不是这个数据集可以追踪的了，因为各个大公司特征、用户的规模早就不是这样了。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Criteo数据集近年来的auc指标 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+前不久Tik Tok放出了他们推荐系统的论文，大量篇幅是在讲基础设施pipeline，模型部分这是个多年前的DeepFM。
+小结 我感觉三个层次大致对应了【生意】-【产品】-【技术】，在这个互联网纷纷裁员的寒冬回过头看，确实这三个层次都出现了不同程度的停滞。不过一个时代过去总会有一个新的时代来临，技术应该是这三个里面停滞现象比较低的，相信在不久的将来就会有新的增长点。
+以上就是我的一些想法，欢迎大家讨论。</description>
+    </item>
+    <item>
+      <title>现在的开源深度学习模型真的太强了</title>
+      <link>https://www.yuanhao.site/post/2022-10-17-multimodal/</link>
+      <pubDate>Mon, 17 Oct 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-10-17-multimodal/</guid>
+      <description>为了迎接宝宝的诞生，前段时间收集了一些中英文故事，做了一个讲故事小程序。
+在收集故事的过程中遇到不少问题，比较典型的情况是只有音频，或者只有文字，或者没有配图。在深度学习模型日新月异的2022，我决定尝试用最新的开源模型来解决一下这些问题。
+[TOC]
+插图生成（text2img） 这是目前大火的领域，每天各种营销号都有大量文章狂轰滥炸。不论是生成梵高画作还是生成性感waifu，似乎AI画师现在已经无所不能。
+但我实际使用下来感觉要让AI直接给故事画插图还是蛮困难的。我使用的是最近红的发紫、大名鼎鼎的Stable Diffusion，短短几个月已经发展到第四版了。我的做法也比较简单，直接把故事标题嵌入在一段prompt里面，例如a story illustration for children of the story about The crow and the water bottle 。这个prompt模板是参考了一些prompt编写指南结合尝试之后得到。
+在尝试的过程中发现几个比较明显的现象
+通过art by xxx控制风格非常灵敏，试了梵高和莫奈，得到图片的风格都很强 细节效果都比较差，不管是脸还是手，只要有这种部位的图都不太能用 AI产生的图片有时给人感觉阴森森的，给小朋友做故事书插画估计真会吓死宝宝 下面是几个我生成出来的例子
+这个乌鸦喝水的图是我比较满意的，两个东西都画的比较正常，水瓶子里还有点石头，估计是模型训练时有见过这个phrase和相应图片，直接给记住了。
+这个图不知所云，没看到有奶牛，青蛙也怪怪的。
+这张丑小鸭算是平均水平，虽然鸭头有点怪，但是在可以接受的范围内。
+后来我又调研了下，有的朋友为了给故事生成插图做得还是比较fancy的。例如这个小姐姐的repo，大家感兴趣可以看一下，也是开源模型攒的pipeline。
+更多生成图片的例子，可以参考这个故事集。
+语音转文字（ASR） 虽然各种有声故事大大减轻了讲故事的负担，但给婴儿或者胎儿讲故事最好还是由爸爸妈妈亲自来。毕竟这个时期故事内容肯定是听不懂的，更重要的是让宝宝听到父母的声音。为了能亲自讲故事，我需要把之前找到的一些故事音频（主要是英文的）转换成文本。
+经过一番调研，目前比较好的ASR模型是最近openAI开源的来源于论文《Robust Speech Recognition via Large-Scale Weak Supervision》的Whisper。 这个模型是个transformer seq2seq model，从插图来看multi task这块比较复杂。
+待转写的故事听起来都比较清晰，我直接搞了个base.en单语模型试了一下。跑出来的效果简直惊艳，几乎没有错误的单词，甚至连时态都识别得很准确。唯一美中不足的是有些文章转写出来没有标点符号，也几乎没法识别出段落，给阅读带来一些障碍。为了解决这个问题，我又找了个punctuation restore模型后处理了一下。现代化的语言模型做这个事情简直是易如反掌，效果也相当好。
+大家可以看这个故事集里面的内容，都是ASR转写出来的。
+文字转语音（TTS） 亲自讲故事虽好，但英语内容不是所有家长都能驾驭的。对于只有文本的英语故事，我也希望能生成相对应的音频。
+目前开源模型里面SOTA水平的应该是来自Facebook（Model Card里是叫fastspeech2，但正文里又写是S^2，微软也有一个叫fastspeech的模型，我还没搞懂他们之间关系）的FastSpeech2，这个模型是用faiseq来实现的，但也在huggingface的hub上托管。
+样例代码有点bug，按照讨论区的指导可以跑通。给一段文字的话生成很快，但句与句之间有点黏连太紧，听感不佳。我稍微做了点小后处理，让文章听起来自然了一些。大家可以参考这个故事集的内容。
+在做TTS和扫论文的过程中隐约感觉TTS是一个很有意思的领域，后面有时间可以多学习一下。
+总之，经过这些有趣尝试，我基本上解决了我遇到的内容问题。虽然这些模型都还有一些问题，但确实已经可以很大得提升生产力。原来需要特别专业团队才能做的事情现在只要几行代码就可以搞定。内容类、工具类产品的玩法也更多了，可以用这些模型和人相互激发促进来产生更多有趣的创意。
+本文就先写到这，如果你也需要经常给宝宝讲故事，欢迎使用这个简单的小程序！后面我还会写一两篇关于这个小程序工程和算法方面的心得，如果你感兴趣，欢迎关注公众号，及时获取更新。</description>
+    </item>
+    <item>
+      <title>文本生成专题2：常见的摘要生成方法</title>
+      <link>https://www.yuanhao.site/post/2022-07-03-summary2/</link>
+      <pubDate>Sun, 03 Jul 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-07-03-summary2/</guid>
+      <description>按照第一篇的计划，这篇文章梳理一下常见的摘要生成方法。大部分方法并不复杂，更多的内容其实包含在seq2seq框架、语言模型、self/cross attention这些模块里。
+[TOC]
+抽取式摘要 所谓抽取式摘要，有点像之前写过的关键词抽取，就是把原文里重要的部分抽出来作为摘要。
+前Transformer时代的方法 有好多基于统计的抽取式摘要生成方法，例如jieba里都集成的TextRank。这方面资料很多，大家搜搜就有。
+Transformers-based方法 比较典型的工作是BERTSum，其结构如下图。相比原始BERT，几个主要的变化是
+在每个句子前面增加[CLS]token，后续用他们对应的隐向量作为句子表征； 把BERT原有的token type改变成了0/1相间的形式； 在得到句子表征后，又增加了一个称为Summarization Layers的Transformer/LSTM模块，用户在句子表征间做交互。 最后对于每句话输出一个应该包含进摘要的概率，最终结果由得分top3句子产生。 来看一下BERTSum的表现，如下图，总体还是不错的。可以发现加上所谓的Summarization Layers模块并没有很明显的提升，预训练语言模型大部分时候确实很强，光魔改结构往往收效不大。这篇文章的结构我感觉很工整，句子前加[CLS]的操作给人一种细腻的感觉。
+生成式摘要 生成式摘要的大体框架很久都没有变过了，大概就是下面这张图。左边是一个encoder，用来编码原文，右边是个decoder，用来生成摘要。
+前Transformer时代的方法 在RNN之后，Transformer出来之前，主要的改进是加入各种各样的attention，原文间，摘要间，原文和摘要间等等。大家可以看出来上面那张图已经是有attention的了。
+我个人认为前Transformers时代最特别的一个问题是OOV。有不少工作是针对这个问题展开的，其中比较有名的是Google的Pointer Generator。对比和上图的区别可以发现，对于next token的预测，概率分布里出现了&amp;quot;2-0&amp;quot;这个从原文copy出来的词（也是不属于词典的词，是没有copy mechanism之前不可能被生成的词）。真的是要感谢subword tokenizer的广泛使用，让大家省去了很多类似的dirty work。
+目前主流的方法 目前的encoder-decoder transformer早已把各种attention玩到登封造极的程度，原文、生成结果间相互的联系已经大大加强。这几年的提升很多都是来自于非结构方面，例如BART用一种新颖的预训练方法来提高，GPT用超大语言模型来提高等。摘要生成逐渐成为了一个跟随语言模型水涨船高的领域（调参调结构当然也有用，但至少大的提升我认为是这样）。
+近期刷榜方法 如果大家有关心今年的ACL，会发现摘要相关的论文很多，前段时间还看到丕子老师发微博感叹。不仅数量多，今年在CNN/Dailymail数据集上还有个不小的涨幅，在本文的最后一起来看下是什么神奇的方法。
+近几年的刷榜方法我认为可以总结为更加充分地挖掘数据集提供的信号，同时在模型上结合生成模型和判别模型。
+我们先从一篇直白的论文Abstractive Summarization with Combination of Pre-trained Sequence-to-Sequence and Saliency Models讲起。这篇论文把原文和摘要中都出现的token认为是重要token，用这个作为监督信号，训练了一个重要性模型(saliency models)。然后尝试了多种组合方式来在解码器上使用重要性模型产生的辅助信号。
+这里解释一下里面出现的几种方式：
+SE，Selective Encoding：用重要性得分来控制编码器输出 SA，Selective Attention：用重要性得分来控制解码器cross attention SEG, Sentence Extraction then Generation：相当于精简原文输入 CIT, Conditional Summarization Model with Important Tokens：把重要的Token选出来跟原文一起输入编码器 来看一下各种方式的表现，只是单独增加一个siliency model训练任务（MT）就提高了1个点的R1，CIT表现也不错，提升接近两个点。
+有了上面这篇文章作为基础，我们来看下目前的SOTA，BRIO: Bringing Order to Abstractive Summarization，他们组其实工作是一脉相承的，感兴趣可以看下他们之前的论文GSum: A General Framework for Guided Neural Abstractive Summarization和SimCLS: A Simple Framework for Contrastive Learning of Abstractive Summarization。</description>
+    </item>
+    <item>
+      <title>文本生成专题1：基础知识</title>
+      <link>https://www.yuanhao.site/post/2022-05-25-summary1/</link>
+      <pubDate>Wed, 25 May 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-05-25-summary1/</guid>
+      <description>大家好，好久不见，疫情封控在家两个月写文章都不利索了😂。
+在这段时间我反思了一下之前写的东西，基本是最近用了什么、看到什么就写什么，感觉系统性比较差。后面我打算少写一些零散话题，多总结一些更有体系的内容。第一个小专题我想总结一下我最近关注比较多的领域，文本生成。文本生成领域很广泛，我主要会聚焦在文本摘要（Text Summarization）和数据驱动生成（Data2Text）。
+这篇文章是专题第一篇，将介绍以下的内容：
+[TOC]
+除了第二部分外都比较像科普文，没有相关技术背景的朋友也可以看懂。
+问题定义和数据集 摘要 摘要这个问题比较好理解，就是把长的文章，例如学术论文、新闻等等缩写成更短的文本，并且保留重要的信息。
+摘要领域常见的典型数据集CNN/DailyMail, arXiv, Pubmed, XSUM等。其中CNN/DailyMail的原始文本是大约几百个词的新闻，摘要（ground truth）是人写的，大概五六十个词。中间两个都是来自学术论文的数据集，原始文本比新闻长不少。学术论文通常都需要作者提供摘要，一般一百来个词，天然适合拿来做摘要的数据集。X-SUM是里面摘要长度最短的数据集，基本是一句话的长度。还有一些数据集，大家可以参考papwerswithcode。
+数据驱动生成 数据驱动生成则是给定一些结构化的数据，例如餐馆信息、实体间的关系等，生成一段自然语言。
+这个领域典型的数据集有WebNLG和E2E。WebNLG的每条样本会提供一系列用三元组描述的实体及关系，以及一段陈述三元组表达事实的自然语言文本作为标签。
+E2E数据集则提供了成对的餐馆结构化信息和自然语言描述。自然语言描述相比于WebNLG数据集更简短一些。更多数据集大家参考这个页面。
+常用的评价指标 除了数据集，要理解一个技术的发展水平，另一个很重要的方面是理解评价指标。评价机器生成的文本，最常用的指标是ROUGE和BLEU。
+ROUGE 摘要里最常用的指标是ROUGE，它的全称是Recall-Oriented Understudy for Gisting Evaluation，是在2004年的论文ROUGE: A Package for Automatic Evaluation of Summaries里提出的。从名字可以看出来它比较关注recall。它有很多形式，在论文里比较常看到的有ROUGE-N(N=1,2,3&amp;hellip;)和ROUGE-L两种。
+对于ROUGE-N，计算方式就是生成结果和参考文本中都出现的ngram占参考文本ngram的比例。ROUGE-L比较麻烦，需要考虑最长公共子串，但相比于预设ngram大小的ROUGE-N有一定的优势。单句的ROUGE-L是最长子串长度除以参考句的长度，举一个论文里的例子
+S1. police killed the gunman S2. police kill the gunman S3. the gunman kill police 假设S1是参考句，那S2和S3的ROUGE-2都是1/3(匹配上了the gunman)，但S2的ROUGE-L是3/4比S3的2/4大，实际情况确实是S2更好一些。
+可以看出ROUGE，特别是ROUGE-N是比较考察和参考文本用词的一致性的，理论上不是个语义上的评价，这也和后面会写到的一些trick有直接的关联。
+ROUGE指标的python实现可以参考这个repo，看代码应该是是最清楚的。
+BLEU 在Data2Text领域常用的指标是BLEU，全称是bilingual evaluation understudy，从名字也能看出来，最开始是在机器翻译的评价里被广泛使用。BLEU像是一个precision指标，基本是在算生成结果和参考文本都出现的词和参考文本长度的比值。主要考虑的问题是多次匹配，例如
+candidate：ha ha ha reference: only saying ha is not good candidate只有一种词，且在标签中出现了，但若BLEU是100分，显然是不合理的。因为ha在reference中只出现一次，所以只能匹配一次，所以BLEU是1/3。
+另一个要解决的问题是防止candidate过短而导致的高分。因为precision的分母是自己ngram的数目，只输出有把握的词是可以提高分数的。这里引入了一个叫brevity penalty的参数。这个参数的计算公式如下：</description>
+    </item>
+    <item>
+      <title>做NLP？Don&#39;t stop pretraining!</title>
+      <link>https://www.yuanhao.site/post/2022-04-20-mlm/</link>
+      <pubDate>Wed, 20 Apr 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-04-20-mlm/</guid>
+      <description>应该很多朋友知道，在训练下游任务之前先在任务的语料上做一下非监督的masked language model任务预训练可提高目标任务的性能。特别是当下游任务的标注数据少，相关语料多的情况下这个小技巧带来的提升更大。举个例子，假设你要做一个恶意评论分类器，但由于时间和成本关系，只标注了几万条评论，但系统里的评论已经有几百万条，这时候先在所有评论上做个MLM训练，再finetune恶意评论分类任务就是个比较好的选择。
+这个问题多年前论文Don’t Stop Pretraining: Adapt Language Models to Domains and Tasks做了比较详细的探讨。
+首先是个很好理解的现象，如下图所示，虽然现代化的Transformer语言模型都是由海量数据训练的，但难免跟我们目标任务的语料领域无法完全重叠
+论文还做了定量的分析，它们选了几个领域，然后抽样了每个领域最高频的一万个token，看下重合度，发现确实不高。重合度最高的是新闻，那是因为Roberta训练的语料里其实就有新闻。
+那既然如此，就在目标任务所在领域语料上继续做一把预训练（DAPT），然后再finetune目标任务。同样是上面几种领域的任务，发现经过DAPT之后都有明显提高，上面重合度最低的CS领域提升最明显。最后一列是个比较有意思的实验，它是为了排除单纯增加了训练数据带来的性能提升，选了一个非目标任务所在领域来进行预训练（数据同样变多，但领域和目标任务无关）。结果大多没提升，有些还下降了。这就说明在目标任务领域做预训练确实有效果！
+这个论文后面还有不少内容，但我感觉对一般场景有些overkill，就不写了，有兴趣的朋友可以自己看。下面来给大家演示一下怎么用目前主流的transformers库来做MLM，相当简单，可以说是开箱即用。
+首先你需要安装Transformers库，然后在transformers/examples/pytorch/language-modeling/目录下面找到run_mlm.py文件，把这个文件复制一份到你的工程目录。
+为了做MLM训练，你需要准备好一些文本数据，将他们以一行一个样本的格式写在一个文本文件里，为了可以监控训练的进程，最好是像平常做其他机器学习任务一样准备一个训练集，一个验证集。但由于是MLM，验证集不需要太多。
+准备好代码和数据之后就可以来运行这个脚本了，有三部分参数需要指定
+模型参数
+必须的模型参数只有一个，即model_name_or_path，即你要使用的基础模型。给这个参数是最方便的，tokenizer等组件会配套使用。你也可以参考代码来精细控制每个组件。
+数据参数
+train_file，即训练数据路径 validation_file，即验证数据路径 max_seq_length，最长的序列长度，不给的话会使用tokenizer的默认最大长度 mlm_probability遮蔽比例，默认是15%，之前陈丹琦组的论文说增大比例可以提高性能，但目前似乎还有争议 line_by_line，因为我们的数据是line by line的，所以这个要设置为True 训练参数。这部分参数有很多，可以参考这个文件。比较推荐设置的有以下几个
+output_dir，这个必填，训练后模型保存的地址 do_train，这个必填 do_eval，如果有验证集必填 num_train_epochs，默认为3 fp16，如果你的显卡支持tensor core，那一定要把这个打开 weight_decay，MLM的时候可以给点衰减防止过拟合，常用0.01 per_device_train_batch_size，batch size 最后的成品可能像这样
+python run_mlm.py \ --model_name_or_path roberta-base \ --train_file training_corpus.txt \ --validation_file validation_corpus.txt \ --per_device_train_batch_size 8 \ --per_device_eval_batch_size 8 \ --do_train \ --do_eval \ --fp16 \ --weight_decay 0.01 \ --line_by_line \ --output_dir .</description>
+    </item>
+    <item>
+      <title>还在用RoBERTa？快来看看DeBERTa吧！</title>
+      <link>https://www.yuanhao.site/post/2022-04-16-deberta/</link>
+      <pubDate>Sat, 16 Apr 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-04-16-deberta/</guid>
+      <description>如果你现在不知道DeBERTa，那相当于你在2018年不知道BERT ——多头注意力
+DeBERTa模型是微软在2021年提出的，首发在ICLR 2021上，到现在其实已经迭代了三个版本。第一版发布的时候在SuperGLUE排行榜上就已经获得了超越人类的水平，如今也成为了Kaggle上非常重要的NLP Backbone（BERT感觉已经没什么人用了）。比较奇怪的是，似乎这个模型被大家讨论并不多，于是最近看了两篇相关论文DeBERTa: Decoding-enhanced BERT with Disentangled Attention和DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing学习了一下。
+DeBERTa 1.0 1.0版本在BERT的基础上有三个主要的改进点：
+更加解耦的self attention，上图中右边黄色部分； 考虑绝对位置的MLM任务，上图中Enhanced Mask Decoder； 预训练时引入对抗训练 我认为其中1应该是最重要的，然后是3，2最不重要，因为在后面的3.0版本已经不再使用MLM作为预训练任务了。
+Disentangled Attention 第一个改进其实有点“复古”，这里的解耦是将位置信息和内容信息分别/交叉做attention。想当年BERT横空出世时大家都津津乐道地讨论为什么可以把word embedding，position embedding加起来做注意力，没想到没过几年却又被分开了。当然，DeBERTa的相对位置编码不同于BERT的绝对位置编码，似乎也不好直接比较。
+论文里定义了一个相对位置embedding P，和一个相对距离函数$\delta(i,j)$，除了和标准transformers一样的内容QKV，计算了相对位置QK，分别为$Q_r=PW_{q,r}$，$K_r=PW_{k,r}$。注意力矩阵的计算变成了
+$$A_{i,j}={H_i,P_{i|j}}\times{ H_j,P_{j|i}}^T=H_iH_j^T+H_iP_{j|i}^T+P_{i|j}H_j^T+P_{i|j}P_{j|i}$$
+第一项是常规的内容自注意力（content-to-content)，第二第三项分别是content-to-position和position-to-content，第四项论文里认为不重要，直接省略了。具体看是下面这个公式
+$$A_{i,j}=Q^c_i{K^c_j}^T+Q^c_i{K_{r,\delta(i,j)}}^T+K_j^c{Q_{r,\delta(j,i)}}^T$$
+这一部分其实看一下代码也比较清晰。
+SiFT 对抗训练也是NLPer经常使用的技术了，在做比赛或者公司业务的时候我一般都会使用FGM对抗训练来提升模型的性能。DeBERTa预训练里面引入的对抗训练叫SiFT，比FGM复杂一些，他攻击的对象不是word embedding，而是embedding之后的layer norm。整个过程需要forward 3次，亲测比FGM慢一些。微软已经把代码放出，大家可以参考，在自己的任务里试一试。
+DeBERTa 2.0 2012年2月放出的2.0版本在1.0版本的基础上又做了一些改进：
+更换tokenizer，将词典扩大了。从1.0版的50k扩成了128k。这个扩大无疑大大增加了模型的capacity。 在第一个transformer block后加入卷积。这个技巧在token classification、span prediction任务里经常用到。 共享位置和内容的变换矩阵 把相对位置编码换成了log bucket，各个尺寸模型的bucket数都是256 这些变化里1和2是把模型变大，3和4是把模型变小。总的效果是V2版本模型比V1版本变大了。
+2.0版几个变更对模型的影响，增大词典效果最显著
+DeBERTa 3.0 2021年11月微软又放出了3.0版本。这次的版本在模型层面并没有修改，而是将预训练任务由掩码语言模型（MLM）换成了ELECTRA一样类似GAN的Replaced token detect任务。因为多了个生成器，DeBERTa 3.0的论文中也更多的是对不同的embedding sharing的探讨，下面这种图是对文中对比的三种方式的简介。
+3.0论文探讨的集中参数更新方式
+根据下图所示论文的结果，3.0的改进进一步提升了DeBERTa模型的性能（实际并不是所有任务都有提升）。DeBERTa-v3也确实成为了Kaggle上最常见的DeBERTa版本。
+DeBERTa 3.</description>
+    </item>
+    <item>
+      <title>Key Phrase Extraction</title>
+      <link>https://www.yuanhao.site/post/2022-03-26-key-phrase-extraction/</link>
+      <pubDate>Sat, 26 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-26-key-phrase-extraction/</guid>
+      <description>做了一段时间的新闻NLP，越来越感受到抓重点对长文本理解的重要性。类别、话题、关键词句这种离散标签对下游的推荐、搜索业务以及产品的形态都有很重大的影响。最近读了两篇关键短语抽取（Key Phrase Extraction，KPE）相关的论文，感觉挺有意思，跟大家分享一下。
+问题定义和数据集 首先，对于一篇文章来说什么是其中的关键短语就没有一个统一的标准，标注的时候也比较主观，而且标注难度很大。常见的类别体系可能包含几百个类别，话题体系包含成千上万个话题，而对于关键短语来说，连个确定的候选集都没有。
+目前主流的KPE任务benchmark数据集有好几个，这里列两个比较有名的
+KP20k：2017年论文Deep Keyphrase Generation贡献的数据集，由科学论文组成。文本包括标题和摘要。发过论文的都知道，作者需要给文章提供几个关键词，确实是很好的数据来源。 KPTimes：2019年论文****KPTimes: A Large-Scale Dataset for Keyphrase Generation on News Documents****贡献的数据集，文章都是新闻，下面是一个例子。 KPTimes数据样例
+这两个数据集规模应该都挺大了，KPTimes的论文里有一张主流数据集规格对照表，一目了然，大家可以参考。从统计上看KP20k和KPTimes篇均5个KP的确实比较实用，但它们的问题是测试集里很大比例的标签并没有在文本中出现，对于模型来说难度可能太大了
+主流数据集对比
+监督方法 KP20k数据集其实是那篇论文的副产品，那篇论文的主要贡献其实是一个叫CopyRNN的方法，看名字大概就知道是个seq2seq+copy机制的生成式方法。这里引入copy机制也是有比较明确的动机的，因为在RNN时代生成式方法会受限于字典，decoder输出层没有的词是无法被预测出来的。
+RNN+copy机制可以在KP20k上获得0.255的F1@10
+到了2020年，BERT等Transformers模型已经成了NLP领域的标配，那自然也会想到用来做KPE。Joint Keyphrase Chunking and Salience Ranking with BERT 就是里面简单且有效的一个方法。题目里的Salience是个显著的意思，这篇文章的方法也非常直接，就是把最可能是KP的文本段落（n-gram）用排序的方法找出来。那怎么得到一个n-gram的表示呢，这篇文章的办法就是在Transformer上面再套一个一维CNN，n和卷积核的大小相对应。
+论文里用了两个任务来训练这个网络，一个任务是二分类，即n-gram是否是KP；另一个是排序任务，这个任务是对于文档中的每个unique n-gram，获得最大的预测值（文中称为max pooling），然后用hinge loss来使得KP的概率值大于非KP。
+JointKPE的成绩大大提高
+感兴趣的朋友们可以参考他们的代码实现。
+非监督方法 一开始我是想找一些靠谱的非监督方法的，毕竟像KP20k这样优质的的训练数据集一般只有英语。然后就在paperswithcode上看到了目前的榜一，UCPhrase。这个方法比较有意思，它的流程如下面这张图所示
+分为几个核心步骤：
+找到所谓的Core Phrase。这其实是通过一些规则找到文本中反复出现的片段，并且把它们当做KP，以及后续网络训练的Silver Labels。 用Transformers语言模型生成特征。这里的特征不是大家常用的embedding，而是attention map。 训练一个图像分类器，对于一个attention map进行是否KP的二分类。 一个attention map样例，从中可以发现：1. attention map把句子分成了比较明显的几块 2.attention map可以可以作为图像输入来进行KP分类
+这个论文的结果如下，在KP20k上的F1@10是19.7，和2017年的RNN+copy差了6个百分点，但和同样使用Transformers的监督方法相比差了16个百分点。
+非监督方法比起监督方法来确实逊色不少
+这个工作的代码也开源了：https://github.com/xgeric/UCPhrase-exp。
+写在最后 提到KPE，可能大家第一个想到的方法是SpanBert那样的span prediction方法，亦或是序列标注里常用的BIO分类法，但JointBert论文里对比下来还是这种接一个CNN的方法更好。相比于单纯序列标注或片段预测，这个方法确实可以更直接地利用附近的邻域信息，在Kaggle中其实也常有在序列标注前先加一层CNN或RNN来强化邻域信息的做法。
+UCPhrase的方法让人眼前一亮，有一种学术美，但与JointBert 16个百分点的性能差异又实际上让它的实用价值大打折扣。所以在业务明确的前提下，搞漂亮方法确实不如扎扎实实搞点标注数据啊。</description>
+    </item>
+    <item>
+      <title>围观特斯拉总监把玩MNIST</title>
+      <link>https://www.yuanhao.site/post/2022-03-09-%E5%9B%B4%E8%A7%82%E7%89%B9%E6%96%AF%E6%8B%89%E6%80%BB%E7%9B%91%E6%8A%8A%E7%8E%A9mnist/</link>
+      <pubDate>Wed, 09 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-09-%E5%9B%B4%E8%A7%82%E7%89%B9%E6%96%AF%E6%8B%89%E6%80%BB%E7%9B%91%E6%8A%8A%E7%8E%A9mnist/</guid>
+      <description>最近大名鼎鼎的特斯拉AI总监Andrej Karpathy发了篇博客（看来写博客是个好习惯），叫Deep Neural Nets: 33 years ago and 33 years from now。饭后花了点时间围观了一下，写得确实挺有意思。
+他先尝试复现了一下深度学习开山模型LeNet，然后尝试利用这33年人类的新知识去改进模型的效果。他干了这么几个事情：
+Baseline. eval: split train. loss 4.073383e-03. error 0.62%. misses: 45 eval: split test . loss 2.838382e-02. error 4.09%. misses: 82 把原文的MSE loss换成如今多分类的标配Cross Entropy Loss eval: split train. loss 9.536698e-06. error 0.00%. misses: 0 eval: split test . loss 9.536698e-06. error 4.38%. misses: 87 首战失败，怀疑SGD优化器不给力，换成了AdamW，并使用“大家都知道”的最优学习率3e-4，还加了点weight decay eval: split train. loss 0.000000e+00. error 0.00%. misses: 0 eval: split test .</description>
+    </item>
+    <item>
+      <title>分级利器：序数回归</title>
+      <link>https://www.yuanhao.site/post/2022-03-02-ordinal-regression/</link>
+      <pubDate>Wed, 02 Mar 2022 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2022-03-02-ordinal-regression/</guid>
+      <description>之前面试的时候遇到过好几个候选人在做”评级“相关的项目，例如针对图片、视频的色情程度，评论的粗鲁程度分级等等。绝大部分的人在面对这种问题时通常想到的都是用回归或分类来解决。这两种方法都是有效的，但都有一些问题：
+常规的分类无法很好地建模类别间的关系。例如你要对评论的不文明程度分5档，但对于分类常用的交叉熵损失函数来说，把一个最高档的评论分成了最低档还是中间档对它来说损失是一样的。但对于实际的业务，前者显然比后者是更难接受的。 回归算法需要比较多的超参调试。在之前的文章里聊过，回归对标签的尺度是敏感的，把细粒度，例如100档（标签为1-100）的评级问题直接交给MSE Loss往往得不到好的结果。回归对标签中的最大值和最小值也天然会有一些抗拒。 在Pawpularity比赛结束后CPMP说他使用了一种叫Ordinal Regression（中文名没找到，姑且称它为序数回归）的方法，我在一些评级问题上尝试之后发现这个方法确实行之有效，而且非常简单优美。
+数学解释 说是序数“回归”，但我它认为本质上是一个考虑了类别间关系的分类算法。 大家一定都很熟悉sigmoid函数$σ$，它的定义域是(-∞,+∞)，而值域是(0,1)，且是单调增函数，连续可导。我们可以把$σ(x)$看做是随机变量小于x的概率，即某个(-∞,+∞)上随机变量的累积分布函数（CDF）。
+假设我要处理一个5档的分类问题，而上面说的随机变量就是模型的输出，那么问题可以转化为找到四个切分点$\theta_1, \theta_2, \theta_3, \theta_4$，并用$P(x&amp;lt;\theta_1)$, $P(\theta_1&amp;lt; x&amp;lt;\theta_2)$, $P(\theta_2&amp;lt; x&amp;lt;\theta_3)$, $P(\theta_3&amp;lt; x&amp;lt;\theta_4)$, $P(\theta_4&amp;lt; x&amp;lt;+\infty)$这五个概率来表示$x$分别属于五个等级的概率。进一步结合前面的sigmoid函数做CDF的方法，可以把五个概率转化为$σ(\theta_1-x)$, $σ(\theta_2-x)-σ(\theta_1-x)$, $σ(\theta_3-x)-σ(\theta_2-x)$, $σ(\theta_4-x)-σ(\theta_3-x)$, $1-σ(\theta_4-x)$。
+这样我们就把一个模型输出的实数logit转化成了属于五个等级的概率，进而可以使用负对数似然损失函数来优化这个分类问题。在这样的设定下既可以使用一组固定的切分点来优化模型，又可以把切分点也作为可学习的权重和模型一起优化。
+代码 一开始我在网上找到了一个pytorch的Ordinal Regression实现spacecutter，但经过一番实验之后我发现它写的并不完美，于是自己又修改了一下，在这里分享给大家
+class OrdinalRegressionLoss(nn.Module): def __init__(self, num_class, train_cutpoints=False, scale=20.0): super().__init__() self.num_classes = num_class num_cutpoints = self.num_classes - 1 self.cutpoints = torch.arange(num_cutpoints).float()*scale/(num_class-2) - scale / 2 self.cutpoints = nn.Parameter(self.cutpoints) if not train_cutpoints: self.cutpoints.requires_grad_(False) def forward(self, pred, label): sigmoids = torch.sigmoid(self.cutpoints - pred) link_mat = sigmoids[:, 1:] - sigmoids[:, :-1] link_mat = torch.</description>
+    </item>
+    <item>
+      <title>多模态对比学习预训练模型CLIP</title>
+      <link>https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/</link>
+      <pubDate>Mon, 13 Dec 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/</guid>
+      <description>我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的
+CLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。
+方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.
+正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。
+用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。
+更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。
+it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet
+更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。
+图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。
+更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。
+This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset.</description>
+    </item>
+    <item>
+      <title>对比学习学习笔记</title>
+      <link>https://www.yuanhao.site/post/2021-12-06-%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Mon, 06 Dec 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-12-06-%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/</guid>
+      <description>对比学习已经火了一阵了，之前看过一下SimCLR和SimCSE的论文，但走马观花也没有实践。这两天仔细学习了一下，大概明白了是怎么回事。
+首先对比学习通常是在自监督的设定下进行表征学习，也就是不依赖标注数据获得一个编码器（Encoder），大致的环节如下
+通过一些方式构造人工正样本对 在一个Batch内构造负样本对 设计一个loss，拉近正样本对表征（Embedding）间的距离，扩大负样本对表征间的距离 构造正样本对 对比学习一开始是在计算机视觉领域兴起的，CV论文里最初是通过对一张图片进行两次不同的数据增强来构造正样本对的。
+SimCLR里用到的图像增强方法，可以看出来强度是比较高的，模型要学会图像间的关系不是那么容易
+后来这把火烧到了NLP领域，最开始也是模仿CV的做法，通过例如删字词、换同义词等数据增强来构造。直到大名鼎鼎的SimCSE横空出世，提出了用两次不同的dropout来构造正样本对的方法，而且效果还特别好。这个方法的前提是在transformers里面每层都有dropout，但常见的卷积神经网络里面dropout往往都只在最后才有，所以并不能迁移到CV界；但最近ViT大火，应该也有人会试着使用这种方法。
+SimCSE除了有自监督的版本，还有通过数据集特点构造的有监督版本
+损失函数构造 SimCLR里面用的是NT-Xent Loss，它是the normalized temperature-scaled cross entropy loss的缩写，我来翻译的话会叫他“归一化的带温度交叉熵”。其公式如下
+$$l(i,j)=-\text{log}\frac{e^{\text{sim}(z_i,z_j)/\tau}}{\sum_{k=1}^{2N}1_{k\ne i}e^{\text{sim}(z_i, z_k)/\tau}}$$
+$$L=\frac{1}{2N}\sum_{k=1}^N[l(2k-1,2k)+l(2k,2k-1)]$$
+SimCLR中一个batch是由N张图片通过两组不同的增强变成2N张并且穿插排列，即2k-1 和 2k 是由同一张图构造的一对人造正样本。从第二个式子可以发现，一个Batch的Loss是其中N对loss的均值。跟cross entropy相比，首先是指数项从模型预测的概率变成了样本对间的相似度。分子与正样本对的相似度相关，分母则与第i张图与其余图的相似度有关。注意分母中只有2N-1项，因为自己与自己天然组成正样本，不去除的话这个分式的极限值（完美模型的loss值）将变成0.5，总loss也就不是0了。
+SimCSE里使用的loss是上面的变种，或者说是个简化版本。$z_i$是原始第i个样本的表征，$z&amp;rsquo;_i$是对应的人造正样本的表征。与上面不同的是原始样本表征之间的相似度、变换样本表征之间的相似度都没有参与loss计算。
+$$l(i)=-\text{log}\frac{e^{\text{sim}(z_i, z&amp;rsquo;i)}}{\sum^N{j=1}e^{\text{sim}(z_i, z&amp;rsquo;_j)}}$$
+代码实现 下面是我实现的SimCSE版本的对比学习loss，供大家参考
+class NTXentLoss(nn.Module): def __init__(self): super().__init__() def forward(self, rep1, rep2, temperature=0.5): normalized_rep1 = F.normalize(rep1) normalized_rep2 = F.normalize(rep2) dis_matrix = torch.mm(normalized_rep1, normalized_rep2.T)/temperature pos = torch.diag(dis_matrix) dedominator = torch.sum(torch.exp(dis_matrix), dim=1) loss = (torch.log(dedominator)-pos).mean() return loss 实验心得 我还是在之前提到的Pawpularity数据集上进行的实验，并且和论文里的表征学习不同，我是将对比学习作为一个辅助任务来帮助主任务的训练。经过一天的实验，有以下一些发现
+在参数合理的情况下，加入对比学习作为辅助任务确实可以提升主任务的表现。 加入对比学习作为辅助任务看上去可以让模型收敛更加稳健，从而可以使用更大的学习率、更高强度的数据增强。 Loss中的温度是很重要的参数，在SimCLR论文中最好的温度是0.1，在SimCSE论文中最好的温度是0.05，但在我的实验里最好的值跟这俩差的很多。熟悉蒸馏的朋友应该知道，温度越高会让样本间的差异越小，loss趋近常数；温度越低则反之。SimCSE论文的消融实验尝试了不同数量级的温度，大家在用的时候也可以大胆地多尝试一下。 将对比学习作为辅助任务额外增加的时间代价不明显。 今天先到这里，上班去辽。</description>
+    </item>
+    <item>
+      <title>Swin Transformer (v2)学习笔记</title>
+      <link>https://www.yuanhao.site/post/2021-11-28-swin_transformerv2/</link>
+      <pubDate>Sun, 28 Nov 2021 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-11-28-swin_transformerv2/</guid>
+      <description>上篇总结了一下最初的ViT模型，它有几个明显的问题：
+建模能力方面，强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性 复杂度方面，之前的ViT是在每层都做全局(global)自注意力。如果保持每个Patch的大小不变，随着图片尺寸的变大，Patch的个数会增加，而Patch的个数等于进入Transformer的Token个数，且Transformer的时间复杂度是O(n^2)。 易用性方面，由于Embedding（结构是全连接）和图片大小是绑定的，所以预训练、精调和推理使用的图片必须是完全同等的尺寸。 Swin Transformer提出了一种称为shifted window的方法来解决（缓解）以上问题。
+Swin Transformer的结构如下图所示
+{: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+Embedding Stage（stage1）。将图片划分为若干4*4的patch，使用线性变换来将patch变为Embedding向量，这一步和ViT是一样的。但是注意，这里的patch比ViT的14*14小了很多。 若干个使用Swin Transformer 的Stage（stage2-4）。这里模仿了经典卷积网络backbone的结构，在每个Stage都将feature map（对应到Vit就是Patch或Token的个数）变成原来的四分之一。这是通过简单地将2*2patch合并成一个来完成的。同时，用Swin Transformer替代了原来的标准Transformer，主要变化如下 用M*M大小的窗口自注意力代替全局自注意力。因为自注意力机制时间复杂度是O(n^2)，通过减少参加自注意力的元素，将原来关于patch数平方复杂度的计算变为关于patch数线性复杂度 用对角线方向的shift来使Swin Transformer里的每一层窗口都是不同的，这样一个patch有机会和不同的patch交互。这里还使用了一个mask trick来使得这种shift的自注意力计算更高效。 添加了相对位置偏置(relative position bias)，对比发现这比添加绝对位置embedding效果好很多 shifted window示意图，l+1层的窗口是从l层往右下角平移2个patch得到的 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+从结果来看，SwinT相比于ViT有了很大的提升
+Swin Transformer实验结果，可以看出来比ViT已经有了很大的提升 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+综合消融实验的结果可以对比三种不同的attention方式: fixed window、sliding window和shifted window的性能。他们的imagenet top1 acc分别是80.2， 81.4和81.3。从中可以看出类似于卷积的sliding window性能是最好的，无奈太慢了。fixed window丢失了很多有用的窗口间交互，性能最差。shifted window性能相比sliding window下降微弱，但速度提升了好几倍。同样可视为fixed window的ViT只能得到0.78的top1 acc，我想这是小patch带来的差别，因为现在的线性变换embedding实在太弱了，patch越大带来的信息丢失就越多。
+前不久原班人马又发布了V2版的Swin Transformer，主要是解决模型上规模的问题，有几个主要的改动：
+把每个Block里的LN从前面换到了后面，来解决深度增加之后训练不稳定的问题 把原来的scaled dot attention换成了scaled cosine attention，也是为了解决训练不稳定的问题（否则可能被某些像素对的相似度主导）。 改进相对位置偏置。V1版里这个模块是用一个规模跟窗口大小M相关可学习参数矩阵来处理的，如果预训练和finetune时M大小改变，就用插值来生成原来不存在的值。V2版首先是引入了一个小网络来取代参数矩阵，其次是将相对位置从线性空间换到了对数空间，通过取对数压缩空间差距来让M变化时的过渡更加顺滑 通过取对数，让finetune时增大窗口和图片的性能损失大为减小。但其实这里还是跟卷积神经网络有差距。通常卷积神经网络在finetune时使用更大的图片可以提升性能。 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+从结果来看，更大的网络确实带来了更好的性能，30亿参数版的SwinV2-G比8800万参数版的SwinV2-B性能提升了不少。同样参数量的V2版也比V1版提升了一些。
+不同模型Imagenet结果 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+消融实验也比较清晰地反映出了V2版加入的新技术带来的技术提升</description>
+    </item>
+    <item>
+      <title>Vision Transformer学习笔记1</title>
+      <link>https://www.yuanhao.site/post/2021-11-17-vision_transformer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/</link>
+      <pubDate>Wed, 17 Nov 2021 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-11-17-vision_transformer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/</guid>
+      <description>最近Transformer结构在计算机视觉领域的应用非常火，时不时都有新的文章出来。作为一个已经使用了两三年Transformer结构的NLPer，一直很想了解一下它在视觉领域是怎么工作的，最近借着一个Kaggle比赛的数据集学习了一下，稍作总结分享给大家。
+首先是学习了一下Vision Transformer，ViT的原理。看的论文是谷歌名作《An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale》，本文初稿发布于2020年10月，今年投了ICLR 2021，应该算是ViT的奠基论文之一。要用Transformer来处理图像，首先（也可能是唯一）要解决的是输入问题，原先的Transformer处理的是token序列，而图像是HWC的像素矩阵。这里做法也很暴力，第一步是将一张图拆成了N个PP个小块(patch)，每个patch看做是一个token。一个patch里有PP个像素，每个像素C个通道，这里直接就给拍平了进一个全连接（线性变换）得到patch的D维Embedding表示。所以ViT里的Embedding层不再是一个lookup table了，而是一个可以学习的线性变换。
+ViT结构图 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+通过这个方法，就把Transformer结构套在了图像上，虽然这不是唯一的方法，但这么做在参数量的角度和时间复杂度的角度都是比较合理的。首先是时间复杂度角度，Transformer的关于序列长度的时间复杂度是O(n^2)，所以输入序列不宜过长。如文题所说，如果我们把图分成1616个patch，那transformer处理的序列长度将会是256，比BERT的默认长度521还短了一半。参数量上，尺寸正常的Transformer很大比例参数在embedding层上，例如BERT-base的30k个token768维的Embedding层有23M参数大约占了其110M总参数量的五分之一。ViT里Embedding层的参数量是正比于图像尺寸的，以224224图像为例，单patch像素点数为196，所以总参数量是196C*D，C是输入通道数，D是Embedding维数，以3和768记的话为0.45M，远小于BERT-base。从下表可以看到同样尺寸的ViT参数量都小于对应的BERT。
+按论文的这种处理方式也有几个比较明显的问题，例如强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性。在中等规模数据集上用这种方法得到的结果还是比卷积要差，但是当把预训练数据变多用更大的数据集训练时，模型性能显著提升了（第二列比第三列），接近甚至超过了SOTA。
+上面的结果都是针对有监督训练的，这篇文章还做了些无监督训练的初步实验，发现加入无监督预训练在下游任务比没有预训练强一2%，但是比有监督预训练差4%，总之一句话，没有实现BERT的效果。
+实验的部分用Pytorch Lightning简单做了一下Kaggle的Pawpularity数据集。这是一个值域0-100的回归问题，评价指标是RMSE。模型部分没什么花头，直接backbone接了个回归头，代码如下
+class Pawpularity(pl.LightningModule): def __init__(self, config): super().__init__() self.config = config self.backbone = timm.create_model(config.backbone_name, pretrained=not config.predict, num_classes=0) self.head = nn.Sequential( nn.Linear(self.backbone.num_features, 128), nn.GELU(), nn.Linear(128, 1) ) self.save_hyperparameters(config) 实验的运行环境是在我的HP Z4工作站上，它搭载了两个RTX 6000 GPU，因为显存是24GB版本，所以batchsize设的比较大。实验结果如下
+模型 模型参数 lr batch size 单轮耗时 早停轮次 RMSE vit_base_patch16_224 85.9M 1e-3 128 36s 10 20.514 vit_base_patch16_224_in21k 85.</description>
+    </item>
+    <item>
+      <title>模型上线不用愁，批量推理来加油.</title>
+      <link>https://www.yuanhao.site/post/2021-06-20-%E6%A8%A1%E5%9E%8B%E4%B8%8A%E7%BA%BF%E4%B8%8D%E7%94%A8%E6%84%81%E6%89%B9%E9%87%8F%E6%8E%A8%E7%90%86%E6%9D%A5%E5%8A%A0%E6%B2%B9/</link>
+      <pubDate>Sun, 20 Jun 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-06-20-%E6%A8%A1%E5%9E%8B%E4%B8%8A%E7%BA%BF%E4%B8%8D%E7%94%A8%E6%84%81%E6%89%B9%E9%87%8F%E6%8E%A8%E7%90%86%E6%9D%A5%E5%8A%A0%E6%B2%B9/</guid>
+      <description>作为一个算法工程师，在日常工作中难免会碰到模型上线的问题。对于一些要求不高的场合，简单找一个web框架实现一下接口就能搞定：对于每个用户请求，调用模型得到结果再返回。但这种朴素的实现往往无法最大化利用GPU，对于性能要求比较高的场景应付起来就略显吃力。
+优化的方法有很多，一个增益很大的措施就是把一个请求推理一次改成多个请求一起推理。去年大概也是这个时候我写了一个小工具来实现这个功能，还取了个蛮霸气的名字InferLight，但当时写得并不太好；最近参考香侬科技的Service-Streamer又重构了一版。这个功能看似简单，但是在实现的过程中可以了解很多Python异步编程的知识，感觉收获颇丰，于是写篇短文总结一下。
+首先，要提高模型的线上推理吞吐量，应该把推理服务做成异步的。对于web服务来说，异步的意思是当模型在计算的时候它可以处理别的请求。对于Python来说，异步服务可以通过很多优秀的基于Asyncio的框架来实现，例如我常用的Sanic。而推理是计算密集的，也没有什么同步异步的说法，我们的目标就是能够汇聚多个推理请求，高效利用GPU的并行计算能力，并且能将批量推理的结果正确地返回给对应的请求者。
+要实现上面的目标，需要以下几个模块
+前端服务：用于接收请求、返回结果。可以是Http、PRC等各种协议。是一个独立进程。 推理Worker：负责模型的初始化、批量推理数据构建、推理计算。是一个独立进程。 任务队列：前端服务收到请求之后把计算任务送入任务队列；推理Worker监听该队列，每次取出一个小批量由模型推理 结果队列：推理服务推理完成后将结果送入结果队列；前端服务监听该队列，获得推理结果 结果分发：在将任务送入任务队列前需要生成任务的唯一标识，从结果队列取回结果后根据标识获取到任务对应的结果 其中两个任务队列的实现方式很多，可以通过一些成熟的中间件例如Kafka、Redis等，但为了避免外部依赖，这次我选择使用Python原生的多进程队列。结果队列监听和分发通过前端服务进程的一个子线程来完成。
+实现细节 推理服务相对简单，由于各种模型的加载、数据处理步骤千奇百怪，所以我将推理Worker设计成了一个基类，使用时继承它并实现特定方法。
+import logging import multiprocessing as mp import time from queue import Empty class BaseInferLightWorker: def __init__(self, data_queue:mp.Queue, result_queue:mp.Queue, model_args:dict, batch_size=16, max_delay=0.1, ready_event=None) -&amp;gt; None: self.data_queue = data_queue self.result_queue = result_queue self.batch_size = batch_size self.max_delay = max_delay self.logger = logging.getLogger(&amp;#39;InferLight-Worker&amp;#39;) self.logger.setLevel(logging.DEBUG) self.load_model(model_args) # 由于模型载入时间较长 # 加载完成后使用一个event来通知主进程 if ready_event: ready_event.set() def run(self): self.logger.info(&amp;#39;Worker started!&amp;#39;) while True: data, task_ids = [], [] since = time.</description>
+    </item>
+    <item>
+      <title>面向电商场景的语言模型E-BERT</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2020-09-16-ebert/</link>
+      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2020-09-16-ebert/</guid>
+      <description>最近跟不少做电商NLP的朋友们聊天，有不少收获。我之前从来没想过【搜索】在电商里的地位是如此重要，可能GMV的50%以上都是从搜索来的。巨大的经济价值也极大地推动了技术的发展，他们的工作做得很细致，毕竟一个百分点的点击率后购买率提升也许对应的就是几百亿的成交额。
+其实之前做的汽车领域NLP工作跟电商有很多相似的地方，场景先验都非常重要。直接使用开放域语料预训练的语言模型效果并不好。我们也尝试过一些方法，例如用本领域语料训练语言模型，结合一些词库词典等等。今天介绍最近看到的一篇针对电商场景调优BERT的论文《E-BERT: Adapting BERT to E-commerce with Adaptive Hybrid Masking and Neighbor Product Reconstruction》，其中的一些方法应该对细分领域NLP都有一些启发。
+方法 论文的创新方法主要有两个：Adaptive Hybrid Masking（AHM，自适应混合掩码）和Neighbor Product Reconstruction（NPR，相似商品重构）。
+E-BERT总览 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+AHM 第一个方法AHM其实是对已有掩码方式的改进。原始版本的BERT采用的是随机mask，这个大家应该都比较清楚。这种mask方式针对的是token，而众所周知token是由单词通过wordpiece tokenizer分割而来。所以这种方式遮盖住的可能是单词的一个部分，学习这种类似看三个字母猜剩下四个字母的任务不是很符合大家的直觉。随后就诞生了更加符合人类认知的Whole Word Masking，这个方法就是说要遮就遮整个词。这里用一个网上的例子帮大家理解
+Input Text: the man jumped up , put his basket on phil ##am ##mon &amp;#39; s head Original Masked Input: [MASK] man [MASK] up , put his [MASK] on phil [MASK] ##mon &amp;#39; s head Whole Word Masked Input: the man [MASK] up , put his basket on [MASK] [MASK] [MASK] &amp;#39; s head philammon是一个词，他会被tokenizer分解成三个token，这时就体现了普通mask和WWM的区别。</description>
+    </item>
+    <item>
+      <title>受控文本生成2</title>
+      <link>https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/</link>
+      <pubDate>Thu, 23 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/</guid>
+      <description>昨天的文章介绍了在输出空间对文本生成进行控制的两篇论文，今天介绍一篇在隐空间控制的论文。
+隐空间方法也分为两个流派，一种认为在隐空间里可以把内容和特性的向量表示分开（disentangled)，然后通过修改特性向量来实现对特性的控制；另一种则无须这种假设。下面分别介绍一篇相关论文。
+Style Transfer from Non-Parallel Text by Cross-Alignment disentangled representation的代表作之一，发表在2017年的NIPS上，如今引用已经接近300多。
+Style Transformer: Unpaired Text Style Transfer without Disentangled Latent Representation 复旦大学NLP组发表于2019年的文章，已经被引用20次，文章标题中明确写了他们的方法without Disentangled Latent Representation。
+在文章的introduction部分列举了一些Disentangled表示的问题，我觉得比较重要的两条是：
+难以评价Disentangled表示的质量，纯粹的Disentangled表示也很难获得； 分离不是必要的，有文章已经论证了靠解码器就可以overwrite风格。 这篇文章总的来说是对抗生成网络的思路。模型分两大块，一块是典型的encoder-decoder结构的transformers，用来作为风格迁移器，另一块是判别器，用来解决由于没有平行语料带来的训练问题。
+判别器训练 文中提出了两种判别器，从结果上看多分类判别器对BLEU指标更友好，而条件判别器对迁移后的风格更友好。
+多分类判别器 这种方法比较好理解，即采用K+1类的多类分类器作为判别器，输入只有句子。后K类对应K种风格，第0类对应$f_\theta(\rm{x},\rm{\hat{s}})$，即假样本。在训练时判别器时，将原始语料和用原风格重建后的句子都标为对应的风格，假样本标为第0类。在训练风格转换器的时候，我们希望转换器能尽量提高$f_\theta(\rm{x},\rm{\hat{s}})$被判别为$\rm{\hat{s}}$类的概率，即能骗过判别器，使判别器不认为生成的是个假样本。
+条件判别器 输入包括句子和风格，判别器需要判断句子是否含有风格（二分类）。训练判别器时将原始语料和重建句子$f_\theta(\rm{x},\rm{s})$标注为正样本，将变换后的句子$f_\theta(\rm{x},\rm{\hat{s}})$标注为负样本。
+判别器训练算法 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+风格迁移器训练 风格迁移器有三个重要的任务，一个是自重建（Self Reconstruction），一个是循环重建（Cycle Reconstruction），以及风格控制（Style Controlling）。
+自重建就是输入句子$\rm{x}$以及其原本风格的控制变量$\rm{s}$，让他生成自己。这个任务是可以使用监督学习来完成的，loss计算公式如下
+$$ L_{\rm{self}}=-p_\theta(\rm y=\rm x|\rm x,\rm s) $$
+循环重建是先输入$\rm{x}$和一个其他的风格控制变量$\rm{\hat{s}}$，生成$\rm\hat y$，再用$\rm\hat y$和$\rm s$生成一个$\rm y$。此时$\rm y$应该和$\rm{x}$无论内容及风格都一致，并且可以使用监督学习来计算loss：
+$$ L_{\rm{cycle}}=-p_\theta(\rm y=\rm x|f_\theta(\rm x,\rm\hat s), \rm s) $$
+前面两个任务虽然解决了没有平行语料带来的训练问题，但思考一下就会发现这两个任务并不会起效果。模型可以完全只学习返回原句子就可以“蒙混过关”。解决的办法就是检验一下循环的中间结果$f_\theta(\rm x,\rm\hat s)$，这个中间结果应该尽可能含有$\rm\hat s$风格。因此引入了第三个风格控制任务，这个任务根据判别器的不同也分成两种情况：</description>
+    </item>
+    <item>
+      <title>受控文本生成1</title>
+      <link>https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/</guid>
+      <description>关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。
+受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。
+名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。
+受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。
+相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。
+Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。
+这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。
+DRG的四种迁移方法 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。
+$$ s(u,v)=\frac{\text{count}(u, \mathcal{D}v)+\lambda}{(\sum{v&amp;rsquo;\in \mathcal{V},v&amp;rsquo;\neq v}\text{count}(u, \mathcal{D}_{v&amp;rsquo;}))+\lambda} $$
+围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。
+Delete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。
+Retrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。
+Generate 这是最后一步，即获得最终的结果。文章里有四种策略
+Retrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c+a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。</description>
+    </item>
+    <item>
+      <title>Tweet Sentiment Extraction比赛总结</title>
+      <link>https://www.yuanhao.site/post/2020-07-08-tweet/</link>
+      <pubDate>Wed, 08 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-08-tweet/</guid>
+      <description>这是前段时间结束的Kaggle比赛，之前在文档问答的文章中我也有提到过，最终我们队获得了第七名，这篇文章分享一下我的参赛收获和感受。
+首先感谢队友，特别是曹老师，如果没有曹老师我肯定中途就弃赛了。至于弃赛的原因，在感受部分会详细介绍。我的代码已经传到Github上了，感兴趣的朋友可以看一看，里面包含了我所有的commits，可以完整看到我方案的演进。
+Repo: https://github.com/thuwyh/Tweet-Sentiment-Extraction
+赛题回顾 比赛叫做Tweet Sentiment Extraction，对于给定的tweet和情感极性，需要选手从文本中找出支撑情感的部分。例如下面这条数据
+&amp;#34;My ridiculous dog is amazing.&amp;#34; [sentiment: positive] 模型应该返回amazing这个词。比赛的评价指标是word-level Jaccard score，它的含义看下面的实现就一目了然了。
+def jaccard(str1, str2): a = set(str1.lower().split()) b = set(str2.lower().split()) c = a.intersection(b) return float(len(c)) / (len(a) + len(b) - len(c)) Baseline及一些改进 在比赛的初期讨论区和kernel分享区基本就定下了解题思路的基调，即用机器阅读理解（MRC）的方法来做span prediction。具体的说，就是把数据提供的情感词作为question，把tweet作为context，把预测对象作为answer。
+模型也很简单，在RoBERTa后面接一个questionAnswering head预测start和end位置就可以了。这道题一个比较神奇的地方就是RoBERTa的效果比普通的BERT要好一些。
+在这个框架下，大家也都做了一些改进，例如：
+在语言模型输出后面加dropout； concat语言模型的多层输出结果； 引入FGM等对抗训练方法 以上都是一些比较常规的操作，也比较容易实现，类似FGM是比较稳定能提分的。还有一些稍微复杂一点的trick，例如：
+在词级别进行数据增强，例如同义词替换，随机删词 在token级别的增强 label smoothing 蒸馏 因为是span prediction任务，数据增强如果做成随机动态的，需要考虑到改词后对label的影响，这是实现的一个小难点。英文的同义词替换可以使用wordnet来做，相比中文的一些同义词库来讲质量是比较高的。
+label smoothing和蒸馏是很相关的两个技术，因为他们都需要用到KL散度作为损失函数。我也是趁这个比赛补了一补相关的知识，感觉还蛮有趣的，感兴趣的朋友可以参考这篇文章。做QA任务通常是对位置用CrossEntropyLoss，但是如果label不是一个确定的位置而是平滑过或者是teacher model预测得到的分布，就需要使用KLDivLoss。
+这里在做标签平滑的时候遇到了一个小问题，蛮值得思考的。最开始是Google在Imagenet上用这个技巧，对于这个分类问题标签的种类是确定的K=1000类，所以在Inception论文里直接用一个系数来控制平滑的强度，即
+$$ q&amp;rsquo;(k) = (1-\epsilon)\delta_{k,y}+\frac{\epsilon}{K} $$
+但是如果用同样方法在这些长短不一的句子上做平滑，其实是不合适的。每个位置的平滑概率反比于句子的长度，也就是K，所以我认为更好的确定平滑强度的方法是先确定一个单位平滑强度，再根据句子总长来确定原标签的权重。
+针对数据特点的方法 这次的数据总体质量很差，噪声（其实是错误）很多，给参赛者带来了很多困扰。主要的噪声模式有两种，一种是把整个句子都标注成了支撑情感的selected_text，第二种是数据中有大量“断头词”出现在标签中。下图给出了一些例子。
+对于第一种整句都是标签的情况，早期很多参赛者就发现了对于neutral类型的情感，绝大部分selected_text都和text一样；但对于其他情感，我们在人工审阅数据之后没有发现什么规律。我只好设计了一个辅助的分类任务让模型自己学习，实测下来有些微的提升，但并不明显。
+对于“断头词”的情况，我们在比赛的末期终于发现了其规律。这种情况应该是由于标注环境不一致导致的。例如Twitter数据里有很多@用户的情况，这份比赛数据集会把相关的文本删除，但由于删除脚本的问题会导致文本中多出一个空格。我们猜测标注者看到的数据应该是没有多余空格的，类似于是使用&#39; &#39;.join(text.split())处理过的。这就会导致标出来的span相对于原text的位置产生了位移。且位移的大小就等于多余空格的数量。</description>
+    </item>
+    <item>
+      <title>跨语种语言模型</title>
+      <link>https://www.yuanhao.site/post/2020-05-11-xlm/</link>
+      <pubDate>Mon, 11 May 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-05-11-xlm/</guid>
+      <description>在著名的科幻电影《银河系漫游指南》里有一种叫巴别鱼的神奇生物。将它塞进耳朵里你就能听懂任何语言。多语种语言模型做得事情和巴别鱼很像，人们希望这个模型能用来处理所有的语言。举个例子，大家常用的中文bert有很强的中文处理能力以及一定的英文处理能力，但基本也就只能处理这两种语言；而目前的SOTA多语种模型XLM-RoBERTa能够处理104种语言。
+巴别鱼，体型很小，黄色，外形像水蛭，很可能是宇宙中最奇异的事物。它靠接收脑电波的能量为生，并且不是从其携带者身上接收，而是从周围的人身上。它从这些脑电波能量中吸收所有未被人察觉的精神频率，转化成营养。然后它向携带者的思想中排泄一种由被察觉到的精神频率和大脑语言中枢提供的神经信号混合而成的心灵感应矩阵。所有这些过程的实际效果就是，如果你把一条巴别鱼塞进耳朵，你就能立刻理解以任何形式的语言对你说的任何事情。
+数据集 训练跨语种语言模型会用到两种语料。一种是单语种（monolingual）语料，另一种是平行（parallel）语料。所谓平行语料就是源语言与译文“对齐”的语料。所谓对齐也有好几种级别，最常见的是句子级对齐，也有按词进行对齐的文本。可想而知，平行语料的获取相比于单语种语料要困难许多。如何充分借助单语种语料来提升模型能力是XLM研究的一个重点。
+跨语种语言模型的评价一般有两个大方向，一个是其语义理解能力，另一个是文本生成能力。语义理解能力通常借助XNLI数据集，它提供了15种语言的平行文本，每种语言7500对的NLI语料。文本生成通常用翻译任务来评估，感兴趣的朋友可以自己查阅相关资料。
+模型 下表列出了常见的单语种和多语种预训练语言模型。接下来我们将分析其中的mBERT、XLM和XLM-R三个模型。
+Multilingual Bert（mBERT） 模型来自于这论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》，你没有看错，就是发表于2018年大名鼎鼎的BERT论文。
+2018年11谷歌就放出了支持104种语言的多语种版本预训练模型，规格是BERT base。这个模型的较新版本是uncased版，即没有对输入文本进行规范化。使用WordPiece算法进行tokenization，词典大小是110k。其他的训练方法和普通的BERT一样，采用的是MLM和NSP两个loss，语料是Wikipedia。
+XLM 模型来自于论文《Cross-lingual lan- guage model pretraining》，来自于FAIR，发表在NIPS2019。
+XLM使用BPE算法进行tokenization，并且词典大小比mBERT更大，达到200k。论文指出Shared sub-word vocabulary对模型性能有很大的影响，在训练BPE算法的过程中他们使用了特殊的采样方式来避免低资源语种被进行字符集切分。
+模型训练使用了三种不同的目标函数，在单语种语料上使用非监督的CLM和MLM。MLM就是masked language modeling，大家比较熟悉，在此就不再赘述了。CLM全称是Causal Language Modeling，简单的说就是用前面的词预测当前词，更详细的介绍大家可以参考我们之前UniLM和MASS的文章。在平行语料上使用的目标称为Translation Language Modeling (TLM)。其训练方式如下图所示，是将平行句子拼接后随机mask，希望让模型能借助另一种语言的信息来还原出被遮蔽的词。从图中可以看出模型用language embedding替换了BERT里的type embedding，并且在做TLM任务时position embedding在两个语言间是对应的。
+我们来看一下XLM在XNLI上的表现。这张表很有意思，首先对这个数据集有3种处理方式：translate-train，translate-test和直接测试，即zeroshot。第一种是把英语的MNLI数据集机器翻译成XNLI内的15种语言用于训练，在XNLI测试集上测试；第二种是把XNLI测试集的15种语言翻译成英文。本文的对照组就是上面的mBERT。
+可以看到效果最好的是翻译训练集，平均精度达到了76.7%，zero-shot次之，最差的是翻译测试集。在相同的实验设定下XLM稳定优于mBERT，甚至在zero-shot下的XLM也比finetune过的mBERT强。另外MLM+TLM也稳定优于只用MLM的方式。
+XLM-RoBERTa 模型来自于论文《Unsupervised Cross-lingual Representation Learning at Scale》，和上文一样来自FAIR，已经被ACL 2020接收。
+XLM-R使用了比XLM更大的词典，达到了250k。它也没有辜负RoBERTa的血统，使用了比Wikipedia大得多的cc100数据集。XLM-R只使用单语种语料，训练目标也只有MLM一个。
+Tokenizer换成了sentence piece算法，在构建时也进行了采样，并且调整了系数使得各语言更加平衡。模型层面去掉了language embedding，变得更加简洁。我感觉用“重剑无锋”来形容XLM-R再合适不过了。
+这篇论文总结了几个影响多语种模型的重要因素，可能会对大家有所启发：
+当处理的语种变多的时候模型的能力会下降（嗯，符合常识）。增大模型可以一定程度对抗这种效应。 模型能力主要受词典大小、训练集大小、语种的采样频率影响 增大词典规模可以提高模型性能 sentence piece可以提高模型的通用性 下面这种图可以让大家对这些结论有更直观的印象
+最后来看一下XLM-RoBERTa的实力。下表是在XNLI数据集上的结果对比，设定和XLM论文中差不多，其中Devlin et al.指的是mBERT，Lample and Conneau指的是XLM。可以看出XLM-R相比于XLM又前进了一大步。
+顺便再提一嘴，论文作者还在GLUE数据集上对比了XLM-R和XLNET、RoBERTa等单语种语言模型，XLM-R超过了BERT-large，略低于XLNET和RoBERTa。也就是说XLM-R不仅获得了多语种能力，而且没有牺牲英文上的水平。
+总结一下，从2018年的mBERT到2020年的XLM-R，跨语种预训练语言模型获得了长足的发展，地球语言范围内的巴别鱼指日可待。最近在Kaggle上正在进行一场跨语种文本分类的比赛，如果有想体验XLM最新进展的朋友可以去试试身手。
+今天的文章就到这里，下期再见👋</description>
+    </item>
+    <item>
+      <title>十分钟读懂beam search-2</title>
+      <link>https://www.yuanhao.site/post/2020-03-23-beamsearch2/</link>
+      <pubDate>Mon, 23 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-23-beamsearch2/</guid>
+      <description>在上一篇文章中我们介绍了基础版的beam search，这篇文章是对它的一个扩展，可以在模型不改的情况下获得更好的生成结果。今天的介绍围绕的也是一篇蛮新的论文，《The Curious Case of Neural Text Degeneration》，根据这篇论文的版面内容，它应该已经被ICLR 2020接收了。
+Beam Search的问题 先解释以下什么要对Beam Search进行改进。因为Beam Search虽然比贪心有所改进，但还是会生成出空洞、重复、前后矛盾的文本。如果你有文本生成经验，一定对这些现象并不陌生。在语言模型还不像如今的BERT、GPT这么厉害的时候，这种现象更加明显。
+没有经验也没关系，我们来看一个论文里面的例子。输入模型的引文（context)
+&amp;ldquo;The study, published in the Proceedings of the They were cattle called Bolivian Cavalleros; they live in a National Academy of Sciences of the United States of remote desert uninterrupted by town, and they speak huge, America (PNAS), was conducted by researchers from the beautiful, paradisiacal Bolivian linguistic thing. They say, Universidad Nacional Autónoma de México (UNAM) and</description>
+    </item>
+    <item>
+      <title>十分钟读懂beam search-1</title>
+      <link>https://www.yuanhao.site/post/2020-03-20-beamsearch1/</link>
+      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-20-beamsearch1/</guid>
+      <description>最近研究了一下用基于BERT的encoder-decoder结构做文本生成任务，碰巧管老师昨天的文章也介绍了以生成任务见长的GPT模型，于是决定用两篇文章大家介绍一下在文本生成任务中常用的解码策略Beam Search（集束搜索）。
+解码及贪心搜索 生成式任务相比普通的分类、tagging等NLP任务会复杂不少。在生成的时候，模型的输出是一个时间步一个时间步依次获得的，而且前面时间步的结果还会影响后面时间步的结果。也就是说，每一个时间步，模型给出的都是基于历史生成结果的条件概率。为了生成完整的句子，需要一个称为解码的额外动作来融合模型多个时间步的输出，而且使得最终得到的序列的每一步条件概率连乘起来最大。
+在文本生成任务中，每一个时间步可能的输出种类称为字典大小(vocabulary size，我们用$v$表示)，进行T步随机的生成可能获得的结果总共有$v^T$种。拿中文文本生成来说，$v$的值大约是5000-6000，即常用汉字的个数。在如此大的基数下，遍历整个生成空间是不现实的。
+最容易想到的策略是贪心搜索，即每一个时间步都取出一个条件概率最大的输出，再将从开始到当前步的结果作为输入去获得下一个时间步的输出，直到模型给出生成结束的标志。例如下图，每一个时间步都取出了条件概率最大一个结果，生成了序列[A,B,C]。
+很明显，这样做将原来指数级别的求解空间直接压缩到了与长度线性相关的大小。由于丢弃了绝大多数的可能解，这种关注当下的策略无法保证最终得到的序列概率是最优的。
+Beam Search 而beam search是对贪心策略一个改进。思路也很简单，就是稍微放宽一些考察的范围。在每一个时间步，不再只保留当前分数最高的1个输出，而是保留num_beams个。当num_beams=1时集束搜索就退化成了贪心搜索。
+下图是一个实际的例子，每个时间步有ABCDE共5种可能的输出，即$v=5$，图中的num_beams=2，也就是说每个时间步都会保留到当前步为止条件概率最优的2个序列。
+在第一个时间步，A和C是最优的两个，因此得到了两个结果[A],[C]，其他三个就被抛弃了； 第二步会基于这两个结果继续进行生成，在A这个分支可以得到5个候选人，[AA],[AB],[AC],[AD],[AE]，C也同理得到5个，此时会对这10个进行统一排名，再保留最优的两个，即图中的[AB]和[CE]； 第三步同理，也会从新的10个候选人里再保留最好的两个，最后得到了[ABD],[CED]两个结果。 可以发现，beam search在每一步需要考察的候选人数量是贪心搜索的num_beams倍，因此是一种牺牲时间换性能的方法。
+以上就是Beam Search的基本概念，下面我们解析一种高效率实现方式。
+Beam Search代码解析 Beam Search的原理虽然简单，但实际实现的时候却有很多细节要考虑。下面要解析这个实现出自于NLP界著名Python包Transformers，我为了说明方便做了一些改动。
+一个正确且高效的算法需要处理的问题大概有两个：
+充分利用硬件，可以处理批量数据，且尽量使用并行计算少用循环 处理好长短不同的生成结果 下面是基础版的beam search函数定义。其中context是编码器编码获得的向量，batch_size是每批数据中包含的样本量，bos_token_id是句子开头标志的token id，pad_token_id是用于填充的token id，eos_token_id是句子结束标志的token id。这里给参数填上的默认值和我们后面讲解时使用的例子是一致的。
+def beam_search_generate(context, batch_size=3, max_length=20, min_length=2, num_beams=2, bos_token_id=101, pad_token_id=0, eos_token_id=102, ): pass 在函数中主要执行以下三个步骤：
+准备初始输入 在当前生成的序列长度未达到max_length时扩展生成序列 准备最终输出的序列 下面我们分别解析。
+准备初始输入 # 建立beam容器，每个样本一个 generated_hyps = [ BeamHypotheses(num_beams, max_length, length_penalty, early_stopping=early_stopping) for _ in range(batch_size) ] # 每个beam容器的得分，共batch_size*num_beams个 beam_scores = torch.zeros((batch_size, num_beams), dtype=torch.float, device=encoder_input_ids.</description>
+    </item>
+    <item>
+      <title>最近邻搜索，MIPS，LSH和ALSH</title>
+      <link>https://www.yuanhao.site/post/2020-03-07-mips/</link>
+      <pubDate>Sat, 07 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-07-mips/</guid>
+      <description>上一篇介绍REALM的文章对文中提到的Maximum Inner Product Search没有作充分的介绍。发出去的标题已经没法改了，这篇文章介绍一下MIPS和最近邻搜索问题，以及两个相关的算法。
+问题定义 MIPS的定义很简单，假设你有一堆d维向量，组成集合X，现在输入了一个同样维度的查询向量q(query)，请从X中找出一个p，使得p和q的点积在集合X是最大的。用公式写出来就是
+$$p=\mathop{\arg\max}_{x \in X}x^Tq$$
+这个问题和最近邻问题很像，最近邻问题只要把上面的定义改成找一个p使得p和q的距离最小，假设这个距离是欧氏距离，则
+$$p = \mathop{\arg\min}_{x \in X}\left |q-x\right|^2=(\left | x \right |^2 – 2q^Tx)$$
+如果X中的向量模长都一样，那两个问题其实是等价的。然而在很多实际场景例如BERT编码后的句向量、推荐系统里的各种Embedding等，这个约束是不满足的。
+最近邻搜索其实应用非常广泛，如图片检索、推荐系统、问答等等。以问答匹配为例，虽然我们可以用BERT这样的大型模型获得很好的准确度，但如果用BERT直接对语料库中的所有问题进行计算，将耗费大量的时间。所以可以先用关键词检索或者向量检索从语料库里召回一些候选语料后再做高精度匹配。
+朴素的算法 对于MIPS问题，一个直观的蛮力算法就是计算出所有相关的内积，然后将内积排序，找到最大的那个。对于最近邻问题其实也类似，即使X中向量模长各不相同，也可以提前计算出来，并不会增加排序的时间复杂度。
+内积的计算可以转换成一个矩阵乘法，在CPU和GPU上都有大量的高效实现。当X中有N个向量时，时间复杂度是O(Nd)，当N不大的时候是可以接受的，但是通常在工业界的大规模系统中，X的规模往往很大，朴素算法就显得力不从心。
+Locality-sensitive hashing 对于某些距离度量（例如欧式距离，cosine距离）下的最近邻问题，可以使用LSH算法来解决。LSH的思路就像下图示意的那样，用hash函数把高维空间的点分到几个桶里去，从而减少距离的计算量。
+跟普通的哈希函数不同，这个哈希函数是Locality-sensitive的。具体地说就是它有一个神奇的特点：在空间中离得近的点被分到同一个桶的概率大，离得远的点则大概率被分到不同的桶里去。或者说对于两个点x和y，他们被哈希函数分到同一个桶的概率随着距离的增大单调递减。
+这样在查询的时候，只需要精确地比较和查询向量q处在同一个桶里的那些x。如果桶足够多，那便可以将N大大降低，从而提高查询速度。但需要注意的是，LSH是一个近似算法，有可能产生桶内的向量其实都不是最优解的情况，不同哈希函数发生这种情况的概率都不一样，也是作为评价哈希函数好坏的重要依据之一，对这部分感兴趣的朋友可以读参考文献。
+下面举一个具体的例子来解释一下LSH。假设某个最近邻问题考虑的距离度量是cosine距离，有一个满足要求的LSH函数（变换），称为Random Projection。
+如上图所示，其过程很好理解：
+随机取一个空间中的超平面将空间分为两半，X内位于某一半的点标为0，其他标为1； 重复第一步K次。 完成之后，X中的每个点便得到了一个由K个0，1组成的表示（signature）。例如重复了K=32次，那每个点都被分到了一个用一个int32类型的整数编号的桶里。如果这些点在空间中分布足够均匀，那么我们将可以期望每个桶里只有N/2^K个点，当K～logN，则查询的时间复杂度就约为O(dlogN)。整个过程构建出了一张哈希表，由于LSH可能会错过最优解，一个可行的增强鲁棒性的做法是用同样的方法多构造几张哈希表，借助随机的力量来降低犯错的概率。这里有一个讲解LSH的视频，可谓短小精悍，直观易懂，推荐给大家。
+LSH看上去相对于朴素算法确实前进了一大步。但别高兴得太早，要达到O(dlogN)的效果必须服从那个很强的假设。而点在空间中分布足够均匀往往是不太现实的。除此之外，一个LSH只能适用于某些距离度量，对于MIPS，找不到符合要求的LSH。
+Asymmetric LSH(ALSH) 论文里证明了找不到可用于MIPS问题的LSH函数，但他们发现对LSH稍作点改动即可将MIPS问题转变为欧式距离下的最近邻搜索问题。改动的关键就在于Asymmetric这个词。在LSH算法中，对查询向量q和X中的向量做的是同样（对称） 的变换，而在ALSH中作者对两者使用了 不同（非对称） 的变换。简单起见，假设查询向量q的模长是1。对于X，先做一个放缩变换使得X中所有向量x的所有元素都小于1。然后对X中的向量进行变换P(x)，对查询向量q做变换Q(x)，P和Q的定义如下：
+$$P(x) = [x; \left | x \right |_2^{2^1}; \left | x \right |_2^{2^2},…,\left | x \right |_2^{2^m}]\ Q(x) = [x;\frac{1}{2};\frac{1}{2},…,\frac{1}{2}]$$
+可以发现，P和Q虽然变换不同，但都会使输入向量增加m维。进一步观察可以得到
+$$Q(q)^TP(x)=q^Tx+\frac{1}{2}(\left | x \right |_2^{2^1}+ \left | x \right |_2^{2^2}]+…+\left | x \right |_2^{2^m})\ \left | P(x) \right |_2^2=\left | x \right |_2^{2^1}+ \left | x \right |_2^{2^2}]+…+\left | x \right |_2^{2^{m+1}}$$</description>
+    </item>
+    <item>
+      <title>REALM: Retrieval-Augmented Language Model Pre Training</title>
+      <link>https://www.yuanhao.site/post/2020-03-06-realm/</link>
+      <pubDate>Fri, 06 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-06-realm/</guid>
+      <description>知识就是力量 ——培根
+背景 去年可以说是语言模型快速发展的一年，BERT、XLNET、Albert等等模型不断刷新各个NLP榜单。在NLP榜单中比较引人注目的应该属于阅读理解型的任务，例如SQuAD等等。以SQuAD为例，模型需要阅读一段给定的文本，然后回答几个问题，问题如果存在答案，答案一定可以在文章中找到。所以说虽然叫阅读理解，但其实和序列标注有点相像，是在给定序列中标出答案段。而这篇论文针对的问题叫开放领域问答（Open-domain QA），对于一个问题Q，模型需要从包含大量文档的知识库中找到答案，而不是像SQuAD数据集一样从一篇文章中寻找。
+大部分的语言模型都采用一种称为masked language model，简称MLM的任务来训练，让模型学会类似完形填空一样的能力。通过在大规模语料上的训练，预训练语言模型如BERT实际上已经隐含了一些知识。例如输入一句“The is the currency of the United Kingdom”，BERT很有可能会填入单词&amp;quot;pound&amp;quot;。虽然他还是根据词的共现信息学习和推理的，但看上去就像具有所谓的知识一样。从去年开始就有越来越多的研究从单纯语言模型转换为带有知识嵌入的语言模型，例如清华和百度提出的两个同名模型ERNIE。
+但上面说的这种隐含知识不好把握，也难以扩展。这篇论文则提出了一种更加模块化且可解释性更强的知识嵌入方法。总的来说，他的方法是训练一个独立的“语境知识抽取器”（contextual knowledge retriever），通过这个抽取器来决定应该在推理时使用哪些知识。而且这个抽取器和语言模型一起进行非监督预训练大大提高模型性能。
+方法 如上图所示，整篇论文涉及两个任务，左边是语言模型预训练任务MLM，右边是QA任务。下图是预训练任务一个更加完整的流程图，我们由此切入进行介绍。
+整个过程分为两个关键步骤。先看第一步，即neural knowledge retriever，它负责计算p(z|x)。要实现这个过程首先需要对z和x进行编码。论文采用的是BERT，对于问题x，直接输入BERT，取[CLS] token的输出作为编码向量，而对于文档z，则将标题和正文用[SEP]连接后输入BERT，同样去[CLS] token的输出。论文中还对BERT的输出向量进行了降维处理。即
+对于文档库中的某一个z，则
+其中f是问题和文档的相关性，
+以上部分就称为neural knowledge retriever，通过他每篇z都会得到一个p。现在可以进行第二步，综合x和z求y。上图是一个预训练的例子，y是抠掉的词。利用z的方式是将z的正文和x拼在一起来提供上下文信息，然后优化下面的目标
+其中j指第j个masked token。
+在做QA的时候稍有不同。由于此时是针对某个具体的z，所以作者将开放域问答任务退化成了像SQuAD一样在文档中找答案的阅读理解任务。
+这一部分就是knowledge-augmented encoder。
+训练 上面已经描述了预训练阶段和QA finetune阶段的任务。训练的过程都是最大化正确y对应的logp(y|z,x)，而且以上描述的两个任务都是可以端到端优化的。
+但这里面对一个问题，上面有个公式需要对整个知识库中所有的文档z的相关概率求和，这是很困难的。作者提出将这一步用只对概率最高的k个文档计算来近似，因为绝大部分文档由于与问题不相关，p(z|x)都非常小。但问题还没有解决，如何找到概率最高的k个文档呢。
+观察公式可以发现p(z|x)是正比于两个编码后的内积的，由于大家的分母都一样，分子的顺序就是整个分数的顺序。所以可以用最大内积搜索算法（Maximum Inner Product Search, MIPS，并不知道是什么，维基百科都没有）来解决。但要构建一个快速检索的索引又要求两个编码后的向量是确定的，而由于编码器是不断训练的，所以这个条件无法满足。为了追求一个平衡，作者决定每隔几百步才更新一下编码器，并重新构建索引。而且这只发生在预训练语言模型的时候，在finetune QA任务的时候只使用语言模型得到的编码器编码一次所有的z和x并构建索引。
+额外策略 在研究过程中作者发现了一些能让模型更好训练的策略。
+只训练真正需要知识的词（通常是实体和日期）来训练MLM 在topk文档外添加一个虚拟的null document 避免让x出现在z中（因为x被mask过，如果它来源于z，那答案就暴露了！） 避免冷启动的retriever太渣导致的恶性循环，他们用了一个以ICT作为任务的模型来初始化retriever 结果对比 这篇论文的对手主要是原来sparse retriever+神经阅读理解模型的组合，例如大名鼎鼎的DrQA。所谓sparse retriever就是指用例如TFIDF之类的特征进行检索的模型。还有一些跟本文很像的neural retriever+neural reader的组合。其中提到了一个ORQA，跟这篇非常像，只是这篇增加了预训练的步骤。最后是一些生成式模型，例如finetune后的T5（可怕！）
+在Natural Questions-Open（NQ）、Web Questions（WQ）和Curated Trec（CT）三个数据集上的结果如下 总之一句话，非常牛逼！而且这里模型只取了top 5文档，其他模型可能取了20-80篇，还是打不过他。注意到ours的括号内有两个数据，Z是知识库，很好理解，X是指预训练用的语料。而且通过文章的Ablation Analysis部分可以知道预训练其实是非常关键的一个步骤，对performance的贡献非常大。
+后记 我感觉这篇论文和他提到的ORQA还是很厉害的，知识嵌入也从去年的实体粒度的嵌入发展到了如今句子、篇章级别的嵌入。试想一下，这项技术发展起来之后，如今基于词的Sparse搜索引擎应该很快会发展成对NN更友好的Dense搜索引擎，所有的内容也许都会被映射到一个向量空间。各路神经网络将在这个向量空间尽情驰骋~莫非得encoder者得天下？！
+论文链接：https://kentonl.com/pub/gltpc.2020.pdf</description>
+    </item>
+    <item>
+      <title>能跟你聊DOTA的神经对话模型：Meena&amp;DialoGPT</title>
+      <link>https://www.yuanhao.site/post/2020-03-02-meena/</link>
+      <pubDate>Mon, 02 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-03-02-meena/</guid>
+      <description>提到对话机器人或者聊天机器人，国内的朋友可能先想到的是微软小冰或者苹果Siri。这两个机器人由于需要完成一些功能性的任务，都采用了模块化设计，虽然神经网络在其中起到了重要作用，但输出结果并不是从输入语句“端到端”产生的。而且用过的朋友都知道，他们的聊天能力并不是很令人满意。
+今天介绍的神经对话模型则是一步到位，将对话历史作为输入，让模型直接生成下一轮的回复。学术一点说，神经对话模型本质上是在解决文本生成的问题。相比于很多聊天机器人（包括我们的晴天一号）目前使用的语料库+检索算法的架构，生成式（包括改写等等）算法能给对话带来更多的可能性和趣味性。最近，得益于大规模预训练语言模型，文本生成任务得到了长足的发展。本文的主角就代表了目前神经对话模型的最高水平，分别是19年十一月由微软发布的DialoGPT和20年一月谷歌发布的Meena。
+在开始正文之前，先展示一段机器人生成的对话，让大家对技术现状有个直观感受。
+模型 两篇论文都没有在模型方面有什么重大的创新，他们使用的都是如下图所示基于Transformer的seq2seq模型。这里大致介绍一下所谓seq2seq模型的工作原理。每生成一个单词的过程如下：将对话的历史信息输入进编码器（左下角inputs），模型已经生成的当前轮结果输入解码器（右下角outputs，没错，outputs是也用来input的~），然后模型将会综合两者信息输出它预测的下一个词（上方output）。而生成一句完整的回复只需要将刚才新生成的词拼接到当前轮已有结果的后面（图中shifted right的含义），重复上述过程直到模型输出句子结束符。
+DialoGPT采用的是标准的GPT-2模型，也就是上图模型的加大号版本；而Meena采用的是去年Google通过神经网络结构搜索（NAS）方法得到的进化版transformer模型（Evolved Transformer）。Meena由1个ET编码器和13个ET解码器构成，ET解码器和标准Transformer解码器的对比如下图所示，两者似乎差别不大，论文注脚说一个ET Decoder Block大概是标准Transformer Decoder Block的两倍深。
+虽然Meena和DialoGPT都是Transformer模块搭建的模型，但两者规模的差别非常巨大。Meena使用了极其巨大的隐层规模（2560 hidden size，32 attention heads)，总参数量达到了惊人的2.6B。相比之下微软的模型就克制很多，最大规模的DialoGPT参数量为762M，表现最好的模型参数量是345M。作为参照，目前地表最强——google的T5模型参数量是11B，BERT large则只有340M。
+数据 数据则是两篇论文提升performance的重中之重，特别是对于模型大小比较正常的DialoGPT来说。 DialoGPT论文里明确说数据是从Reddit上搞下来的。通过解析Reddit上的讨论帖，可以获得“树状”的对话数据，然后把每一条从根节点到叶节点的路径拎出来都能获得一个完整的对话。假设一个对话共说了K轮，每次取出当前轮作为标签，之前轮的对话作为输入，总共可以获得K-1条训练数据。Meena的数据来自于public domain social media conversations，他也是从树状对话中获得的数据，我猜测这些对话的形式应该和reddit这种论坛比较相似。
+他们的数据量都是非常之巨大的，DialoGPT的总session数是147116725（147M），总词数是1.8B。再来看Meena，他们的总训练数据量是867M，总词数是40B，存成文本文件是341GB。这里可以对比一下之前的模型，BERT的训练数据是16GB，GPT-2的训练数据是40GB，曾经的数据狂魔Roberta是160GB。谷歌再次定义了什么叫大力出奇迹。我在维基百科看到人的平均阅读速度是每分钟200词，按这样的速度1 Billion单词需要一个人不眠不休阅读大概347天。从这个角度看，目前的训练数据量似乎又显得比较合理了。
+两篇论文都提到要对数据做非常大刀阔斧的清洗，例如删掉太长或太短的、重复词语多的、含有URL的、不含有常见词的等等。总之，要保证数据质量足够高。
+顺便提一下，DialoGPT尝试了从预训练模型迁移和从对话数据集从头训练两种方式。结果是迁移的表现明显好于从头训练。我认为这个现象非常的合理，使用预训练模型就好比教一个学过好几年语文的小朋友在网上聊天，这应该好过一个从小就只通过网络聊天学语文的小朋友。但Meena好像采用的是从头训练的模式，也许他们预训练一把能得到更好的结果。
+由于使用了极大的模型和数据集，两个模型都是使用了豪华的硬件来进行训练。DialoGPT使用16个V100，而Meena则使用了2048个TPU v3核训练了30天。512个v2 TPU组成的POD三年协议价是12万美元一个月，v3应该更贵，所以你如果想复现这个模型，至少要花费48万美元。有钱真好:)
+解码方式 解码是生成式任务里很重要的一个部分。因为正如前面介绍的，生成模型在推理时每一个时间步只会生成下一个词，而且后面的结果会依赖前面的结果，所以就需要一个好的解码策略来保证这一个个token最后能组成高质量的句子。去年有不少关于解码的工作，希望让机器人产生更有意义、有个性的回复。
+DialoGPT没有采用什么独特的解码方式，而是使用了常见的Beam Search（集束搜索），只在最后用了一个较为新颖的重排序算法来从集束搜索得到的TOP K个结果中选出最佳的那个。在排序时，他们用一个训练好的“反向模型”来由生成的回复倒推输入。选用使输入语句概率最大的那个输出作为最终的输出。由于采用了Beam Search，它的解码过程应该是比较耗时的。
+Meena比较有意思，作者们表示由于模型的Perplexity（困惑度）够低，完全不需要使用集束搜索。而是采用非常简洁的采样+重排就可以得到好的句子。
+困惑度p可以理解为，如果每个时间步都根据语言模型计算的概率分布随机挑词，那么平均情况下，挑多少个词才能挑到正确的那个。 &amp;ndash;知乎用户TimsonShi
+所谓采样，就是在每一步都根据输出层得到的概率分布，随机选一个输出token，直到得出一个完整的句子。重复采用过程N次，得能到N个句子，最后将这N句话根据归一化后的句子概率排序，选出最优的。需要注意的是他们的输出层并不是对Vocabulary的简单Softmax，而是像知识蒸馏里一样增加了采样温度，即
+$$p_i=\frac{\exp(z_j/T)}{\sum_j{\exp(z_j/T)}}$$
+作者们发现T的大小会影响生成结果。T小的时候，倾向于使用常规词汇，而T大的时候倾向于使用与上下文相关的词汇。论文使用的T为0.88，N为20。他们的结果显示这种采样的效果相比于集束搜索确实有很大的改进。下面一个是集束搜索的结果，另一个是采样，采样很好地避免了集束搜索生成结果丰富性差的弊端。
+能得到这么好的结果有一个重要前提，就是模型的困惑度也就是perplexity够低。Meena的困惑度有多低呢，它是10.2，相比较之下DialoGPT的困惑度大约是15。 评价指标与结果
+对评价指标的选择，两篇论文有很多共同点。他们都已经从BLEU这种考量词级别重合度的离散客观指标进化到了直接跟对话质量相关的抽象指标。从这一点也可以感觉出这个领域已经进入了相对成熟的阶段。DialoGPT使用人工评价的方式，评价模型的relevance，informativeness和how human-like。而Meena则用综合sensibleness和specificity的称为SSA的指标对机器人进行评价。所谓SSA就是对sensibleness和specificity的简单平均，A对应就是average。
+Sensibleness我认为基本对应relevance，是指机器人能否得出符合上下文的有意义回答。但有意义是不够的，正如文章所说，一个只会回答“I don&amp;rsquo;t know”这类万金油句子的机器人说的话也是符合上下文的，但其实并不好。
+Specificity对应infomativeness，是另一个维度，它评估机器人是否能给出有具体信息的答案。例如当人问”你喜欢电影吗”的时候你可以回答“我不知道/这很难说”，但一个更令人满意的回答可能是”当然，我特别喜欢科幻电影”。
+我们来看一下Meena论文里的结果，因为他们为了比较，在相同的评测体系下把DialoGPT也测了。在Meena论文的评价指标下Meena的水平相当高，人类的SSA大概是0.82，Meena是0.78，已经相当接近。其他的对手在Meena面前基本抬不起头来，DialoGPT 0.51，Cleverbot 0.44。他们还评估了小冰和Mitsuku这两个著名的模块化机器人（非端到端的神经对话模型），SSA分别是0.36和0.56。文中还特别提到小冰的Specificity很差，只有0.19，这和我的使用感受是一致的。小冰感觉总是在扯淡，很难说出有意义的东西来。
+SSA体系虽好，但完全依赖人工评价。Meena论文还评估了perplexity和SSA的相关度。结果如上图所示，横坐标是困惑度，纵坐标是SSA，Perplexity和SSA呈现非常明显的负相关关系，相关度大概是0.94。这就是说在训练模型的时候只需要评估混乱度基本就能知道最终的效果。这个结论我觉得非常重要，它无疑给广大神经对话模型研究人员带来了一个福音，毕竟人工评价实在太麻烦也太贵了。这下好了，以后大家奔着降低perplexity去就好了。
+对话样例 在这一小节再放几张对话小样，从图中可以看出，这些模型的表现都很好，回答不仅流畅还符合一些常识。当然，我们在前面的文章里也讲过，这种隐含知识不太好控制。但只要语料够优秀，效果看起来是非常棒的。
+后记 DialoGPT去年年底就发布了，而且微软大方地提供了预训练好的模型，他们也成为了这个领域当时的SOTA，但没想到这么快就被谷歌超越了。今年初看到谷歌连续放出Meena和REALM的时候还是蛮激动的，一个在类人闲聊上获得突破，另一个大幅提高了外挂知识库的利用水平。Twitter上针对这两篇论文也充满了乐观的论调，甚至有人预测2021年我们就能看到AGI了。这两年的技术发展确实让我们对文本数据的利用水平有了质的飞越，虽然不知道AGI如何，中文房间我感觉很快就会造好了。 另外也感慨Quoc V. Le带领的团队最近势头真猛。谷歌海量算力给了他们无限的空间，已经有在CV（例如去年的EfficientNet已经红遍Kaggle社区了）、NLP等领域遍地开花之势。如果中文房间真的盖好了，门牌上应该写的是1600 Amphitheatre Parkway, Mountain View, CA, U.S.吧。
+参考阅读 DialoGPT： http://arxiv.</description>
+    </item>
+  </channel>
+</rss>

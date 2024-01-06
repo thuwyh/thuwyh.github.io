@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Inference on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/inference/</link>
+    <description>Recent content in Inference on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 20 Jun 2021 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/inference/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Impvove Inference Efficiency with Batch Inference</title>
+      <link>https://www.yuanhao.site/post/2021-06-20-inferlight/</link>
+      <pubDate>Sun, 20 Jun 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-06-20-inferlight/</guid>
+      <description>As an algorithm engineer, it is inevitable that you will encounter the problem of bringing models online in your daily work. For some less demanding scenarios, you can handle this by utilizing a web framework: for each user request, call the model to infer and return the result. However, this straightforward implementation often fails to maximize the use of the GPU, and is slightly overwhelming for scenarios with high performance requirements.</description>
+    </item>
+  </channel>
+</rss>

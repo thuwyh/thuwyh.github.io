@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>多模态对比学习预训练模型CLIP | 多头注意力</title>
+<meta name="keywords" content="对比学习, 多模态, NLP, CLIP, 预训练">
+<meta name="description" content="我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的
+CLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。
+方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.
+正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。
+用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。
+更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。
+it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet
+更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。
+图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。
+更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。
+This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset.">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="多模态对比学习预训练模型CLIP" />
+<meta property="og:description" content="我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的
+CLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。
+方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.
+正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。
+用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。
+更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。
+it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet
+更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。
+图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。
+更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。
+This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-13T10:25:03+00:00" />
+<meta property="article:modified_time" content="2021-12-13T10:25:03+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多模态对比学习预训练模型CLIP"/>
+<meta name="twitter:description" content="我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的
+CLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。
+方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.
+正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。
+用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。
+更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。
+it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet
+更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。
+图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。
+更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。
+This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://www.yuanhao.site/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "多模态对比学习预训练模型CLIP",
+      "item": "https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "多模态对比学习预训练模型CLIP",
+  "name": "多模态对比学习预训练模型CLIP",
+  "description": "我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的\nCLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。\n方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.\n正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。\n用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。\n更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。\nit is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet\n更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。\n图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。\n更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。\nThis data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset.",
+  "keywords": [
+    "对比学习", "多模态", "NLP", "CLIP", "预训练"
+  ],
+  "articleBody": "我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的\nCLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。\n方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.\n正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。\n用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。\n更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。\nit is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet\n更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。\n图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。\n更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。\nThis data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset.\n以往的多模态交互方法有不少，例如希望去用图片信息去重建caption，但由于文字空间的自由度太大，在文本token这个离散空间去构建训练任务的结果就是难度太大，噪音太多。CLIP作者发现对比学习是个好办法，做法如下图所示。训练目标不再是生成文本的逐字比对，而变成整个caption文本表征向量和图片表征向量的比较。\n论文里有一个非常易于理解的训练伪代码\n# image_encoder - ResNet or Vision Transformer # text_encoder - CBOW or Text Transformer # I[n, h, w, c] - minibatch of aligned images # T[n, l] - minibatch of aligned texts # W_i[d_i, d_e] - learned proj of image to embed # W_t[d_t, d_e] - learned proj of text to embed # t - learned temperature parameter # extract feature representations of each modality I_f = image_encoder(I) #[n, d_i] T_f = text_encoder(T) #[n, d_t] # joint multimodal embedding [n, d_e] I_e = l2_normalize(np.dot(I_f, W_i), axis=1) T_e = l2_normalize(np.dot(T_f, W_t), axis=1) # scaled pairwise cosine similarities [n, n] logits = np.dot(I_e, T_e.T) * np.exp(t) # symmetric loss function labels = np.arange(n) loss_i = cross_entropy_loss(logits, labels, axis=0) loss_t = cross_entropy_loss(logits, labels, axis=1) loss = (loss_i + loss_t)/2 最终的效果也很好，蓝线是baseline即image encoder+transformers生成图片caption，黄线是将生成caption换成预测BoW，绿线是最终方案，直接在向量空间进行对比学习。每一次迭代都大大提高了模型的训练效率。\n因为数据集够大，整个训练过程也没有任何花活，数据增强几乎没有，连原本对比学习里模型最后的非线性变换都去掉了。\nZero-shot迁移 这是不少科普公众号最容易“震惊”的点。\n通过上面的方法训练出来的模型有很好的迁移能力，可以在一些没见过的图片上进行各种图像任务（主要是分类）。为了解决目标数据集文本标签和训练时不一致的问题，CLIP还使用了最近也非常时髦的PROMPT技术。以下图为例，如果希望CLIP识别飞机、汽车、狗和鸟，先用模板 a photo of a {object}来构建文本，再经过文本编码器获得文本embedding，与图像embedding进行比较，即可完成分类。\n论文里提到，对于不同的目标任务可以通过构建不同的Prompt模板来提高迁移性能。\n总结 整个CLIP模型给我的感觉是比较自然的，特别是在已经了解过对比学习的情况下，几乎没有什么特别新的概念和方法。但实际上要把两个模态的编码器整合到这个效果，对资源和执行力的要求是很高的。\n主要解决了三个问题\n数据集成本问题。这个显而易见，图文对在互联网上到处都是 应用范围。之前的做法是端到端的，用imagenet训练的模型只能预测imagenet里面的1000种类别。CLIP换成匹配之后理论上可以大大扩大使用范围。实际上如果新概念出现太快的话这些编码器还是需要重新训练的。Limitation部分也提到对于训练数据无法包含的概念，例如区分车的型号，CLIP的表现也一般。 在现实世界的表现差。大意就是原来端到端训练模型刷榜都是过拟合啦，CLIP过拟合的概率比较小，不会出现刷榜分数贼高，实际应用却很拉胯的情况。 ",
+  "wordCount" : "245",
+  "inLanguage": "en",
+  "datePublished": "2021-12-13T10:25:03Z",
+  "dateModified": "2021-12-13T10:25:03Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "多头注意力",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.yuanhao.site/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/post/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      多模态对比学习预训练模型CLIP
+    </h1>
+    <div class="post-meta"><span title='2021-12-13 10:25:03 +0000 UTC'>December 13, 2021</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%96%b9%e6%b3%95" aria-label="方法">方法</a><ul>
+                        
+                <li>
+                    <a href="#%e8%87%aa%e7%84%b6%e8%af%ad%e8%a8%80%e4%bf%a1%e5%8f%b7" aria-label="自然语言信号">自然语言信号</a></li>
+                <li>
+                    <a href="#%e6%9b%b4%e5%a4%a7%e7%9a%84%e6%95%b0%e6%8d%ae%e9%9b%86" aria-label="更大的数据集">更大的数据集</a></li>
+                <li>
+                    <a href="#%e6%9b%b4%e5%a4%a7%e7%9a%84%e6%a8%a1%e5%9e%8b" aria-label="更大的模型">更大的模型</a></li>
+                <li>
+                    <a href="#%e6%9b%b4%e9%ab%98%e6%95%88%e7%9a%84%e8%ae%ad%e7%bb%83%e7%9b%ae%e6%a0%87" aria-label="更高效的训练目标">更高效的训练目标</a></li></ul>
+                </li>
+                <li>
+                    <a href="#zero-shot%e8%bf%81%e7%a7%bb" aria-label="Zero-shot迁移">Zero-shot迁移</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的</p>
+<p>CLIP (<em>Contrastive Language–Image Pre-training</em>) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。</p>
+<h2 id="方法">方法<a hidden class="anchor" aria-hidden="true" href="#方法">#</a></h2>
+<h3 id="自然语言信号">自然语言信号<a hidden class="anchor" aria-hidden="true" href="#自然语言信号">#</a></h3>
+<blockquote>
+<p>At the core of our approach is the idea of learning perception from supervision contained in natural language.</p>
+</blockquote>
+<p>正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。</p>
+<p>用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。</p>
+<h3 id="更大的数据集">更大的数据集<a hidden class="anchor" aria-hidden="true" href="#更大的数据集">#</a></h3>
+<p>CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。</p>
+<blockquote>
+<p>it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet</p>
+</blockquote>
+<h3 id="更大的模型">更大的模型<a hidden class="anchor" aria-hidden="true" href="#更大的模型">#</a></h3>
+<p>文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。</p>
+<p>图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。</p>
+<h3 id="更高效的训练目标">更高效的训练目标<a hidden class="anchor" aria-hidden="true" href="#更高效的训练目标">#</a></h3>
+<p>过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。</p>
+<blockquote>
+<p>This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset.</p>
+</blockquote>
+<p>以往的多模态交互方法有不少，例如希望去用图片信息去重建caption，但由于文字空间的自由度太大，在文本token这个离散空间去构建训练任务的结果就是难度太大，噪音太多。CLIP作者发现对比学习是个好办法，做法如下图所示。训练目标不再是生成文本的逐字比对，而变成整个caption文本表征向量和图片表征向量的比较。</p>
+<p><img loading="lazy" src="/assets/clip/Untitled.png" alt="Untitled"  />
+</p>
+<p>论文里有一个非常易于理解的训练伪代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># image_encoder - ResNet or Vision Transformer</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># text_encoder - CBOW or Text Transformer</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># I[n, h, w, c] - minibatch of aligned images</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># T[n, l] - minibatch of aligned texts</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># W_i[d_i, d_e] - learned proj of image to embed</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># W_t[d_t, d_e] - learned proj of text to embed</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># t - learned temperature parameter</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># extract feature representations of each modality</span>
+</span></span><span style="display:flex;"><span>I_f <span style="color:#f92672">=</span> image_encoder(I) <span style="color:#75715e">#[n, d_i]</span>
+</span></span><span style="display:flex;"><span>T_f <span style="color:#f92672">=</span> text_encoder(T) <span style="color:#75715e">#[n, d_t]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># joint multimodal embedding [n, d_e]</span>
+</span></span><span style="display:flex;"><span>I_e <span style="color:#f92672">=</span> l2_normalize(np<span style="color:#f92672">.</span>dot(I_f, W_i), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>T_e <span style="color:#f92672">=</span> l2_normalize(np<span style="color:#f92672">.</span>dot(T_f, W_t), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># scaled pairwise cosine similarities [n, n]</span>
+</span></span><span style="display:flex;"><span>logits <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>dot(I_e, T_e<span style="color:#f92672">.</span>T) <span style="color:#f92672">*</span> np<span style="color:#f92672">.</span>exp(t)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># symmetric loss function</span>
+</span></span><span style="display:flex;"><span>labels <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(n)
+</span></span><span style="display:flex;"><span>loss_i <span style="color:#f92672">=</span> cross_entropy_loss(logits, labels, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>loss_t <span style="color:#f92672">=</span> cross_entropy_loss(logits, labels, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>loss <span style="color:#f92672">=</span> (loss_i <span style="color:#f92672">+</span> loss_t)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>
+</span></span></code></pre></div><p>最终的效果也很好，蓝线是baseline即image encoder+transformers生成图片caption，黄线是将生成caption换成预测BoW，绿线是最终方案，直接在向量空间进行对比学习。每一次迭代都大大提高了模型的训练效率。</p>
+<p><img loading="lazy" src="/assets/clip/Untitled%201.png" alt="Untitled"  />
+</p>
+<p>因为数据集够大，整个训练过程也没有任何花活，数据增强几乎没有，连原本对比学习里模型最后的非线性变换都去掉了。</p>
+<h2 id="zero-shot迁移">Zero-shot迁移<a hidden class="anchor" aria-hidden="true" href="#zero-shot迁移">#</a></h2>
+<p>这是不少科普公众号最容易“震惊”的点。</p>
+<p>通过上面的方法训练出来的模型有很好的迁移能力，可以在一些没见过的图片上进行各种图像任务（主要是分类）。为了解决目标数据集文本标签和训练时不一致的问题，CLIP还使用了最近也非常时髦的<strong>PROMPT</strong>技术。以下图为例，如果希望CLIP识别飞机、汽车、狗和鸟，先用模板 <code>a photo of a {object}</code>来构建文本，再经过文本编码器获得文本embedding，与图像embedding进行比较，即可完成分类。</p>
+<p><img loading="lazy" src="/assets/clip/Untitled%202.png" alt="Untitled"  />
+</p>
+<p>论文里提到，对于不同的目标任务可以通过构建不同的Prompt模板来提高迁移性能。</p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>整个CLIP模型给我的感觉是比较自然的，特别是在已经了解过对比学习的情况下，几乎没有什么特别新的概念和方法。但实际上要把两个模态的编码器整合到这个效果，对资源和执行力的要求是很高的。</p>
+<p>主要解决了三个问题</p>
+<ul>
+<li>数据集成本问题。这个显而易见，图文对在互联网上到处都是</li>
+<li>应用范围。之前的做法是端到端的，用imagenet训练的模型只能预测imagenet里面的1000种类别。CLIP换成匹配之后理论上可以大大扩大使用范围。实际上如果新概念出现太快的话这些编码器还是需要重新训练的。Limitation部分也提到对于训练数据无法包含的概念，例如区分车的型号，CLIP的表现也一般。</li>
+<li>在现实世界的表现差。大意就是原来端到端训练模型刷榜都是过拟合啦，CLIP过拟合的概率比较小，不会出现刷榜分数贼高，实际应用却很拉胯的情况。</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://www.yuanhao.site/tags/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/">对比学习</a></li>
+      <li><a href="https://www.yuanhao.site/tags/%E5%A4%9A%E6%A8%A1%E6%80%81/">多模态</a></li>
+      <li><a href="https://www.yuanhao.site/tags/nlp/">NLP</a></li>
+      <li><a href="https://www.yuanhao.site/tags/clip/">CLIP</a></li>
+      <li><a href="https://www.yuanhao.site/tags/%E9%A2%84%E8%AE%AD%E7%BB%83/">预训练</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://www.yuanhao.site/post/2021-12-20-2021%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>2021面试总结</span>
+  </a>
+  <a class="next" href="https://www.yuanhao.site/post/2021-12-06-%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/">
+    <span class="title">Next »</span>
+    <br>
+    <span>对比学习学习笔记</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 多模态对比学习预训练模型CLIP on x"
+            href="https://x.com/intent/tweet/?text=%e5%a4%9a%e6%a8%a1%e6%80%81%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8bCLIP&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f&amp;hashtags=%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%2c%e5%a4%9a%e6%a8%a1%e6%80%81%2cNLP%2cCLIP%2c%e9%a2%84%e8%ae%ad%e7%bb%83">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 多模态对比学习预训练模型CLIP on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f&amp;title=%e5%a4%9a%e6%a8%a1%e6%80%81%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8bCLIP&amp;summary=%e5%a4%9a%e6%a8%a1%e6%80%81%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8bCLIP&amp;source=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 多模态对比学习预训练模型CLIP on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f&title=%e5%a4%9a%e6%a8%a1%e6%80%81%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8bCLIP">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 多模态对比学习预训练模型CLIP on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 多模态对比学习预训练模型CLIP on whatsapp"
+            href="https://api.whatsapp.com/send?text=%e5%a4%9a%e6%a8%a1%e6%80%81%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8bCLIP%20-%20https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 多模态对比学习预训练模型CLIP on telegram"
+            href="https://telegram.me/share/url?text=%e5%a4%9a%e6%a8%a1%e6%80%81%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8bCLIP&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 多模态对比学习预训练模型CLIP on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%e5%a4%9a%e6%a8%a1%e6%80%81%e5%af%b9%e6%af%94%e5%ad%a6%e4%b9%a0%e9%a2%84%e8%ae%ad%e7%bb%83%e6%a8%a1%e5%9e%8bCLIP&u=https%3a%2f%2fwww.yuanhao.site%2fpost%2f2021-12-13-%25E5%25A4%259A%25E6%25A8%25A1%25E6%2580%2581%25E5%25AF%25B9%25E6%25AF%2594%25E5%25AD%25A6%25E4%25B9%25A0%25E9%25A2%2584%25E8%25AE%25AD%25E7%25BB%2583%25E6%25A8%25A1%25E5%259E%258Bclip%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

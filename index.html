@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.121.2"><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>多头注意力</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="多头注意力" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多头注意力"/>
+<meta name="twitter:description" content=""/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "多头注意力",
+  "url": "https://www.yuanhao.site",
+  "description": "",
+  "thumbnailUrl": "https://www.yuanhao.site/favicon.ico",
+  "sameAs": [
+      "https://www.kaggle.com/wuyhbb", "https://www.zhihu.com/people/fjshwyh", "https://github.com/thuwyh"
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <h1>Hi there 👋</h1>
+    </header>
+    <div class="entry-content">
+        欢迎关注同名公众号【多头注意力】
+    </div>
+    <footer class="entry-footer">
+        <div class="social-icons" >
+    <a href="https://www.kaggle.com/wuyhbb" target="_blank" rel="noopener noreferrer me"
+        title="Kaggle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" stroke="none" viewBox="0 0 32 32">
+    <path transform="matrix(.527027 0 0 .527027 -30.632288 -22.45559)" clip-path="url(#A)" d="M105.75 102.968c-.06.238-.298.357-.713.357H97.1c-.477 0-.89-.208-1.248-.625L82.746 86.028l-3.655 3.477v12.93c0 .595-.298.892-.892.892h-6.152c-.595 0-.892-.297-.892-.892V43.5c0-.593.297-.89.892-.89H78.2c.594 0 .892.298.892.89v36.288l15.692-15.87c.416-.415.832-.624 1.248-.624h8.204c.356 0 .593.15.713.445.12.357.09.624-.09.803L88.274 80.588l17.297 21.488c.237.238.297.535.18.892"/>
+</svg>
+    </a>
+    <a href="https://www.zhihu.com/people/fjshwyh" target="_blank" rel="noopener noreferrer me"
+        title="Zhihu">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13.3334,3.60098l0,17.1471l1.79582,0l0.75424,2.13703l3.18459,-2.13703l3.93584,0l0,-17.1471l-9.6705,0zm7.41375,14.87538l-1.79283,0l-2.24777,1.50849l-0.53276,-1.50849l-0.53875,0l0,-12.53483l5.10911,0l0,12.53483l0.00299,0zm-8.56906,-7.18927l-3.97475,0c0.06285,-1.34387 0.1287,-3.12174 0.19754,-5.17496l3.91788,0l-0.00299,-0.24244c0,-0.01796 -0.00599,-0.43998 -0.06884,-0.87097c-0.06285,-0.44896 -0.19754,-1.04457 -0.62854,-1.04457l-6.5727,0c0.13169,-0.61657 0.46991,-2.08615 0.87995,-2.80747l0.19155,-0.33522l-0.3861,-0.02095c-0.02394,0 -0.58663,-0.02694 -1.23912,0.31726c-1.06851,0.56868 -1.5474,1.68807 -1.75691,2.52612c-0.55072,2.18791 -1.33489,3.70837 -1.66712,4.35786c-0.09877,0.19155 -0.15863,0.30529 -0.18557,0.38311c-0.05387,0.14666 -0.02394,0.29332 0.0838,0.38909c0.31427,0.28434 1.14334,-0.0868 1.15232,-0.08979c0.01796,-0.00898 0.03891,-0.01796 0.06585,-0.02993c0.41603,-0.18856 1.64916,-0.74826 2.08914,-2.52911l1.69705,0c0.02095,0.96376 0.09278,4.14236 0.0868,5.17496l-4.22018,0l-0.06285,0.0449c-0.69139,0.50582 -0.91288,1.8916 -0.92185,1.95146l-0.0419,0.27536l4.99837,0c-0.36814,2.34355 -0.79315,3.3941 -1.01763,3.81313c-0.11074,0.20951 -0.21849,0.41902 -0.32025,0.62255c-0.63752,1.26306 -1.29898,2.56802 -3.7802,4.5973c-0.10775,0.0838 -0.20951,0.23944 -0.14367,0.41005c0.07183,0.18856 0.27835,0.27237 0.73629,0.27237c0.16162,0 0.35318,-0.00898 0.58065,-0.02993c1.49352,-0.13169 3.01698,-0.53875 4.04359,-2.6219c0.50882,-1.05056 0.94879,-2.14601 1.31394,-3.25941l4.08549,4.78886l0.14965,-0.35916c0.02394,-0.05687 0.56868,-1.38578 0.15264,-2.87032l-0.01497,-0.05387l-3.23547,-3.68143l-0.65847,0.49684c0.19155,-0.78118 0.31726,-1.49352 0.37413,-2.12805l4.74995,0l0,-0.23944c0,-1.20021 -0.55371,-1.91255 -0.57466,-1.94248l-0.07183,-0.08979z"/>
+</svg>
+    </a>
+    <a href="https://github.com/thuwyh" target="_blank" rel="noopener noreferrer me"
+        title="Github">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+    </a>
+</div>
+
+    </footer>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">填志愿真难
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这两天各省的高考成绩陆续发布，考生和家长马上该为怎么填志愿伤脑筋了。
+今年小舅子高考，考得不错，虽然清北上不了，但其他学校应该都有机会。作为一名负责任的好姐夫，自然也发动身边资源给小舅子出谋划策。 不搞不知道，现在填志愿还真是不容易。
+首先是现在的大学都很会蹭热点、造概念。人工智能相关的各种学院、实验班就有好几个，比如浙大的图领班，人大的高瓴学院，复旦的计算机科学拔尖班。 还有些近年来火热的产业比如新能源，也有像上交的博渊未来学院这种新兴院系。 近年来各种软硬件的热点确实多，AI、半导体、新能源都火过一把，给了这些院系或者项目很好的土壤。 家长和考生也很吃这套，愿意为此买单。 遥想十几年前我填志愿那会其实也有热门专业，当时的显学是金融、建筑、土木，现在好像也都比较冷清了。 所以大家填志愿的时候也不要过分追逐当下的热点。
+第二个现象是所谓大类招生，或者更实际的说法是各种“实验班”很多。这种实验班往往是相关专业搭在一起，但里面的专业强弱是有差别的。 例如复旦的“技术科学实验班”里面包含的专业有信息类也有航空航天。这种大类专业往往进去之后还要按成绩分流。 上海交大这方面就比较离谱，分流时80%看的是高考的成绩。感觉有点给考生画大饼的意思，用大类招生里的好专业把你吸（哄）引（骗）进来，入学后可能会和期望有偏差。 不管怎么样，我认为大类招生的本意应该是好的，但是对于这种大类招生，考生和家长们务必要调查清楚，做好预期管理。
+今天看到一个我关注的大V写现在专业之间的差别没有学校之间差别大了，我感觉是有道理的。随着社会和国家对硬科技的关注越来越多，原来的一些天坑专业比如生化环材也开始支棱起来了。 计算机类虽然在收入上目前还有一定的优势，但优势也在衰减。在这种情况下，他建议大家可以多考虑下自己的兴趣和特长，我也比较认同。
+不过遗憾的是，像我们这种在小县城长大的小孩可能很难有机会在上大学之前就搞清楚自己的兴趣到底是啥，很多东西可能都没有机会接触到。 作为一个过来人，我本来是想写点东西来给大家科普一下，但也一直没时间。这里把我的一些想法分享出来，大家可以用这个框架自行查阅资料。
+其实很简单，想了解一个专业，可以问这几个问题：
+这个专业在大学四年的培养计划是什么样的？会学一些什么课程？对比几个专业的培养计划就能看出区别来。如果培养计划没啥差别，那后面研究生阶段转换就会比较容易。 这个专业有哪些著名的公司？他们的产品是什么？他们的股价或者市值这几年是怎么变化的 这个专业有哪些著名的人物？可以分别找找学术界和工业界的，看下他们在研究什么。他们中有没有你想成为的人？ 大家有什么关于填志愿的好方法也欢迎在评论区留言。</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-06-25 00:00:00 +0000 UTC'>June 25, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 填志愿真难" href="https://www.yuanhao.site/post/thoughts/2023-06-25-major-selection/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">令人吃惊的M2芯片
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近拿到了一台14寸的MacBook Pro，搭载了M2 Pro芯片，内存为16GB。昨天心血来潮，在上面尝试训练了一个神经网络，感触挺深的。
+我训练的是一个BERT-base模型，当年也算是个”大模型“，但在现在看起来就是个小不点。训练数据不多，大概一万多条文本，平均长度应该接近模型的最大输入长度。 这个任务在我的A6000显卡上跑得飞快，不到十分钟就可以跑完三个epoch的训练。我一开始移植代码到MacBook上的时候没有注意到Huggingface Trainer有个控制是否使用M系芯片神经处理的开关，所以用的是CPU，进度条显示训练完要15个小时。 后来查阅文档，打开开关后，跑完训练的时间大幅下降到了1小时左右，提速了十几倍！(测试不严谨，但提速非常大是肯定的)
+不过遗憾的是，目前pytorch并不支持在M系列芯片上使用半精度数据类型，导致训练的显存消耗略大，batchsize上不去。但GitHub上有个帖子说M2其实只支持bf16的，估计不久的将来会有PR来支持这一特性，那又可以有一个速度的大提升。
+前几天苹果发布了缝合版处理器M2 Ultra，碰巧知乎上有个付费问题，我就去了解了一下相关知识。目前苹果的统一内存架构是在CPU和GPU之间共享内存，而且内存带宽极大。4090的内存带宽是1T/s，而M2 Ultra达到了800GB/s。M2 pro的带宽也有200GB/s，而M2 max是400GB/s。 统一内存架构在大模型时代感觉有极大的优势，我查阅了一下目前NV主流的移动显卡，显存大多只有8GB，而M2 pro笔记本的起跳内存就有16GB，32GB版本再花3000块就能买到。
+即使在不支持半精度的情况下，32GB的统一内存也足够塞下7B的模型，已经有很多东西可以玩了。京东上一个24GB的4090显卡也要一万多，加上七七八八配个台式机估计两万块也是要的。但是一个32GB版本的MacBook Pro也只要19000，简直太划算了！
+高考刚刚结束，有不少同学或者家长估计都在挑选新的电脑、手机等设备。在不差钱的情况下，我强烈建议搞一个MacBook，教育优惠可以打八五折，你可以尝试很多普通笔记本电脑没法带给你的东西。</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-06-11 00:00:00 +0000 UTC'>June 11, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 令人吃惊的M2芯片" href="https://www.yuanhao.site/post/review/2023-06-11-apple-m2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Vicuna初体验
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>今天深入体验了下Vicuna,以下是我的takeaways:
+指令跟随的能力跟ChatGPT有点差距。最典型的就是下面的身份设定任务都经常失败（如下图）。模型会非常倔强地回复你他是Vicuna，是LMSYS训练的模型。 针对上面的问题我看了下代码，发现他们专门搞了好几个问身份的语料来训练模型图片，真的是把身份感刻在了骨子里。 fastchat迭代挺快的，今天试了下他们新加的API功能。整个使用体验几乎和openai的client一模一样，学习成本很低。但目前文档没怎么跟上，有时需要看看代码。例如我在异步环境里用chatCompletion.create失败，看代码才知道要用acreate。 试了下Vicuna-7b的embedding，能力非常一般，而且维度4096太大了，那算相似度可真费劲，而且在检索任务上被768维的Instructor Embedding秒杀了。 看了下lmsys的成员，好家伙，几乎全是中国人，感觉人才这块可能对于中文大模型不会是短板。 使用下来总体还可以，下面这个例子和GPT的能力确实差不多。最后一个图是我提供些knowledge给它后的回答，措辞稍微不达预期。 </p>
+  </div>
+  <footer class="entry-footer"><span title='2023-05-07 00:00:00 +0000 UTC'>May 7, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Vicuna初体验" href="https://www.yuanhao.site/post/review/2023-05-07-vicuna-impression/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">OpenAI官方出品的ChatGPT调校指南你读了吗
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>作为一名Prompt Engineer，每天都在跟GPT打交道，时常被他惊艳，也看过很多模型失效的案例。在不精调的情况下，prompt基本上是影响效果的唯一因素了，虽然网上有很多Prompt编写指南，但我认为OpenAI出品的这份，你一定要看一下。
+这篇文章就给大家划一下重点。
+ChatGPT基操 主要包含在How to work with large language models这个文档里，同时适合网页和API用户。首先，介绍了向ChatGPT提问的三种主要范式，一种是直接给指令，例如
+Extract the name of the author from the quotation below. “Some humans theorize that intelligent species go extinct before they can expand into outer space. If they&#39;re correct, then the hush of the night sky is the silence of the graveyard.” ― Ted Chiang, Exhalation 模型将会输出
+Ted Chiang 另一种是将指令转化为一个补全(completion)问题，例如上面那个指令改为
+“Some humans theorize that intelligent species go extinct before they can expand into outer space....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-05-04 00:00:00 +0000 UTC'>May 4, 2023</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to OpenAI官方出品的ChatGPT调校指南你读了吗" href="https://www.yuanhao.site/post/deeplearning/2023-05-04-openai-cookbook/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">大力真的有奇迹
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在之前那篇颇受欢迎的卖惨小品【今天被OpenAI爆了】里，我讲述了被GPT embedding震撼的故事。但故事的最后，我们并没有采用openai的embedding接口，因为那样确实成本和产品稳定性都不好控制。
+我们在一番寻找之后，我们看到了一个叫Massive Text Embedding Benchmark (MTEB)的大型语义表征benchmark（在Huggingface上有最新的的榜单）。并且最终选择了榜单上排名第二的instructor-lg模型。
+Instructor-large模型的水平在这个榜单上超过了openai的ada-002，可见开源社区还是很能打的。这个模型基于的是谷歌的T5模型，然后用instruction finetuning的方法训练了一个可以适用多个场景的embedding模型。维度768，模型0.3b，推理速度很快，线上使用负担也比1536的ada-002低很多。这个跟之前我使用的21年SOTA Simcse模型（排在排行榜第30位）比，规模是三倍，在这个benchmark上的得分是61.59 vs 48.87，提升确实很明显。不过我猜Simcse large的得分应该也能超过50。总之instructor是个好模型，推荐大家在需要语义embedding的场景使用。
+但今天的主角并不是他，而是排在第14名的模型all-mpnet-base-v2。这个模型是sentence-transformers出品的一个模型，用的backbone是mpnet-base。它的规模和simcse相当，但得分是57.78，提升了很多。如果说前面的Instructor模型，甚至是GPT模型的提升很大程度来源于模型规模扩大，那这个同等规模模型的提升来自于哪里呢？mpnet这个稍显小众的网络可能比bert、roberta是强一些，但这不是主要的。因为有一个名字很类似的模型all-MiniLM-L12-v2，以及它的缩小版all-MiniLM-L6-v2，的得分分别是56.x。这两个模型的维度更小，是384维，而L6模型的层数甚至也只有bert-base的一半。主要的提升点来自于前缀all。model card里是这么说的
+We use the concatenation from multiple datasets to fine-tune our model. The total number of sentence pairs is above 1 billion sentences. We sampled each dataset given a weighted probability which configuration is detailed in the data_config.json file.
+十亿句子对训练，没错，是十亿。拿一个小小的6层模型，在大量数据上训练，就可以获得一个比两年前的SOTA好很多的模型。这种暴力美学真的令我叹为观止。看到他们数据集的时候突然感觉自己的格局或者想象力真的太小了。什么叫对深度学习有信仰，这种玩法大概就是吧。其实OpenAI也是很类似的，因为相信大模型，大数据，所以能搞成。而且就sentence-transformers用的数据来说，都是公开可获取的，能跑得动这个训练的人应该有很多，但真这么跑的却很少。
+不止是NLP领域，CV界不也是这样吗，前段时间Meta的SAM也是用史无前例的大数据集训练的。对比一下，之前的预训练模型用的常用数据集COCO才328K张图片，是SAM数据集的3%。
+SAM is trained on a massive dataset of 11 million images and 1.1 billion masks, which is the largest segmentation dataset to date....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-04-19 00:00:00 +0000 UTC'>April 19, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 大力真的有奇迹" href="https://www.yuanhao.site/post/deeplearning/2023-04-19-brute-force-is-miracle/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">今天被OpenAI爆了
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>今天第一次体验到来自大语言模型的压力。
+最近在做一个语义匹配的小任务，选择的方案是用2021年的SOTA模型SimCSE在我们的领域数据上先进一步预训练，然后再用任务数据finetune降维。前几天的时候还自我感觉良好，因为比之前的模型效果好，还修复了老语言模型的一些明显badcase。
+但是今天，我们用openai的embedding模型也试了一下，recall指标直接翻了一倍。当时看到结果我都惊呆了。这个模型一千个token只要0.0004美元，相当的便宜，而且开箱即用。
+之前我看到网上帖子说NLP工程师失业啥的还觉得有点夸张，现在感觉还真有可能。
+首先这个事情是有正反馈的，作为一款公开的产品，而且这么便宜，你不用别人也会用，你如果没法超过他（现在看起来确实不容易），那就只能也用，不然产品竞争力就会出问题。
+一旦大规模用，那很多NLP问题的处理范式真的会改变，以前大家在不同场景finetune类似bert这样的小模型，但现在可能会变成在OpenAI embedding基础上finetune最上面的输出层，例如分类层。一个底座可以支撑好几个上层需求。这样的话需要的人力大大减少，公司的inference负担也大大降低。虽然在OpenAI那花了些钱，但算下来大概率是比原来划算的。
+当然这样的方案也有一些问题，例如公司的数据就都让OpenAI知道了，并且OpenAI目前不太稳定，稳定性上有点不可控。
+那作为公司，感觉除了之前大家都看到的在NLG上投入大模型这条独木桥，未来在NLU上投入大模型的应该会有很多。自己跑个10B量级的模型作为底座，做到OpenAI的8、9成应该是个比较好的选择。朋友们，赶紧学起来啊，不然真要成为纺织女工了。</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-28 00:00:00 +0000 UTC'>March 28, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 今天被OpenAI爆了" href="https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">[大模型补课]模型及训练方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 这是大模型补课的第三篇文章，主要关注模型及其训练方法。做算法的人往往最喜欢看模型相关的东西，这期包含的内容也确实很有趣，不需要技术背景也能看懂。
+Encoder vs Decoder 在模型层面，我认为大模型时代最重要的一个变化就是从前几年的Encoder为主变成了Decoder Only占据绝对的主流。相对应的，自然语言生成问题取代了自然语言理解问题成为了主流，并且是在用生成这种范式统一了理解问题。
+transformer编码器和transformer解码器的主要区别在于它们如何处理输入和输出序列。
+{: .align-center style=“width:80%”} 最开始的时候Transformer的Encoder和Decoder是成对出现的 {: .align-caption style=“text-align:center;font-size:smaller”}
+Transformer编码器处理输入序列（例如句子），并将其转换为一组隐藏表示，以捕获序列的含义。编码器由一堆相同的层组成，每个层对输入序列应用自注意力机制和前馈神经网络。
+另一方面，Transformer解码器基于编码器产生的隐藏表示生成输出序列。它也由类似的层堆叠组成，但每个层还关注编码器产生的隐藏表示，以包含输入序列的信息。解码器还使用自注意力机制以自回归方式生成输出序列，这意味着它逐个标记地生成，条件是它已经生成的标记。
+总之，虽然transformer架构中的编码器和解码器都使用自注意力机制和前馈神经网络，但编码器处理输入序列，解码器通过关注编码器产生的隐藏表示来生成输出序列。
+当下火爆的大语言模型几乎都使用的是decoder only的结构。在知乎有一个问题为什么现在的LLM都是Decoder only的架构？，非常推荐大家阅读。GPT4发布之后，其处理context的能力从3.5的4k一下跃升到32k，不知道openai是不是又加入了encoder。
+涌现、Scaling Law和科学炼丹 模型的规模增大无疑是最近AI进步的重要推动力。目前像GPT3.5这样的语言模型包含了1750亿个参数，相比于人脑中的神经连接其实还小了差不多一个数量级。模型的大小和其能力的关系实际是一个非常有指导意义的值得研究的问题。
+涌现（emergent abilities）是在2022年中的论文Emergent Abilities of Large Language Models 提出的概念，是指在大模型中出现的而在小模型里没有出现的能力，用咱们熟悉的话说就是&#34;量变引起质变&#34;，而且这种现象是不可预测的。这种不可预测性给模型的开发带来了很大的麻烦，因为训练一个100B以上的模型成本是非常高昂的。这篇论文里列举了好几个任务里涌现的案例。
+Emergence is when quantitative changes in a system result in qualitative changes in behavior. –Nobel prize-winning physicist Philip Anderson
+{: .align-center style=“width:80%”} Few-shot任务里体现出来的涌现现象 {: .align-caption style=“text-align:center;font-size:smaller”}
+实际上，早在几年前人们就训练过巨大的模型，但那时候并没有出现现在这么强的模型。例如可能是世界上最喜欢大模型的公司Nvidia，在2022年训练过一个530B的超大模型MT-NLG，但可能知道这个模型的人都很少。Deepmind的论文Training Compute-Optimal Large Language Models讨论了这个问题，并给出了结论：之前的模型都训练不充分，把数据量提上去小模型也会有大能力。还给出了一套算力消耗一定的情况下合理分配模型规模和训练数据多少的方法论。
+{: .align-center style=“width:80%”} 典型的大模型参数量及训练数据量，Chinchilla参数少得多但性能更强 {: ....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-25 00:00:00 +0000 UTC'>March 25, 2023</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to [大模型补课]模型及训练方法" href="https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">[大模型补课]模型训练关键工具包
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。
+并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种
+DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。
+TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP&#43;TP&#43;PP)。
+有关并行的介绍，推荐阅读Huggingface的这篇文档。
+Megatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。
+目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。
+全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵
+$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$
+这样 $$Y=X_1A_1&#43;X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题
+$$GeLU(XA)\ne GeLU(X_1A_1&#43;X_2A_2)$$
+所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到
+$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$
+整个过程可以用下图表示
+自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。
+上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。
+在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。
+We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-25 00:00:00 +0000 UTC'>March 25, 2023</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to [大模型补课]模型训练关键工具包" href="https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Logistic Regression: A Beginner&#39;s Guide
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Logistic Regression is a statistical method used to analyze the relationship between a categorical dependent variable and one or more independent variables. It is widely used in machine learning and predictive modeling for binary classification problems. In this article, we will discuss the basics of logistic regression and its mathematical formulation.
+Binary Classification Binary classification is a type of classification problem in which the output variable can take only two possible values, usually represented as 0 or 1....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-24 00:00:00 +0000 UTC'>March 24, 2023</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to Logistic Regression: A Beginner&#39;s Guide" href="https://www.yuanhao.site/post/ml101/2023-03-24-logistic-regression/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Linear Regression: Understanding the Basics
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Linear regression is a widely-used statistical method for modeling and predicting the relationship between two variables. In essence, it is a technique for finding the best-fitting line through a set of data points. This article provides a beginner-friendly introduction to linear regression and its underlying concepts.
+What is Linear Regression? Linear regression is a statistical method that models the relationship between a dependent variable (also known as the response variable) and one or more independent variables (also known as predictors)....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-23 00:00:00 +0000 UTC'>March 23, 2023</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to Linear Regression: Understanding the Basics" href="https://www.yuanhao.site/post/ml101/2023-03-23-lr/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="https://www.yuanhao.site/page/2/">Next&nbsp;2/8&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

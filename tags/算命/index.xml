@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>算命 on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/%E7%AE%97%E5%91%BD/</link>
+    <description>Recent content in 算命 on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 28 Feb 2023 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/%E7%AE%97%E5%91%BD/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何使用ChatGPT算命</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/</link>
+      <pubDate>Tue, 28 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/</guid>
+      <description>可能是网站slogan：AI算命，朋克养生的关系，最近我看google search console后台总是有很多&amp;quot;Chatgpt算命&amp;quot;这个查询导致的网站展现。 既然大家有这个需求，我就实践SEO里面的方法，上网搜索了一下如何使用chatgpt算命，总结在这个文章里。
+好多chatgpt算命的查询 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+基本上，这要用到chatgpt的**&amp;ldquo;角色扮演&amp;rdquo;**功能，让它站在算命者的角度回答你的问题。
+先从英文开始，英文里算命先生叫做fortune teller，那么我们可以这么问chatgpt
+Act like a coffee fortune teller, I can see a cat shape in the corner of the cup, what is its meaning?
+翻译成中文就是：
+像个算命先生一样回答我，我在杯子的角落看到了一个猫的形状，这意味着什么？
+英文版的回答是
+The cat shape in the corner of your cup is a sign of good luck and protection. It is a reminder to stay alert and to be aware of any potential danger or obstacles that may arise in your life.</description>
+    </item>
+  </channel>
+</rss>

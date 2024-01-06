@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>深度学习 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="深度学习" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深度学习"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/categories/">Categories</a></div>
+  <h1>
+    深度学习
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Swin Transformer (v2)学习笔记
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上篇总结了一下最初的ViT模型，它有几个明显的问题：
+建模能力方面，强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性 复杂度方面，之前的ViT是在每层都做全局(global)自注意力。如果保持每个Patch的大小不变，随着图片尺寸的变大，Patch的个数会增加，而Patch的个数等于进入Transformer的Token个数，且Transformer的时间复杂度是O(n^2)。 易用性方面，由于Embedding（结构是全连接）和图片大小是绑定的，所以预训练、精调和推理使用的图片必须是完全同等的尺寸。 Swin Transformer提出了一种称为shifted window的方法来解决（缓解）以上问题。
+Swin Transformer的结构如下图所示
+{: .align-caption style=“text-align:center;font-size:smaller”}
+Embedding Stage（stage1）。将图片划分为若干4*4的patch，使用线性变换来将patch变为Embedding向量，这一步和ViT是一样的。但是注意，这里的patch比ViT的14*14小了很多。 若干个使用Swin Transformer 的Stage（stage2-4）。这里模仿了经典卷积网络backbone的结构，在每个Stage都将feature map（对应到Vit就是Patch或Token的个数）变成原来的四分之一。这是通过简单地将2*2patch合并成一个来完成的。同时，用Swin Transformer替代了原来的标准Transformer，主要变化如下 用M*M大小的窗口自注意力代替全局自注意力。因为自注意力机制时间复杂度是O(n^2)，通过减少参加自注意力的元素，将原来关于patch数平方复杂度的计算变为关于patch数线性复杂度 用对角线方向的shift来使Swin Transformer里的每一层窗口都是不同的，这样一个patch有机会和不同的patch交互。这里还使用了一个mask trick来使得这种shift的自注意力计算更高效。 添加了相对位置偏置(relative position bias)，对比发现这比添加绝对位置embedding效果好很多 shifted window示意图，l&#43;1层的窗口是从l层往右下角平移2个patch得到的 {: .align-caption style=“text-align:center;font-size:smaller”}
+从结果来看，SwinT相比于ViT有了很大的提升
+Swin Transformer实验结果，可以看出来比ViT已经有了很大的提升 {: .align-caption style=“text-align:center;font-size:smaller”}
+综合消融实验的结果可以对比三种不同的attention方式: fixed window、sliding window和shifted window的性能。他们的imagenet top1 acc分别是80.2， 81.4和81.3。从中可以看出类似于卷积的sliding window性能是最好的，无奈太慢了。fixed window丢失了很多有用的窗口间交互，性能最差。shifted window性能相比sliding window下降微弱，但速度提升了好几倍。同样可视为fixed window的ViT只能得到0.78的top1 acc，我想这是小patch带来的差别，因为现在的线性变换embedding实在太弱了，patch越大带来的信息丢失就越多。
+前不久原班人马又发布了V2版的Swin Transformer，主要是解决模型上规模的问题，有几个主要的改动：
+把每个Block里的LN从前面换到了后面，来解决深度增加之后训练不稳定的问题 把原来的scaled dot attention换成了scaled cosine attention，也是为了解决训练不稳定的问题（否则可能被某些像素对的相似度主导）。 改进相对位置偏置。V1版里这个模块是用一个规模跟窗口大小M相关可学习参数矩阵来处理的，如果预训练和finetune时M大小改变，就用插值来生成原来不存在的值。V2版首先是引入了一个小网络来取代参数矩阵，其次是将相对位置从线性空间换到了对数空间，通过取对数压缩空间差距来让M变化时的过渡更加顺滑 通过取对数，让finetune时增大窗口和图片的性能损失大为减小。但其实这里还是跟卷积神经网络有差距。通常卷积神经网络在finetune时使用更大的图片可以提升性能。 {: .align-caption style=“text-align:center;font-size:smaller”}
+从结果来看，更大的网络确实带来了更好的性能，30亿参数版的SwinV2-G比8800万参数版的SwinV2-B性能提升了不少。同样参数量的V2版也比V1版提升了一些。
+不同模型Imagenet结果 {: .align-caption style=“text-align:center;font-size:smaller”}
+消融实验也比较清晰地反映出了V2版加入的新技术带来的技术提升...</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-11-28 00:00:00 +0000 UTC'>November 28, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Swin Transformer (v2)学习笔记" href="https://www.yuanhao.site/post/2021-11-28-swin_transformerv2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Vision Transformer学习笔记1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近Transformer结构在计算机视觉领域的应用非常火，时不时都有新的文章出来。作为一个已经使用了两三年Transformer结构的NLPer，一直很想了解一下它在视觉领域是怎么工作的，最近借着一个Kaggle比赛的数据集学习了一下，稍作总结分享给大家。
+首先是学习了一下Vision Transformer，ViT的原理。看的论文是谷歌名作《An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale》，本文初稿发布于2020年10月，今年投了ICLR 2021，应该算是ViT的奠基论文之一。要用Transformer来处理图像，首先（也可能是唯一）要解决的是输入问题，原先的Transformer处理的是token序列，而图像是HWC的像素矩阵。这里做法也很暴力，第一步是将一张图拆成了N个PP个小块(patch)，每个patch看做是一个token。一个patch里有PP个像素，每个像素C个通道，这里直接就给拍平了进一个全连接（线性变换）得到patch的D维Embedding表示。所以ViT里的Embedding层不再是一个lookup table了，而是一个可以学习的线性变换。
+ViT结构图 {: .align-caption style=“text-align:center;font-size:smaller”}
+通过这个方法，就把Transformer结构套在了图像上，虽然这不是唯一的方法，但这么做在参数量的角度和时间复杂度的角度都是比较合理的。首先是时间复杂度角度，Transformer的关于序列长度的时间复杂度是O(n^2)，所以输入序列不宜过长。如文题所说，如果我们把图分成1616个patch，那transformer处理的序列长度将会是256，比BERT的默认长度521还短了一半。参数量上，尺寸正常的Transformer很大比例参数在embedding层上，例如BERT-base的30k个token768维的Embedding层有23M参数大约占了其110M总参数量的五分之一。ViT里Embedding层的参数量是正比于图像尺寸的，以224224图像为例，单patch像素点数为196，所以总参数量是196C*D，C是输入通道数，D是Embedding维数，以3和768记的话为0.45M，远小于BERT-base。从下表可以看到同样尺寸的ViT参数量都小于对应的BERT。
+按论文的这种处理方式也有几个比较明显的问题，例如强行分割patch破坏了原有的邻域结构，也不再具有卷积的那种空间不变性。在中等规模数据集上用这种方法得到的结果还是比卷积要差，但是当把预训练数据变多用更大的数据集训练时，模型性能显著提升了（第二列比第三列），接近甚至超过了SOTA。
+上面的结果都是针对有监督训练的，这篇文章还做了些无监督训练的初步实验，发现加入无监督预训练在下游任务比没有预训练强一2%，但是比有监督预训练差4%，总之一句话，没有实现BERT的效果。
+实验的部分用Pytorch Lightning简单做了一下Kaggle的Pawpularity数据集。这是一个值域0-100的回归问题，评价指标是RMSE。模型部分没什么花头，直接backbone接了个回归头，代码如下
+class Pawpularity(pl.LightningModule): def __init__(self, config): super().__init__() self.config = config self.backbone = timm.create_model(config.backbone_name, pretrained=not config.predict, num_classes=0) self.head = nn.Sequential( nn.Linear(self.backbone.num_features, 128), nn.GELU(), nn.Linear(128, 1) ) self.save_hyperparameters(config) 实验的运行环境是在我的HP Z4工作站上，它搭载了两个RTX 6000 GPU，因为显存是24GB版本，所以batchsize设的比较大。实验结果如下
+模型 模型参数 lr batch size 单轮耗时 早停轮次 RMSE vit_base_patch16_224 85.9M 1e-3 128 36s 10 20.514 vit_base_patch16_224_in21k 85....</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-11-17 00:00:00 +0000 UTC'>November 17, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Vision Transformer学习笔记1" href="https://www.yuanhao.site/post/2021-11-17-vision_transformer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">模型上线不用愁，批量推理来加油.
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>作为一个算法工程师，在日常工作中难免会碰到模型上线的问题。对于一些要求不高的场合，简单找一个web框架实现一下接口就能搞定：对于每个用户请求，调用模型得到结果再返回。但这种朴素的实现往往无法最大化利用GPU，对于性能要求比较高的场景应付起来就略显吃力。
+优化的方法有很多，一个增益很大的措施就是把一个请求推理一次改成多个请求一起推理。去年大概也是这个时候我写了一个小工具来实现这个功能，还取了个蛮霸气的名字InferLight，但当时写得并不太好；最近参考香侬科技的Service-Streamer又重构了一版。这个功能看似简单，但是在实现的过程中可以了解很多Python异步编程的知识，感觉收获颇丰，于是写篇短文总结一下。
+首先，要提高模型的线上推理吞吐量，应该把推理服务做成异步的。对于web服务来说，异步的意思是当模型在计算的时候它可以处理别的请求。对于Python来说，异步服务可以通过很多优秀的基于Asyncio的框架来实现，例如我常用的Sanic。而推理是计算密集的，也没有什么同步异步的说法，我们的目标就是能够汇聚多个推理请求，高效利用GPU的并行计算能力，并且能将批量推理的结果正确地返回给对应的请求者。
+要实现上面的目标，需要以下几个模块
+前端服务：用于接收请求、返回结果。可以是Http、PRC等各种协议。是一个独立进程。 推理Worker：负责模型的初始化、批量推理数据构建、推理计算。是一个独立进程。 任务队列：前端服务收到请求之后把计算任务送入任务队列；推理Worker监听该队列，每次取出一个小批量由模型推理 结果队列：推理服务推理完成后将结果送入结果队列；前端服务监听该队列，获得推理结果 结果分发：在将任务送入任务队列前需要生成任务的唯一标识，从结果队列取回结果后根据标识获取到任务对应的结果 其中两个任务队列的实现方式很多，可以通过一些成熟的中间件例如Kafka、Redis等，但为了避免外部依赖，这次我选择使用Python原生的多进程队列。结果队列监听和分发通过前端服务进程的一个子线程来完成。
+实现细节 推理服务相对简单，由于各种模型的加载、数据处理步骤千奇百怪，所以我将推理Worker设计成了一个基类，使用时继承它并实现特定方法。
+import logging import multiprocessing as mp import time from queue import Empty class BaseInferLightWorker: def __init__(self, data_queue:mp.Queue, result_queue:mp.Queue, model_args:dict, batch_size=16, max_delay=0.1, ready_event=None) -&gt; None: self.data_queue = data_queue self.result_queue = result_queue self.batch_size = batch_size self.max_delay = max_delay self.logger = logging.getLogger(&#39;InferLight-Worker&#39;) self.logger.setLevel(logging.DEBUG) self.load_model(model_args) # 由于模型载入时间较长 # 加载完成后使用一个event来通知主进程 if ready_event: ready_event.set() def run(self): self.logger.info(&#39;Worker started!&#39;) while True: data, task_ids = [], [] since = time....</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-06-20 10:25:03 +0000 UTC'>June 20, 2021</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 模型上线不用愁，批量推理来加油." href="https://www.yuanhao.site/post/2021-06-20-%E6%A8%A1%E5%9E%8B%E4%B8%8A%E7%BA%BF%E4%B8%8D%E7%94%A8%E6%84%81%E6%89%B9%E9%87%8F%E6%8E%A8%E7%90%86%E6%9D%A5%E5%8A%A0%E6%B2%B9/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">面向电商场景的语言模型E-BERT
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近跟不少做电商NLP的朋友们聊天，有不少收获。我之前从来没想过【搜索】在电商里的地位是如此重要，可能GMV的50%以上都是从搜索来的。巨大的经济价值也极大地推动了技术的发展，他们的工作做得很细致，毕竟一个百分点的点击率后购买率提升也许对应的就是几百亿的成交额。
+其实之前做的汽车领域NLP工作跟电商有很多相似的地方，场景先验都非常重要。直接使用开放域语料预训练的语言模型效果并不好。我们也尝试过一些方法，例如用本领域语料训练语言模型，结合一些词库词典等等。今天介绍最近看到的一篇针对电商场景调优BERT的论文《E-BERT: Adapting BERT to E-commerce with Adaptive Hybrid Masking and Neighbor Product Reconstruction》，其中的一些方法应该对细分领域NLP都有一些启发。
+方法 论文的创新方法主要有两个：Adaptive Hybrid Masking（AHM，自适应混合掩码）和Neighbor Product Reconstruction（NPR，相似商品重构）。
+E-BERT总览 {: .align-caption style=“text-align:center;font-size:smaller”}
+AHM 第一个方法AHM其实是对已有掩码方式的改进。原始版本的BERT采用的是随机mask，这个大家应该都比较清楚。这种mask方式针对的是token，而众所周知token是由单词通过wordpiece tokenizer分割而来。所以这种方式遮盖住的可能是单词的一个部分，学习这种类似看三个字母猜剩下四个字母的任务不是很符合大家的直觉。随后就诞生了更加符合人类认知的Whole Word Masking，这个方法就是说要遮就遮整个词。这里用一个网上的例子帮大家理解
+Input Text: the man jumped up , put his basket on phil ##am ##mon &#39; s head Original Masked Input: [MASK] man [MASK] up , put his [MASK] on phil [MASK] ##mon &#39; s head Whole Word Masked Input: the man [MASK] up , put his basket on [MASK] [MASK] [MASK] &#39; s head philammon是一个词，他会被tokenizer分解成三个token，这时就体现了普通mask和WWM的区别。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-09-16 00:00:00 +0000 UTC'>September 16, 2020</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 面向电商场景的语言模型E-BERT" href="https://www.yuanhao.site/post/deeplearning/2020-09-16-ebert/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">受控文本生成2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>昨天的文章介绍了在输出空间对文本生成进行控制的两篇论文，今天介绍一篇在隐空间控制的论文。
+隐空间方法也分为两个流派，一种认为在隐空间里可以把内容和特性的向量表示分开（disentangled)，然后通过修改特性向量来实现对特性的控制；另一种则无须这种假设。下面分别介绍一篇相关论文。
+Style Transfer from Non-Parallel Text by Cross-Alignment disentangled representation的代表作之一，发表在2017年的NIPS上，如今引用已经接近300多。
+Style Transformer: Unpaired Text Style Transfer without Disentangled Latent Representation 复旦大学NLP组发表于2019年的文章，已经被引用20次，文章标题中明确写了他们的方法without Disentangled Latent Representation。
+在文章的introduction部分列举了一些Disentangled表示的问题，我觉得比较重要的两条是：
+难以评价Disentangled表示的质量，纯粹的Disentangled表示也很难获得； 分离不是必要的，有文章已经论证了靠解码器就可以overwrite风格。 这篇文章总的来说是对抗生成网络的思路。模型分两大块，一块是典型的encoder-decoder结构的transformers，用来作为风格迁移器，另一块是判别器，用来解决由于没有平行语料带来的训练问题。
+判别器训练 文中提出了两种判别器，从结果上看多分类判别器对BLEU指标更友好，而条件判别器对迁移后的风格更友好。
+多分类判别器 这种方法比较好理解，即采用K&#43;1类的多类分类器作为判别器，输入只有句子。后K类对应K种风格，第0类对应$f_\theta(\rm{x},\rm{\hat{s}})$，即假样本。在训练时判别器时，将原始语料和用原风格重建后的句子都标为对应的风格，假样本标为第0类。在训练风格转换器的时候，我们希望转换器能尽量提高$f_\theta(\rm{x},\rm{\hat{s}})$被判别为$\rm{\hat{s}}$类的概率，即能骗过判别器，使判别器不认为生成的是个假样本。
+条件判别器 输入包括句子和风格，判别器需要判断句子是否含有风格（二分类）。训练判别器时将原始语料和重建句子$f_\theta(\rm{x},\rm{s})$标注为正样本，将变换后的句子$f_\theta(\rm{x},\rm{\hat{s}})$标注为负样本。
+判别器训练算法 {: .align-caption style=“text-align:center;font-size:smaller”}
+风格迁移器训练 风格迁移器有三个重要的任务，一个是自重建（Self Reconstruction），一个是循环重建（Cycle Reconstruction），以及风格控制（Style Controlling）。
+自重建就是输入句子$\rm{x}$以及其原本风格的控制变量$\rm{s}$，让他生成自己。这个任务是可以使用监督学习来完成的，loss计算公式如下
+$$ L_{\rm{self}}=-p_\theta(\rm y=\rm x|\rm x,\rm s) $$
+循环重建是先输入$\rm{x}$和一个其他的风格控制变量$\rm{\hat{s}}$，生成$\rm\hat y$，再用$\rm\hat y$和$\rm s$生成一个$\rm y$。此时$\rm y$应该和$\rm{x}$无论内容及风格都一致，并且可以使用监督学习来计算loss：
+$$ L_{\rm{cycle}}=-p_\theta(\rm y=\rm x|f_\theta(\rm x,\rm\hat s), \rm s) $$
+前面两个任务虽然解决了没有平行语料带来的训练问题，但思考一下就会发现这两个任务并不会起效果。模型可以完全只学习返回原句子就可以“蒙混过关”。解决的办法就是检验一下循环的中间结果$f_\theta(\rm x,\rm\hat s)$，这个中间结果应该尽可能含有$\rm\hat s$风格。因此引入了第三个风格控制任务，这个任务根据判别器的不同也分成两种情况：...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-07-23 00:00:00 +0000 UTC'>July 23, 2020</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 受控文本生成2" href="https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">受控文本生成1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。
+受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。
+名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=“text-align:center;font-size:smaller”}
+文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。
+受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。
+相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。
+Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。
+这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。
+DRG的四种迁移方法 {: .align-caption style=“text-align:center;font-size:smaller”}
+这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。
+$$ s(u,v)=\frac{\text{count}(u, \mathcal{D}v)&#43;\lambda}{(\sum{v’\in \mathcal{V},v’\neq v}\text{count}(u, \mathcal{D}_{v’}))&#43;\lambda} $$
+围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。
+Delete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。
+Retrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。
+Generate 这是最后一步，即获得最终的结果。文章里有四种策略
+Retrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c&#43;a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-07-22 00:00:00 +0000 UTC'>July 22, 2020</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 受控文本生成1" href="https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Tweet Sentiment Extraction比赛总结
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是前段时间结束的Kaggle比赛，之前在文档问答的文章中我也有提到过，最终我们队获得了第七名，这篇文章分享一下我的参赛收获和感受。
+首先感谢队友，特别是曹老师，如果没有曹老师我肯定中途就弃赛了。至于弃赛的原因，在感受部分会详细介绍。我的代码已经传到Github上了，感兴趣的朋友可以看一看，里面包含了我所有的commits，可以完整看到我方案的演进。
+Repo: https://github.com/thuwyh/Tweet-Sentiment-Extraction
+赛题回顾 比赛叫做Tweet Sentiment Extraction，对于给定的tweet和情感极性，需要选手从文本中找出支撑情感的部分。例如下面这条数据
+&#34;My ridiculous dog is amazing.&#34; [sentiment: positive] 模型应该返回amazing这个词。比赛的评价指标是word-level Jaccard score，它的含义看下面的实现就一目了然了。
+def jaccard(str1, str2): a = set(str1.lower().split()) b = set(str2.lower().split()) c = a.intersection(b) return float(len(c)) / (len(a) &#43; len(b) - len(c)) Baseline及一些改进 在比赛的初期讨论区和kernel分享区基本就定下了解题思路的基调，即用机器阅读理解（MRC）的方法来做span prediction。具体的说，就是把数据提供的情感词作为question，把tweet作为context，把预测对象作为answer。
+模型也很简单，在RoBERTa后面接一个questionAnswering head预测start和end位置就可以了。这道题一个比较神奇的地方就是RoBERTa的效果比普通的BERT要好一些。
+在这个框架下，大家也都做了一些改进，例如：
+在语言模型输出后面加dropout； concat语言模型的多层输出结果； 引入FGM等对抗训练方法 以上都是一些比较常规的操作，也比较容易实现，类似FGM是比较稳定能提分的。还有一些稍微复杂一点的trick，例如：
+在词级别进行数据增强，例如同义词替换，随机删词 在token级别的增强 label smoothing 蒸馏 因为是span prediction任务，数据增强如果做成随机动态的，需要考虑到改词后对label的影响，这是实现的一个小难点。英文的同义词替换可以使用wordnet来做，相比中文的一些同义词库来讲质量是比较高的。
+label smoothing和蒸馏是很相关的两个技术，因为他们都需要用到KL散度作为损失函数。我也是趁这个比赛补了一补相关的知识，感觉还蛮有趣的，感兴趣的朋友可以参考这篇文章。做QA任务通常是对位置用CrossEntropyLoss，但是如果label不是一个确定的位置而是平滑过或者是teacher model预测得到的分布，就需要使用KLDivLoss。
+这里在做标签平滑的时候遇到了一个小问题，蛮值得思考的。最开始是Google在Imagenet上用这个技巧，对于这个分类问题标签的种类是确定的K=1000类，所以在Inception论文里直接用一个系数来控制平滑的强度，即
+$$ q’(k) = (1-\epsilon)\delta_{k,y}&#43;\frac{\epsilon}{K} $$
+但是如果用同样方法在这些长短不一的句子上做平滑，其实是不合适的。每个位置的平滑概率反比于句子的长度，也就是K，所以我认为更好的确定平滑强度的方法是先确定一个单位平滑强度，再根据句子总长来确定原标签的权重。
+针对数据特点的方法 这次的数据总体质量很差，噪声（其实是错误）很多，给参赛者带来了很多困扰。主要的噪声模式有两种，一种是把整个句子都标注成了支撑情感的selected_text，第二种是数据中有大量“断头词”出现在标签中。下图给出了一些例子。
+对于第一种整句都是标签的情况，早期很多参赛者就发现了对于neutral类型的情感，绝大部分selected_text都和text一样；但对于其他情感，我们在人工审阅数据之后没有发现什么规律。我只好设计了一个辅助的分类任务让模型自己学习，实测下来有些微的提升，但并不明显。
+对于“断头词”的情况，我们在比赛的末期终于发现了其规律。这种情况应该是由于标注环境不一致导致的。例如Twitter数据里有很多@用户的情况，这份比赛数据集会把相关的文本删除，但由于删除脚本的问题会导致文本中多出一个空格。我们猜测标注者看到的数据应该是没有多余空格的，类似于是使用&#39; &#39;.join(text.split())处理过的。这就会导致标出来的span相对于原text的位置产生了位移。且位移的大小就等于多余空格的数量。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-07-08 00:00:00 +0000 UTC'>July 8, 2020</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to Tweet Sentiment Extraction比赛总结" href="https://www.yuanhao.site/post/2020-07-08-tweet/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">跨语种语言模型
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在著名的科幻电影《银河系漫游指南》里有一种叫巴别鱼的神奇生物。将它塞进耳朵里你就能听懂任何语言。多语种语言模型做得事情和巴别鱼很像，人们希望这个模型能用来处理所有的语言。举个例子，大家常用的中文bert有很强的中文处理能力以及一定的英文处理能力，但基本也就只能处理这两种语言；而目前的SOTA多语种模型XLM-RoBERTa能够处理104种语言。
+巴别鱼，体型很小，黄色，外形像水蛭，很可能是宇宙中最奇异的事物。它靠接收脑电波的能量为生，并且不是从其携带者身上接收，而是从周围的人身上。它从这些脑电波能量中吸收所有未被人察觉的精神频率，转化成营养。然后它向携带者的思想中排泄一种由被察觉到的精神频率和大脑语言中枢提供的神经信号混合而成的心灵感应矩阵。所有这些过程的实际效果就是，如果你把一条巴别鱼塞进耳朵，你就能立刻理解以任何形式的语言对你说的任何事情。
+数据集 训练跨语种语言模型会用到两种语料。一种是单语种（monolingual）语料，另一种是平行（parallel）语料。所谓平行语料就是源语言与译文“对齐”的语料。所谓对齐也有好几种级别，最常见的是句子级对齐，也有按词进行对齐的文本。可想而知，平行语料的获取相比于单语种语料要困难许多。如何充分借助单语种语料来提升模型能力是XLM研究的一个重点。
+跨语种语言模型的评价一般有两个大方向，一个是其语义理解能力，另一个是文本生成能力。语义理解能力通常借助XNLI数据集，它提供了15种语言的平行文本，每种语言7500对的NLI语料。文本生成通常用翻译任务来评估，感兴趣的朋友可以自己查阅相关资料。
+模型 下表列出了常见的单语种和多语种预训练语言模型。接下来我们将分析其中的mBERT、XLM和XLM-R三个模型。
+Multilingual Bert（mBERT） 模型来自于这论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》，你没有看错，就是发表于2018年大名鼎鼎的BERT论文。
+2018年11谷歌就放出了支持104种语言的多语种版本预训练模型，规格是BERT base。这个模型的较新版本是uncased版，即没有对输入文本进行规范化。使用WordPiece算法进行tokenization，词典大小是110k。其他的训练方法和普通的BERT一样，采用的是MLM和NSP两个loss，语料是Wikipedia。
+XLM 模型来自于论文《Cross-lingual lan- guage model pretraining》，来自于FAIR，发表在NIPS2019。
+XLM使用BPE算法进行tokenization，并且词典大小比mBERT更大，达到200k。论文指出Shared sub-word vocabulary对模型性能有很大的影响，在训练BPE算法的过程中他们使用了特殊的采样方式来避免低资源语种被进行字符集切分。
+模型训练使用了三种不同的目标函数，在单语种语料上使用非监督的CLM和MLM。MLM就是masked language modeling，大家比较熟悉，在此就不再赘述了。CLM全称是Causal Language Modeling，简单的说就是用前面的词预测当前词，更详细的介绍大家可以参考我们之前UniLM和MASS的文章。在平行语料上使用的目标称为Translation Language Modeling (TLM)。其训练方式如下图所示，是将平行句子拼接后随机mask，希望让模型能借助另一种语言的信息来还原出被遮蔽的词。从图中可以看出模型用language embedding替换了BERT里的type embedding，并且在做TLM任务时position embedding在两个语言间是对应的。
+我们来看一下XLM在XNLI上的表现。这张表很有意思，首先对这个数据集有3种处理方式：translate-train，translate-test和直接测试，即zeroshot。第一种是把英语的MNLI数据集机器翻译成XNLI内的15种语言用于训练，在XNLI测试集上测试；第二种是把XNLI测试集的15种语言翻译成英文。本文的对照组就是上面的mBERT。
+可以看到效果最好的是翻译训练集，平均精度达到了76.7%，zero-shot次之，最差的是翻译测试集。在相同的实验设定下XLM稳定优于mBERT，甚至在zero-shot下的XLM也比finetune过的mBERT强。另外MLM&#43;TLM也稳定优于只用MLM的方式。
+XLM-RoBERTa 模型来自于论文《Unsupervised Cross-lingual Representation Learning at Scale》，和上文一样来自FAIR，已经被ACL 2020接收。
+XLM-R使用了比XLM更大的词典，达到了250k。它也没有辜负RoBERTa的血统，使用了比Wikipedia大得多的cc100数据集。XLM-R只使用单语种语料，训练目标也只有MLM一个。
+Tokenizer换成了sentence piece算法，在构建时也进行了采样，并且调整了系数使得各语言更加平衡。模型层面去掉了language embedding，变得更加简洁。我感觉用“重剑无锋”来形容XLM-R再合适不过了。
+这篇论文总结了几个影响多语种模型的重要因素，可能会对大家有所启发：
+当处理的语种变多的时候模型的能力会下降（嗯，符合常识）。增大模型可以一定程度对抗这种效应。 模型能力主要受词典大小、训练集大小、语种的采样频率影响 增大词典规模可以提高模型性能 sentence piece可以提高模型的通用性 下面这种图可以让大家对这些结论有更直观的印象
+最后来看一下XLM-RoBERTa的实力。下表是在XNLI数据集上的结果对比，设定和XLM论文中差不多，其中Devlin et al.指的是mBERT，Lample and Conneau指的是XLM。可以看出XLM-R相比于XLM又前进了一大步。
+顺便再提一嘴，论文作者还在GLUE数据集上对比了XLM-R和XLNET、RoBERTa等单语种语言模型，XLM-R超过了BERT-large，略低于XLNET和RoBERTa。也就是说XLM-R不仅获得了多语种能力，而且没有牺牲英文上的水平。
+总结一下，从2018年的mBERT到2020年的XLM-R，跨语种预训练语言模型获得了长足的发展，地球语言范围内的巴别鱼指日可待。最近在Kaggle上正在进行一场跨语种文本分类的比赛，如果有想体验XLM最新进展的朋友可以去试试身手。
+今天的文章就到这里，下期再见👋</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-05-11 00:00:00 +0000 UTC'>May 11, 2020</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 跨语种语言模型" href="https://www.yuanhao.site/post/2020-05-11-xlm/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">十分钟读懂beam search-2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在上一篇文章中我们介绍了基础版的beam search，这篇文章是对它的一个扩展，可以在模型不改的情况下获得更好的生成结果。今天的介绍围绕的也是一篇蛮新的论文，《The Curious Case of Neural Text Degeneration》，根据这篇论文的版面内容，它应该已经被ICLR 2020接收了。
+Beam Search的问题 先解释以下什么要对Beam Search进行改进。因为Beam Search虽然比贪心有所改进，但还是会生成出空洞、重复、前后矛盾的文本。如果你有文本生成经验，一定对这些现象并不陌生。在语言模型还不像如今的BERT、GPT这么厉害的时候，这种现象更加明显。
+没有经验也没关系，我们来看一个论文里面的例子。输入模型的引文（context)
+“The study, published in the Proceedings of the They were cattle called Bolivian Cavalleros; they live in a National Academy of Sciences of the United States of remote desert uninterrupted by town, and they speak huge, America (PNAS), was conducted by researchers from the beautiful, paradisiacal Bolivian linguistic thing. They say, Universidad Nacional Autónoma de México (UNAM) and...</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-03-23 00:00:00 +0000 UTC'>March 23, 2020</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 十分钟读懂beam search-2" href="https://www.yuanhao.site/post/2020-03-23-beamsearch2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">十分钟读懂beam search-1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近研究了一下用基于BERT的encoder-decoder结构做文本生成任务，碰巧管老师昨天的文章也介绍了以生成任务见长的GPT模型，于是决定用两篇文章大家介绍一下在文本生成任务中常用的解码策略Beam Search（集束搜索）。
+解码及贪心搜索 生成式任务相比普通的分类、tagging等NLP任务会复杂不少。在生成的时候，模型的输出是一个时间步一个时间步依次获得的，而且前面时间步的结果还会影响后面时间步的结果。也就是说，每一个时间步，模型给出的都是基于历史生成结果的条件概率。为了生成完整的句子，需要一个称为解码的额外动作来融合模型多个时间步的输出，而且使得最终得到的序列的每一步条件概率连乘起来最大。
+在文本生成任务中，每一个时间步可能的输出种类称为字典大小(vocabulary size，我们用$v$表示)，进行T步随机的生成可能获得的结果总共有$v^T$种。拿中文文本生成来说，$v$的值大约是5000-6000，即常用汉字的个数。在如此大的基数下，遍历整个生成空间是不现实的。
+最容易想到的策略是贪心搜索，即每一个时间步都取出一个条件概率最大的输出，再将从开始到当前步的结果作为输入去获得下一个时间步的输出，直到模型给出生成结束的标志。例如下图，每一个时间步都取出了条件概率最大一个结果，生成了序列[A,B,C]。
+很明显，这样做将原来指数级别的求解空间直接压缩到了与长度线性相关的大小。由于丢弃了绝大多数的可能解，这种关注当下的策略无法保证最终得到的序列概率是最优的。
+Beam Search 而beam search是对贪心策略一个改进。思路也很简单，就是稍微放宽一些考察的范围。在每一个时间步，不再只保留当前分数最高的1个输出，而是保留num_beams个。当num_beams=1时集束搜索就退化成了贪心搜索。
+下图是一个实际的例子，每个时间步有ABCDE共5种可能的输出，即$v=5$，图中的num_beams=2，也就是说每个时间步都会保留到当前步为止条件概率最优的2个序列。
+在第一个时间步，A和C是最优的两个，因此得到了两个结果[A],[C]，其他三个就被抛弃了； 第二步会基于这两个结果继续进行生成，在A这个分支可以得到5个候选人，[AA],[AB],[AC],[AD],[AE]，C也同理得到5个，此时会对这10个进行统一排名，再保留最优的两个，即图中的[AB]和[CE]； 第三步同理，也会从新的10个候选人里再保留最好的两个，最后得到了[ABD],[CED]两个结果。 可以发现，beam search在每一步需要考察的候选人数量是贪心搜索的num_beams倍，因此是一种牺牲时间换性能的方法。
+以上就是Beam Search的基本概念，下面我们解析一种高效率实现方式。
+Beam Search代码解析 Beam Search的原理虽然简单，但实际实现的时候却有很多细节要考虑。下面要解析这个实现出自于NLP界著名Python包Transformers，我为了说明方便做了一些改动。
+一个正确且高效的算法需要处理的问题大概有两个：
+充分利用硬件，可以处理批量数据，且尽量使用并行计算少用循环 处理好长短不同的生成结果 下面是基础版的beam search函数定义。其中context是编码器编码获得的向量，batch_size是每批数据中包含的样本量，bos_token_id是句子开头标志的token id，pad_token_id是用于填充的token id，eos_token_id是句子结束标志的token id。这里给参数填上的默认值和我们后面讲解时使用的例子是一致的。
+def beam_search_generate(context, batch_size=3, max_length=20, min_length=2, num_beams=2, bos_token_id=101, pad_token_id=0, eos_token_id=102, ): pass 在函数中主要执行以下三个步骤：
+准备初始输入 在当前生成的序列长度未达到max_length时扩展生成序列 准备最终输出的序列 下面我们分别解析。
+准备初始输入 # 建立beam容器，每个样本一个 generated_hyps = [ BeamHypotheses(num_beams, max_length, length_penalty, early_stopping=early_stopping) for _ in range(batch_size) ] # 每个beam容器的得分，共batch_size*num_beams个 beam_scores = torch.zeros((batch_size, num_beams), dtype=torch.float, device=encoder_input_ids....</p>
+  </div>
+  <footer class="entry-footer"><span title='2020-03-20 00:00:00 +0000 UTC'>March 20, 2020</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 十分钟读懂beam search-1" href="https://www.yuanhao.site/post/2020-03-20-beamsearch1/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://www.yuanhao.site/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/page/3/">
+      «&nbsp;Prev&nbsp;3/5
+    </a>
+    <a class="next" href="https://www.yuanhao.site/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/page/5/">Next&nbsp;5/5&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

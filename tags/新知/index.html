@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>新知 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/%E6%96%B0%E7%9F%A5/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/%E6%96%B0%E7%9F%A5/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="新知" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/%E6%96%B0%E7%9F%A5/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="新知"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    新知
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">美国游记——上
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> 时代广场 {: .align-caption style=“text-align:center;font-size:smaller”}
+图片加强版请戳：http://user.qzone.qq.com/297542513/blog/1438659227
+7.25 今天我的美国东部游就正式开始了，上午师兄把我拉到机场，出发前往纽约。冶哥打了辆uber来接我，不一会便回到了他的住所。他住在jessry，其实和纽约都不是一个州，但和曼哈顿只隔着一条Hudson River，打开窗就能看见曼哈顿摩天大楼构筑的迷人的天际线。房间虽小，租金不少，900美金在北京也能住到一个至少40平的房子了吧~
+刚到泽西感觉这里超级像厦门，植物很热带，不过人可比厦门少多了。放好行李我们就前往一个叫聚缘（还是福忘了，美国中餐馆超多叫类似名字的）轩的中餐馆吃午饭，居然能吃到空心菜真是感动得我眼泪掉下来。吃饱喝足之后也懒得休息，就出发前往大纽约了！路上有个地方在搞活动，音响震天，一帮黑哥黑姐载歌载舞，烧烤摊青烟缕缕，散发出诱人的香味，简直让你感觉回到了中国= =
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2015-08-18 00:00:00 +0000 UTC'>August 18, 2015</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 美国游记——上" href="https://www.yuanhao.site/post/review/2015-08-18-trip-to-us-1/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">美国游记——下
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>云门 {: .align-caption style=“text-align:center;font-size:smaller”}
+8.1 上午吃到了涛哥亲自下厨做的早饭。美国同学们的早饭其实都挺类似的。牛奶加上粗粮做成一碗粥，配上面包饼干之类的，还可以煮个鸡蛋来点水果；或者在波士顿耀子舍友是水果加牛奶榨汁，面包片夹水果和火鸡肉之类的东西做成三明治。今天在家还和老爹聊起早饭，他们得早上一大早起来就煮稀饭，还得炒菜啥啥的，效率确实比较低，而且感觉有点太偏重淀粉，营养不是很均衡。
+饭间还和涛哥聊起他们的日常生活，在普渡读博的涛哥住在西拉法叶一个小区里，三个同学合租一个小别墅。一楼是厨房餐厅，还有一个超大的party空间，地下室有游戏机，二楼是卧室。这里比芝加哥和纽约便宜多了，他们每个人每月的房租只有400美金左右。这里公共交通比较挫，都是开车上学，开车到普渡得10分钟。他说们每天9点左右到办公室，然后五点就下班回家。中午吃个外卖什么的，应该也不怎么休息。勤劳的涛哥一家回家之后自己做晚饭，从准备到吃完打理好厨房餐厅得花2个小时，晚上也就不再去学校了。其实到了国内学校的食堂真是帮广大学生处理了一大堆的琐事，节省了很多时间。感觉在美国因为房子大，有车，吃饭也比较麻烦，你在料理生活上要花费比国内多不少的时间，加上住的比较远，可能很多研究生在实验室宅的时间远没有国内多。即使这样，涛哥还是准备4年就博士毕业了。我们的科研效率确实比较堪忧啊。
+吃完饭我们便往普渡校园出发了。普渡建校的历史我觉得挺有意思，以下摘自百度百科。1862年时，美国总统林肯签署了由佛蒙特州参议员贾斯汀摩利尔（Justin Smith Morrill）所提出的土地拨赠法案（Morrill Land-Grant Colleges Act），联邦政府按照众议员的数目给各州拨地，而这些土地出售后的资金，用来建设以传授农业和机械知识为主的大学。1865年，印第安那州政府收到拉法叶地区的商业领袖和慈善家约翰·普渡所捐赠的十五万美元，包括Tippecanoe郡既有的五万美元经费及由拉法叶居民提供的150亩土地，在1869年时在拉法叶市郊的这片土地上正式设立普渡大学。普渡大学在1874年9月16日正式开始授课，初期的普渡大学只有三栋建筑物、六位教师及39个学生，并在1875年正式颁发第一个学位。同年，普渡大学招收第一个女性学生。1883年时，普渡大学学生人数增加至350人。在廿世纪初期，普渡大学开始在学术、教学及设备三方面快速扩张，并逐渐成为全世界知名的理工科大学。土地拨赠法案的百度百科词条评价该法案奠定了美国现今高等教育的基础。而普渡的故事我觉得更是国家和民众互动的非常正面的例子，好的大学不可能仅仅由国家一方主导便可建立，应该给民众更广泛的参与的权利和机会。
+普渡校园有快3000英亩，非常大。主要的教学研究建筑倒是比较集中，风格也非常统一——红砖墙加红屋顶，比较朴素，有些建筑非常像红色版的北大。普渡建校于1869年，历史也算悠久了，立校时以教授农学与机械为主，据涛哥说农业是全美第一的专业哦。普渡有自己的机场，有飞机驾驶课可以选修，费用不到3000美金；它还是培养美国宇航员最多的大学，阿姆斯特朗也是普渡校友，还有一座楼是已他名字命名的。涛哥带我参观了他们ME的系馆，里面陈设有他们玩具设计课的优秀作业，还有一个过山车模型，据说该校有过山车设计专业。因为正值暑假，校园里基本是空的，偶尔能看到一些前来报道的新生。中午外面太晒，就先在union里和楷哥越洋扯淡，下午按照游览指南又走了一遍，还特意去看了他们的stadium，可惜假期封住了进不去。橄榄球真是美国国球，在OSU时忘了拍他们stadium，据说可以坐10万人，一到重要比赛场外都是为看球搭起的帐篷。之前我觉得清华已经很大了，到美国才发现它其实一点也不大，之前的俄亥俄州立和普渡都数倍于我校的面积；而且一些学校虽然比如西北大学campus看着小，但他们的住宿楼都是散落在所在城市里的，所以可用的面积也并不小。可能更悲剧的一点是，比如中国的顶尖大学大多都在主要城市之中，很可能还在繁华地段，几乎难再扩张了。从这个角度看，建一些分校还是有道理的。或者像中科大这样撤离北京，从长远来看不见得是一个坏事。
+傍晚出发回芝加哥了。这次时间还比较早，印第安纳的风光一路在夕阳下一览无遗。大平原让他们有了自动化农业的条件，一路看到很多巨大的喷灌装置。还有一大片风力发电机，也非常美。在高速路上时不时就有从车窗伸出手向我们竖大拇指的人，更有一个疯狂的家伙从车窗里爬出来挥舞着手中的酒瓶向我们致敬。昭牛说这辆viper可是美国唯一的手工超跑，人们对它充满了民族自豪感。可见美国的汽车文化真不是盖的，懂车的人很多；另一方面他们的企业也能造出让自己的国民兴奋、自豪的产品。这样的场景还真是挺能激发我的使命感，但愿景归愿景，还是要把功夫花到实处。国家已经比之前富裕不少，我们这一代有条件也应该有能力做出一些厉害的东西。
+8.2 这已经是在美国的最后一天了，下午就要出发回国。上午起床先把东西一收，把脏衣服床单拿到楼下洗衣房洗。美国的洗衣房通常是洗衣机加烘干机的组合，正是有了烘干机的存在，才让我有可能在出发当天洗衣服。第一次用烘干机是在耀子家，烘完之后的衣服很软，还温温的，连洗带烘只要不到两个小时。想想只要两小时就能把一件脏衣服干干净净地重新穿身上，效率真是非常高。但也不见得这就是先进的，在不需要急用的场合用太阳光显然是更加环保的做法。其实在节能环保上，国人真是大大地走在了美国人的前面。烘干机，大量使用的卫生纸，温度低到令人发指的空调，这些东西我们真的不一定要向美国人学习。
+在洗衣房对面有一个游戏室，里面就像个幼儿园教室，都是给小朋友准备的玩具之类的东西，在游戏室的门外还有一个迷你游乐园，有一些滑滑梯。这些统统都是给研究生的小孩准备的！在昭牛这住了这么多天，时常在电梯里碰到一家几口同时出现的外国人，在地下车库里也有好些婴儿车。我觉得这一点美国学校真是大大大大地比国内先进，他们是真的为学生创造各种各样的便利条件，非常人性化。想想在国内，应该没有一个大学有为博士生的小孩准备设施的吧。关于这点还有一个细节，在这个宿舍楼内有一些常用标志是用多国语言写的，有中文，日文，韩文之类的，我看到后觉得奇怪，能来这读书的看这些英语标识肯定是没问题的啊，昭牛说这是为家属准备的。听后当时心里真的是感到一股暖流啊。想想紫荆宿舍，不能留宿，收个快递还必须到14号楼，办个换房间手续还层层审批。。。总之有各种各样仔细想想站不住脚的规定，后勤总是把自己想成管理者，而不是服务者，总想用简单的一刀切的办法来降低自己的管理成本，我是感觉在人性化服务方面我们还有很多进步的空间，而率先做到极致用户体验的人必将在未来成为市场的赢家。
+既然说到这了，再提提我看到的美国博士们的待遇。他们的工资一般是2000美金，如果乘上汇率那在中国可是高薪了。但事实是不能这么算，我在美国吃过的最便宜的饭是7美金，当然你要是在家跟人搭伙做应该会便宜一点。房租基本月付，怎么得也要400左右，在一些大一点的城市700到900是要的。住的远可以省一些房费，但车就成了必需品，车本身不贵，几千刀的二手车通勤足矣，但每月保险又得花你几百块。其实算下来也留不下什么钱。不过这里国内贵的一些东西比如衣服啊，电子产品啊反而相对便宜，衣服几十块已经可以买大品牌了，iphone一台也不过几百块。我很一直在找一个坐标系来评估一下中美的生活成本和收入水平，最后发现大件商品是比较合适的，算上汇率国内外差价不大，所以基本结论是东西差不多贵，但是他们赚的比我们多（美国家庭年收入中位数约为5万美金，差距应该就是汇率了），不过外面吃饭确实比较贵。所以国内博士们的钱其实已经还行了，当然如果还能再提高点没有人会拒绝，毕竟优质大学主要集中在几个大城市，消费太高了。但要是一说到房子，那国人就比较惨了，我们的房子真的已经和美国一样贵，很可能更贵了。这一点我尤其欣赏美国区域平衡发展的程度，很多的厉害大学就是在偏远的小镇，不是所有好资源都放在纽约。中小城市能提供一些高级的例如大学教授这样的工作机会，大家就不会争着往几个城市挤了，房子价钱合理，生活水平也高，也难怪人家容易出成果。你说一个清华教授，也得住房子孩子也得上学，不花时间赚点钱能行吗？
+中午又去了尖沙咀，点了和来芝加哥时一模一样的牛肉火锅，不过这次饭后终于吃上了昭牛力荐的Andy’s冰淇淋，点了一个mint chip concrete，简单点说就是薄荷冰淇淋。味道还是不错的，就是巧克力有点太甜了。下午到机场居然走错了航站楼，奥黑尔机场的小火车又因为大风暂停工作了好一会儿，有一个白人姑娘直接在人群中昏厥过去，应该是第一次见人晕倒，没想到是在美国。紧赶慢赶到了T3，发现飞机延误了，身边是一伙101中学的初中生，他们刚结束暑假的游学也准备返回北京。想想来的时候也是一伙初中生和我一班飞机，不过那时是景山学校。
+上了飞机，坐在一个华人大叔旁边，得知他是从波士顿去上海出差的，趁着飞机还没起飞，就和他聊了起来。大叔非常斯文，来美国已经有16年了，大儿子已经上中学，小女儿还上小学，在波士顿做了一家太阳能电池板相关仪器的创业公司，这次去中国是想开拓下业务，看看他们的传感器能不能用在其他领域。得知我只在波士顿游玩了一天，他挺可惜的，说波士顿其实可玩的地方很多，比如有个科学博物馆非常值得一去之类的，这没办法，只好下次再来了。他对我们这行也挺了解的，知道HughHerr教授，说听过一次他的真人演讲，当时穿着假肢来了一个空翻，把大叔震住了，在飞机上还一直说amazing。大叔之前在TI旗下某子公司干技术，我问是否会感觉到有天花板，他说其实还好，但做技术的永远不可能赚的跟做管理的一样多，因为“管的事情就没那么多，凭什么给你那么多钱”。
+后来问了比较多偏向旅美生活的问题，比如他们的孩子中文学得怎么样，他说基本上的第二代是无法用中文流利交流的。后来又问看到子女变成和自己有着不同的文化会不会怪怪的，我说我作为一个南方人想到若是留在北京以后小孩一口京片子都会一阵蛋疼，大叔教育我说你有孩子了想法就会改变的，你会希望你孩子首先掌握在当前环境下生存下去的技能，然后才是传承文化。当被问到退休之后会不会想回国时，大叔说也不知道自己什么时候能退休，现在若是父母还在回去还有个念想，但“妈妈死了兄弟姐妹就都成了亲戚”，回去就得付出比较大的代价了。
+其实第一代的迁徙者确实是挺辛苦的，新老文化和关系在他们身上撕扯地最厉害。大叔去上海出差却因为机票贵买了飞北京的航班，这飞机一晚点他只好在机场随便休息下了，明早六点还得赶去上海的班机。
+后记 这次去美国前后两周，收获还是很大的。这篇断断续续的游记居然也已经写了一万多字。其实能有机会到地球的另一边去看看是非常幸运的事情，特别是在家乡这种小县城，很多人一辈子都不会有这种机会，这也是我写这些的一个很重要原因。这次去最大的一个作用我认为是消除神秘感，不管是在科研方面还是社会文化方面，终于能亲身感受一下最先进的美国到底是如何在运行的。而且你会发现在很多地方我们相差已经没那么大，常常会觉得，原来美国的**也就这样啊。但差距还是有的，例如前面说了很多的房子啊教育啊还有环境之类的，前几天在厦门就感觉这海为什么一点都不蓝，这楼为什么盖得这么凌乱。但差距之外还有差别，两国的文化有太多的不同，而这种不同不一定是可以简单用好或坏来评价的，我们要找一条适合我们的路径来发展。总之，你会对“社会主义初级阶段”这样的词有一个更全面的认识，你会知道中级或者高级可能是一个什么样子。
+两周的时间毕竟也很难深入了解美国，有些地方难免写得比较主观，大家看看就好。 嗯，现在有点后悔没有让昭牛带我去脱衣舞俱乐部了- -</p>
+  </div>
+  <footer class="entry-footer"><span title='2015-08-18 00:00:00 +0000 UTC'>August 18, 2015</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 美国游记——下" href="https://www.yuanhao.site/post/review/2015-08-18-trip-to-us-2/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

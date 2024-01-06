@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Macbook on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/macbook/</link>
+    <description>Recent content in Macbook on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 11 Jun 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/macbook/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>令人吃惊的M2芯片</title>
+      <link>https://www.yuanhao.site/post/review/2023-06-11-apple-m2/</link>
+      <pubDate>Sun, 11 Jun 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2023-06-11-apple-m2/</guid>
+      <description>最近拿到了一台14寸的MacBook Pro，搭载了M2 Pro芯片，内存为16GB。昨天心血来潮，在上面尝试训练了一个神经网络，感触挺深的。
+我训练的是一个BERT-base模型，当年也算是个”大模型“，但在现在看起来就是个小不点。训练数据不多，大概一万多条文本，平均长度应该接近模型的最大输入长度。 这个任务在我的A6000显卡上跑得飞快，不到十分钟就可以跑完三个epoch的训练。我一开始移植代码到MacBook上的时候没有注意到Huggingface Trainer有个控制是否使用M系芯片神经处理的开关，所以用的是CPU，进度条显示训练完要15个小时。 后来查阅文档，打开开关后，跑完训练的时间大幅下降到了1小时左右，提速了十几倍！(测试不严谨，但提速非常大是肯定的)
+不过遗憾的是，目前pytorch并不支持在M系列芯片上使用半精度数据类型，导致训练的显存消耗略大，batchsize上不去。但GitHub上有个帖子说M2其实只支持bf16的，估计不久的将来会有PR来支持这一特性，那又可以有一个速度的大提升。
+前几天苹果发布了缝合版处理器M2 Ultra，碰巧知乎上有个付费问题，我就去了解了一下相关知识。目前苹果的统一内存架构是在CPU和GPU之间共享内存，而且内存带宽极大。4090的内存带宽是1T/s，而M2 Ultra达到了800GB/s。M2 pro的带宽也有200GB/s，而M2 max是400GB/s。 统一内存架构在大模型时代感觉有极大的优势，我查阅了一下目前NV主流的移动显卡，显存大多只有8GB，而M2 pro笔记本的起跳内存就有16GB，32GB版本再花3000块就能买到。
+即使在不支持半精度的情况下，32GB的统一内存也足够塞下7B的模型，已经有很多东西可以玩了。京东上一个24GB的4090显卡也要一万多，加上七七八八配个台式机估计两万块也是要的。但是一个32GB版本的MacBook Pro也只要19000，简直太划算了！
+高考刚刚结束，有不少同学或者家长估计都在挑选新的电脑、手机等设备。在不差钱的情况下，我强烈建议搞一个MacBook，教育优惠可以打八五折，你可以尝试很多普通笔记本电脑没法带给你的东西。</description>
+    </item>
+  </channel>
+</rss>

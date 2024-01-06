@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NLG on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/nlg/</link>
+    <description>Recent content in NLG on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 23 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/nlg/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>受控文本生成2</title>
+      <link>https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/</link>
+      <pubDate>Thu, 23 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-23-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%902/</guid>
+      <description>昨天的文章介绍了在输出空间对文本生成进行控制的两篇论文，今天介绍一篇在隐空间控制的论文。
+隐空间方法也分为两个流派，一种认为在隐空间里可以把内容和特性的向量表示分开（disentangled)，然后通过修改特性向量来实现对特性的控制；另一种则无须这种假设。下面分别介绍一篇相关论文。
+Style Transfer from Non-Parallel Text by Cross-Alignment disentangled representation的代表作之一，发表在2017年的NIPS上，如今引用已经接近300多。
+Style Transformer: Unpaired Text Style Transfer without Disentangled Latent Representation 复旦大学NLP组发表于2019年的文章，已经被引用20次，文章标题中明确写了他们的方法without Disentangled Latent Representation。
+在文章的introduction部分列举了一些Disentangled表示的问题，我觉得比较重要的两条是：
+难以评价Disentangled表示的质量，纯粹的Disentangled表示也很难获得； 分离不是必要的，有文章已经论证了靠解码器就可以overwrite风格。 这篇文章总的来说是对抗生成网络的思路。模型分两大块，一块是典型的encoder-decoder结构的transformers，用来作为风格迁移器，另一块是判别器，用来解决由于没有平行语料带来的训练问题。
+判别器训练 文中提出了两种判别器，从结果上看多分类判别器对BLEU指标更友好，而条件判别器对迁移后的风格更友好。
+多分类判别器 这种方法比较好理解，即采用K+1类的多类分类器作为判别器，输入只有句子。后K类对应K种风格，第0类对应$f_\theta(\rm{x},\rm{\hat{s}})$，即假样本。在训练时判别器时，将原始语料和用原风格重建后的句子都标为对应的风格，假样本标为第0类。在训练风格转换器的时候，我们希望转换器能尽量提高$f_\theta(\rm{x},\rm{\hat{s}})$被判别为$\rm{\hat{s}}$类的概率，即能骗过判别器，使判别器不认为生成的是个假样本。
+条件判别器 输入包括句子和风格，判别器需要判断句子是否含有风格（二分类）。训练判别器时将原始语料和重建句子$f_\theta(\rm{x},\rm{s})$标注为正样本，将变换后的句子$f_\theta(\rm{x},\rm{\hat{s}})$标注为负样本。
+判别器训练算法 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+风格迁移器训练 风格迁移器有三个重要的任务，一个是自重建（Self Reconstruction），一个是循环重建（Cycle Reconstruction），以及风格控制（Style Controlling）。
+自重建就是输入句子$\rm{x}$以及其原本风格的控制变量$\rm{s}$，让他生成自己。这个任务是可以使用监督学习来完成的，loss计算公式如下
+$$ L_{\rm{self}}=-p_\theta(\rm y=\rm x|\rm x,\rm s) $$
+循环重建是先输入$\rm{x}$和一个其他的风格控制变量$\rm{\hat{s}}$，生成$\rm\hat y$，再用$\rm\hat y$和$\rm s$生成一个$\rm y$。此时$\rm y$应该和$\rm{x}$无论内容及风格都一致，并且可以使用监督学习来计算loss：
+$$ L_{\rm{cycle}}=-p_\theta(\rm y=\rm x|f_\theta(\rm x,\rm\hat s), \rm s) $$
+前面两个任务虽然解决了没有平行语料带来的训练问题，但思考一下就会发现这两个任务并不会起效果。模型可以完全只学习返回原句子就可以“蒙混过关”。解决的办法就是检验一下循环的中间结果$f_\theta(\rm x,\rm\hat s)$，这个中间结果应该尽可能含有$\rm\hat s$风格。因此引入了第三个风格控制任务，这个任务根据判别器的不同也分成两种情况：</description>
+    </item>
+    <item>
+      <title>受控文本生成1</title>
+      <link>https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-22-%E5%8F%97%E6%8E%A7%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%901/</guid>
+      <description>关于文本生成的话题聊得比较少，印象中我们之前只有一期多轮问句改写涉及到了文本生成，受控文本生成就更少了。
+受控文本生成是在保证内容的前提下对文本的特性，例如情绪、文风等，进行控制。典型的任务有文本风格迁移。图片和声音的风格迁移都已经商用落地了，例如之前很火的几个应用例如Prisma和FaceApp，相比起来文本风格迁移的发展要慢一些。
+名噪一时的Prisma是图像风格迁移的代表性应用 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+文本风格迁移很像翻译任务（语言也可以认为是文本特性的一种），但相比于机器翻译，风格迁移任务几乎没有平行语料，所以要困难一些。如果你对这个方向有兴趣，强烈推荐北大付振新同学整理的这个Repo。
+受控文本生成因为是文本生成的高级版，通过学习相关技术可以很好地加深对文本生成的理解。受控文本生成从技法上来讲主要有两类，第一类在隐空间做文章，第二类在生成器的输出空间上做文章。
+相比于在隐空间施加控制，我感觉在输出空间施加控制在方法上更简单一些。今天先从这个流派开始。我认为在输出空间进行控制又可以细分出两种形式，一种是在概率空间，一种是在离散空间，下面分别用一篇文章来举例。
+Delete, Retrieve, Generate: A Simple Approach to Sentiment and Style Transfer 来自斯坦福NLP组，发表在2018年的NAACL，目前引用150，可以说是这个方向的经典论文了。
+这篇其实包含了四种方法，但我感觉最有代表性的是在token空间进行的方法（即后面的template based方法），可解释性强，效率也高。
+DRG的四种迁移方法 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+这篇文章的思路很简单，因为它基于一个假设：通常文本特征迁移可以通过改变一些标志词或短语（attribute markers）来完成。 在做风格迁移时，首先要找到这些attribute markers。找的方法也很简单，就是考虑某个n-gram在不同风格语料中出现的概率。如果有显著(salience, s)差异，那它就很可能是个attribute marker，显著性的计算公式如下，$u$是某个term，$v$是某种风格，$\mathcal{D}_v$是某种风格的所有语料，$\lambda$是个平滑系数。公式简单，大家一看便懂，计算出数值后根据阈值最终确定所有的attribute marker。
+$$ s(u,v)=\frac{\text{count}(u, \mathcal{D}v)+\lambda}{(\sum{v&amp;rsquo;\in \mathcal{V},v&amp;rsquo;\neq v}\text{count}(u, \mathcal{D}_{v&amp;rsquo;}))+\lambda} $$
+围绕这些attribute marker（后文简称AM），后续将进行如文字标题所写的三种核心操作：delete, retrieve和generate。
+Delete Delete的目的是要删除句子中的AM，留下内容。用$a(x, v^{\text{src}})$表示源句子x中所有的AM，删除AM后的x表示为$c(x, v^{\text{src}})$，即不含AM的句子内容。
+Retrieve 这一步是要在源句子中插入目标特性的AM。论文的策略是先使用$c(x, v^{\text{src}})$在目标特性句子集合中检索一个内容最接近的句子$x^{\text{tgt}}$。内容接近程度的评价可以使用任意的距离函数来完成。
+Generate 这是最后一步，即获得最终的结果。文章里有四种策略
+Retrieve Only 直接返回第二步的结果。这么做生成的句子在语言角度应该是正确的且带有目标特性，但可能在内容上和源句有出入。 Template Based 直接把$a(x, v^{\text{src}})$替换成$a(x^{\text{tgt}}, v^{\text{tgt}})$。这么做简单粗暴，可能产生不通顺的句子。 Delete Only 把$c(x, v^{\text{src}})$交给一个RNN进行编码，再拼上特性$v^{\text{tgt}}$的embedding，最后交由一个解码器解码。 Delete And Retrieve 和上一种相似，但不是拼上特性$v^{\text{tgt}}$的嵌入，而是用另一个RNN编码得到的$a(x^{\text{tgt}}, v^{\text{tgt}})$的表示向量。 前两种方法是不需要训练的，后两种则需要训练。对于Delete Only，使用重建句子任务（即训练一个自编码器）来训练。对于Delete And Retrieve则复杂一些，为了防止特征迁移的能力退化成句子拼接（c+a）的能力，作者在这里训练一个降噪自编码器，具体地说就是随机替换a里的AM。</description>
+    </item>
+  </channel>
+</rss>

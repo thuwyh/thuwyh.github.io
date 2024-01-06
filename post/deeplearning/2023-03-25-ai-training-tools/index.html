@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[大模型补课]模型训练关键工具包 | 多头注意力</title>
+<meta name="keywords" content="大模型, NLP, ChatGPT, 语言模型, LLaMA, deepspeed, Transformers, Megatron, trl, PEFT">
+<meta name="description" content="前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。
+并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种
+DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。
+TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP&#43;TP&#43;PP)。
+有关并行的介绍，推荐阅读Huggingface的这篇文档。
+Megatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。
+目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。
+全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵
+$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$
+这样 $$Y=X_1A_1&#43;X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题
+$$GeLU(XA)\ne GeLU(X_1A_1&#43;X_2A_2)$$
+所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到
+$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$
+整个过程可以用下图表示
+自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。
+上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。
+在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。
+We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15.">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="[大模型补课]模型训练关键工具包" />
+<meta property="og:description" content="前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。
+并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种
+DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。
+TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP&#43;TP&#43;PP)。
+有关并行的介绍，推荐阅读Huggingface的这篇文档。
+Megatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。
+目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。
+全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵
+$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$
+这样 $$Y=X_1A_1&#43;X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题
+$$GeLU(XA)\ne GeLU(X_1A_1&#43;X_2A_2)$$
+所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到
+$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$
+整个过程可以用下图表示
+自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。
+上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。
+在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。
+We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-03-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-03-25T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[大模型补课]模型训练关键工具包"/>
+<meta name="twitter:description" content="前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。
+并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种
+DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。
+TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP&#43;TP&#43;PP)。
+有关并行的介绍，推荐阅读Huggingface的这篇文档。
+Megatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。
+目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。
+全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵
+$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$
+这样 $$Y=X_1A_1&#43;X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题
+$$GeLU(XA)\ne GeLU(X_1A_1&#43;X_2A_2)$$
+所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到
+$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$
+整个过程可以用下图表示
+自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。
+上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。
+在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。
+We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://www.yuanhao.site/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "[大模型补课]模型训练关键工具包",
+      "item": "https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[大模型补课]模型训练关键工具包",
+  "name": "[大模型补课]模型训练关键工具包",
+  "description": "前情提要：\n[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。\n并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种\nDataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。\nTensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP+TP+PP)。\n有关并行的介绍，推荐阅读Huggingface的这篇文档。\nMegatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。\n目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。\n全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵\n$$X=[X_1, X_2],A=[\\begin{matrix}A_1\\A_2\\end{matrix}]$$\n这样 $$Y=X_1A_1+X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题\n$$GeLU(XA)\\ne GeLU(X_1A_1+X_2A_2)$$\n所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到\n$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$\n整个过程可以用下图表示\n自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。\n上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。\n在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。\nWe efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15.",
+  "keywords": [
+    "大模型", "NLP", "ChatGPT", "语言模型", "LLaMA", "deepspeed", "Transformers", "Megatron", "trl", "PEFT"
+  ],
+  "articleBody": "前情提要：\n[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。\n并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种\nDataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。\nTensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP+TP+PP)。\n有关并行的介绍，推荐阅读Huggingface的这篇文档。\nMegatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。\n目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。\n全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵\n$$X=[X_1, X_2],A=[\\begin{matrix}A_1\\A_2\\end{matrix}]$$\n这样 $$Y=X_1A_1+X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题\n$$GeLU(XA)\\ne GeLU(X_1A_1+X_2A_2)$$\n所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到\n$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$\n整个过程可以用下图表示\n自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。\n上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。\n在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。\nWe efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15.1 PetaFLOPs sus- tained over the entire application.\nZeRO和DeepSpeed ZeRO(Zero Redundancy Optimizer)是微软在2020年提出的一套并行优化方法。和Megatron的张量并行不同，这个算法采用的是流水线并行的方式。一言以蔽之，就是参数能不存就不存。\n它分为以下三个阶段。\n优化器状态分片Pos 这个阶段比较好理解。上图中的第一行为不使用ZeRO时数据并行训练的样子，每个GPU上都有完整的参数(p)，梯度(g)和优化器状态（os）副本。右边的表格计算出了所需要的显存消耗，其中Ψ是模型参数量，2+2是指p和g都是fp16，占2个字节，k=12是指Adam优化器需要额外保存的滑动平均、二阶矩滑动平均等额外参数（优化器状态是大头啊）。这么搞下来，一个7.5B模型在单个GPU上的显存消耗需要120GB。\n启用优化器状态分片后，优化器的状态不再是每个GPU都存完整的，而是每个GPU只存一部分，当需要使用的时候再通过广播发送到其他的GPU。如果有64个GPU来平分优化器的状态，那么一个GPU上的显存消耗就变成了31.4G，减小到了约baseline的四分之一。\n优化器加梯度分片Pos+g 理解了上一阶段，这一阶段就很容易理解了。这一阶段是在上一阶段的基础上把梯度也分到不同的GPU上，只有要用的时候才同步。这么搞下来，又能再干掉一半的显存消耗。\n全分片 这一阶段是把模型参数也给分片了。这么做之后，前向传播的过程就受到了影响。因为每个GPU上只保存了部分参数，在前向传播时需要从别的GPU把参数先拷贝过来。于是乎通信成本会比前面两个阶段增加。\n到第三阶段的话原本120G的显存消耗变成1.9G，降了60倍。根据刚才的计算，一个fp32的175b模型需要700G，加上梯度和优化器状态的话fp16模式需要再乘4，就是2800G。如果要在目前最牛逼的80G显存A100上跑的话，需要至少有30个GPU。\n目前，DeepSpeed已经被集成进了众多主流的训练框架，例如在大家熟悉的Transformers库里，只需要一个配置就可以非常容易地使用DeepSpeed。\nPEFT 上面两个包很牛逼，但大家应该很少会直接使用，但PEFT这个包则是目前玩大语言模型必会的一个包。\nPEFT是Parameter-Efficient Fine-Tuning的缩写，用大白话说就是低成本精调语言模型，主要解决的是adaption问题。所谓adaption，就是指把一个通用模型，例如LLaMA在你独特的场景语料里精调，让模型在你关心的任务上提升性能。\n这个包支持的精调方法有\nLoRA，这个算法已经在文生图领域火出一片天，我感觉毫无疑问也会在大语言模型领域大放异彩（相比后面几种方法，LoRA真的在大模型领域重要非常多）。 Prompt Tuning，这个训练方法是可以理解为是用[MASK] token来做NLU任务。例如输入“Amazing movie! This movie is [MASK]\"，然后看[MASK] token 模型预测的词是啥。 Prefix Tuning，这可以理解为连续空间的prompt tuning。还是刚才那个例子，现在的输入变成了cat([embedding(Amazing movie!), [h0, h1, h2], embedding([MASK])]。也就是说不用自然语言来输入提示词了，而是直接让模型在语义空间自行寻找提示词。 P-tuning。感觉和上面的prefix tuning差不多。 目前很多新的大模型（基本全了）也都可以用PEFT微调了\nModel LoRA Prefix Tuning P-Tuning Prompt Tuning GPT-2 ✅ ✅ ✅ ✅ Bloom ✅ ✅ ✅ ✅ OPT ✅ ✅ ✅ ✅ GPT-Neo ✅ ✅ ✅ ✅ GPT-J ✅ ✅ ✅ ✅ GPT-NeoX-20B ✅ ✅ ✅ ✅ LLaMA ✅ ✅ ✅ ✅ ChatGLM ✅ ✅ ✅ ✅ 而且用LoRA来微调真的能节约很多的显存。\nModel Full Finetuning PEFT-LoRA PyTorch PEFT-LoRA DeepSpeed with CPU Offloading bigscience/T0_3B (3B params) 47.14GB GPU / 2.96GB CPU 14.4GB GPU / 2.96GB CPU 9.8GB GPU / 17.8GB CPU bigscience/mt0-xxl (12B params) OOM GPU 56GB GPU / 3GB CPU 22GB GPU / 52GB CPU bigscience/bloomz-7b1 (7B params) OOM GPU 32GB GPU / 3.8GB CPU 18.1GB GPU / 35GB CPU 如果大家有看过alpaca的代码的话就会发现，其实核心代码都是调用Huggingface的Transformers，train.py那个文件直接调用了transformers的trainer进行训练。 而alpaca-lora这个repo实际调用端就是peft的转换函数来训练。\ntrl 之前的文章介绍过大模型训练的几个重要算法，其中一个是强化学习算法RLHF，或者更确切的说背后的PPO算法。这个方法可以让模型输出更加符合人类预期的结果，一个典型的应用是让模型更安全，少说有毒的话。但似乎目前玩家圈子里搞这一步的人还比较少，基本做到instruction finetune就结束了（毕竟不是公司，没有太多公众形象负担）。\n目前有几个库可以支持算法，今天介绍一个库也是来自Huggingface的trl。PPO的主要流程如下图所示，分为三个阶段\nRollout。就是用模型根据query完成生成，获得response。 Evaluation。用奖励模型（也可以是人工标注）算出这个response的得分。 Optimization。实际上这个过程比较复杂，单看图也不是太清晰，我特地花了点时间看了下代码。稍微具体地说，PPO的时候需要有保留两个模型副本，一个是不会被更新的ref model，另一个是持续更新的active model。在一个大的PPO Step里，response和reward是由evaluation步骤确定的，不会变化。语言模型同时产生action和当前状态的value estimation，并且也是一并优化的。即让模型能预估reward，且能产生最大化reward的输出。期间还发现了他们注释（注释，注释，重要的问题说三遍）的一些小问题，提了一个PR，现在已经merge到主分支，成为了contributor😂 如果你对算法的原理不感兴趣也没关系，这个库也很易用，参考readme几行代码就可以开始PPO训练。\n小结 以上就是关于大语言模型训练工具的内容。本来计划把训练和推理一起写的，但发现工作量实在太大，还是先写到这里。前几天一个老朋友跟我说大模型这块进展太快了，要学的东西好多。我也深有同感，如果时间紧张的话我建议大家就只看Huggingface的文档和博客，以他们目前的布局，未来一段时间都会是绝对的主流。\n补课系列已经来到第四篇，最多还有一篇关于推理工具。后面在保持学习的同时，我会更多投入到实践中，开始炼丹了。欢迎大家持续关注，多交流。\n",
+  "wordCount" : "251",
+  "inLanguage": "en",
+  "datePublished": "2023-03-25T00:00:00Z",
+  "dateModified": "2023-03-25T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "多头注意力",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.yuanhao.site/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/post/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      [大模型补课]模型训练关键工具包
+    </h1>
+    <div class="post-meta"><span title='2023-03-25 00:00:00 +0000 UTC'>March 25, 2023</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%b9%b6%e8%a1%8c%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e7%9a%84%e5%bf%85%e8%a6%81%e6%89%8b%e6%ae%b5" aria-label="并行：大模型训练的必要手段">并行：大模型训练的必要手段</a></li>
+                <li>
+                    <a href="#megatron-lm" aria-label="Megatron-LM">Megatron-LM</a></li>
+                <li>
+                    <a href="#zero%e5%92%8cdeepspeedhttpswwwmicrosoftcomen-usresearchblogzero-deepspeed-new-system-optimizations-enable-training-models-with-over-100-billion-parameters" aria-label="ZeRO和DeepSpeed">ZeRO和DeepSpeed</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bc%98%e5%8c%96%e5%99%a8%e7%8a%b6%e6%80%81%e5%88%86%e7%89%87pos" aria-label="优化器状态分片Pos">优化器状态分片Pos</a></li>
+                <li>
+                    <a href="#%e4%bc%98%e5%8c%96%e5%99%a8%e5%8a%a0%e6%a2%af%e5%ba%a6%e5%88%86%e7%89%87posg" aria-label="优化器加梯度分片Pos&#43;g">优化器加梯度分片Pos+g</a></li>
+                <li>
+                    <a href="#%e5%85%a8%e5%88%86%e7%89%87" aria-label="全分片">全分片</a></li></ul>
+                </li>
+                <li>
+                    <a href="#peft" aria-label="PEFT">PEFT</a></li>
+                <li>
+                    <a href="#trlhttpsgithubcomlvwerratrl" aria-label="trl">trl</a></li>
+                <li>
+                    <a href="#%e5%b0%8f%e7%bb%93" aria-label="小结">小结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>前情提要：</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzI4MzEyOTIzOA==&amp;mid=2648564370&amp;idx=1&amp;sn=0f22e449c7d825d4408c9c3285120ba0&amp;chksm=f3a6266bc4d1af7db04515b1390fff361ac72e7d9f62348d12e66b145370320e7a537e411f7c#rd" title="[大模型补课]当代AI的基石数据集">[大模型补课]当代AI的基石数据集</a></li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzI4MzEyOTIzOA==&amp;mid=2648564435&amp;idx=1&amp;sn=105595062e3a5fd8a6681f7aebc2e1d6&amp;chksm=f3a6262ac4d1af3c10f2237c55ee0e6d762047c8416f3322e015d68a47f54c0d36bc3e3c31e7&amp;token=201380487&amp;lang=zh_CN#rd" title="[大模型补课]当代语言模型的评价体系">[大模型补课]当代语言模型的评价体系</a></li>
+<li><a href="https://www.yuanhao.site/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/2023/03/25/AI-model.html">[大模型补课]模型及训练方法</a></li>
+</ul>
+<p>这是大模型补课的第四篇文章，主要关注模型背后的训练工具。</p>
+<h2 id="并行大模型训练的必要手段">并行：大模型训练的必要手段<a hidden class="anchor" aria-hidden="true" href="#并行大模型训练的必要手段">#</a></h2>
+<p>如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种</p>
+<ul>
+<li>DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。</li>
+<li>ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。</li>
+</ul>
+<p>以下再介绍几个模型并行的细分方法。</p>
+<ul>
+<li>TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。</li>
+<li>PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的<a href="https://ai.googleblog.com/2019/03/introducing-gpipe-open-source-library.html" title="Gpipe">Bubble区域</a>），这个问题通常用更小批量的数据来缓解。</li>
+</ul>
+<p><img loading="lazy" src="https://wyhhexo.oss-cn-hangzhou.aliyuncs.com/202304081457293.png" alt="流水线并行带来的GPU利用率下降。"  />
+</p>
+<p>现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP+TP+PP)。</p>
+<p><img loading="lazy" src="https://wyhhexo.oss-cn-hangzhou.aliyuncs.com/202304081500967.png" alt="三维并行"  />
+</p>
+<p>有关并行的介绍，推荐阅读Huggingface的这篇<a href="https://huggingface.co/docs/transformers/v4.15.0/parallelism" title="Huggingface parallelism">文档</a>。</p>
+<h2 id="megatron-lm">Megatron-LM<a hidden class="anchor" aria-hidden="true" href="#megatron-lm">#</a></h2>
+<p>提到模型并行，不得不提的软件包是英伟达的<a href="https://github.com/NVIDIA/Megatron-LM">Megatron-LM</a>。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据<a href="https://arxiv.org/abs/1909.08053v4" title="Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism">论文</a>介绍一下他的原理，还是挺有趣的。</p>
+<p>目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。</p>
+<p>全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵</p>
+<p>$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$</p>
+<p>这样 $$Y=X_1A_1+X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题</p>
+<p>$$GeLU(XA)\ne GeLU(X_1A_1+X_2A_2)$$</p>
+<p>所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到</p>
+<p>$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$</p>
+<p>整个过程可以用下图表示</p>
+<p><img loading="lazy" src="https://wyhhexo.oss-cn-hangzhou.aliyuncs.com/202304052047648.png" alt="MLP的并行方式"  />
+</p>
+<p>自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。</p>
+<p><img loading="lazy" src="https://wyhhexo.oss-cn-hangzhou.aliyuncs.com/202304052052646.png" alt="自注意力的并行方式"  />
+</p>
+<p>上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。</p>
+<p>在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。</p>
+<blockquote>
+<p>We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15.1 PetaFLOPs sus- tained over the entire application.</p>
+</blockquote>
+<h2 id="zero和deepspeedhttpswwwmicrosoftcomen-usresearchblogzero-deepspeed-new-system-optimizations-enable-training-models-with-over-100-billion-parameters">ZeRO和<a href="https://www.microsoft.com/en-us/research/blog/zero-deepspeed-new-system-optimizations-enable-training-models-with-over-100-billion-parameters/">DeepSpeed</a><a hidden class="anchor" aria-hidden="true" href="#zero和deepspeedhttpswwwmicrosoftcomen-usresearchblogzero-deepspeed-new-system-optimizations-enable-training-models-with-over-100-billion-parameters">#</a></h2>
+<p>ZeRO(Zero Redundancy Optimizer)是微软在2020年提出的一套并行优化方法。和Megatron的张量并行不同，这个算法采用的是流水线并行的方式。一言以蔽之，就是参数能不存就不存。</p>
+<p><img loading="lazy" src="/assets/largelm/DeepSpeed-Image-1.png" alt="DeepSpeed原理"  />
+</p>
+<p>它分为以下三个阶段。</p>
+<h3 id="优化器状态分片pos">优化器状态分片Pos<a hidden class="anchor" aria-hidden="true" href="#优化器状态分片pos">#</a></h3>
+<p>这个阶段比较好理解。上图中的第一行为不使用ZeRO时数据并行训练的样子，每个GPU上都有完整的参数(p)，梯度(g)和优化器状态（os）副本。右边的表格计算出了所需要的显存消耗，其中Ψ是模型参数量，2+2是指p和g都是fp16，占2个字节，k=12是指Adam优化器需要额外保存的滑动平均、二阶矩滑动平均等额外参数（优化器状态是大头啊）。这么搞下来，一个7.5B模型在单个GPU上的显存消耗需要120GB。</p>
+<p>启用优化器状态分片后，优化器的状态不再是每个GPU都存完整的，而是每个GPU只存一部分，当需要使用的时候再通过广播发送到其他的GPU。如果有64个GPU来平分优化器的状态，那么一个GPU上的显存消耗就变成了31.4G，减小到了约baseline的四分之一。</p>
+<h3 id="优化器加梯度分片posg">优化器加梯度分片Pos+g<a hidden class="anchor" aria-hidden="true" href="#优化器加梯度分片posg">#</a></h3>
+<p>理解了上一阶段，这一阶段就很容易理解了。这一阶段是在上一阶段的基础上把梯度也分到不同的GPU上，只有要用的时候才同步。这么搞下来，又能再干掉一半的显存消耗。</p>
+<h3 id="全分片">全分片<a hidden class="anchor" aria-hidden="true" href="#全分片">#</a></h3>
+<p>这一阶段是把模型参数也给分片了。这么做之后，前向传播的过程就受到了影响。因为每个GPU上只保存了部分参数，在前向传播时需要从别的GPU把参数先拷贝过来。于是乎通信成本会比前面两个阶段增加。</p>
+<p>到第三阶段的话原本120G的显存消耗变成1.9G，降了60倍。根据刚才的计算，一个fp32的175b模型需要700G，加上梯度和优化器状态的话fp16模式需要再乘4，就是2800G。如果要在目前最牛逼的80G显存A100上跑的话，需要至少有30个GPU。</p>
+<p>目前，DeepSpeed已经被集成进了众多主流的训练框架，例如在大家熟悉的Transformers库里，只需要一个配置就可以非常容易地使用DeepSpeed。</p>
+<h2 id="peft">PEFT<a hidden class="anchor" aria-hidden="true" href="#peft">#</a></h2>
+<p>上面两个包很牛逼，但大家应该很少会直接使用，但<a href="https://github.com/huggingface/peft" title="PEFT">PEFT</a>这个包则是目前玩大语言模型必会的一个包。</p>
+<p>PEFT是Parameter-Efficient Fine-Tuning的缩写，用大白话说就是低成本精调语言模型，主要解决的是<strong>adaption</strong>问题。所谓adaption，就是指把一个通用模型，例如LLaMA在你独特的场景语料里精调，让模型在你关心的任务上提升性能。</p>
+<p>这个包支持的精调方法有</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2106.09685" title="LORA: LOW-RANK ADAPTATION OF LARGE LANGUAGE MODELS">LoRA</a>，这个算法已经在文生图领域火出一片天，我感觉毫无疑问也会在大语言模型领域大放异彩（相比后面几种方法，LoRA真的在大模型领域重要非常多）。</li>
+<li><a href="https://arxiv.org/abs/2104.08691" title="The Power of Scale for Parameter-Efficient Prompt Tuning">Prompt Tuning</a>，这个训练方法是可以理解为是用[MASK] token来做NLU任务。例如输入“Amazing movie! This movie is [MASK]&quot;，然后看[MASK] token 模型预测的词是啥。</li>
+<li><a href="https://aclanthology.org/2021.acl-long.353/" title="Prefix-Tuning: Optimizing Continuous Prompts for Generation">Prefix Tuning</a>，这可以理解为连续空间的prompt tuning。还是刚才那个例子，现在的输入变成了<code>cat([embedding(Amazing movie!), [h0, h1, h2], embedding([MASK])]</code>。也就是说不用自然语言来输入提示词了，而是直接让模型在语义空间自行寻找提示词。</li>
+<li><a href="https://arxiv.org/pdf/2110.07602.pdf" title="P-Tuning v2: Prompt Tuning Can Be Comparable to Fine-tuning Universally Across Scales and Tasks">P-tuning</a>。感觉和上面的prefix tuning差不多。</li>
+</ul>
+<p>目前很多新的大模型（基本全了）也都可以用PEFT微调了</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>LoRA</th>
+<th>Prefix Tuning</th>
+<th>P-Tuning</th>
+<th>Prompt Tuning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPT-2</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Bloom</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>OPT</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>GPT-Neo</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>GPT-J</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>GPT-NeoX-20B</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>LLaMA</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>ChatGLM</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p>而且用LoRA来微调真的能节约很多的显存。</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Full Finetuning</th>
+<th>PEFT-LoRA PyTorch</th>
+<th>PEFT-LoRA DeepSpeed with CPU Offloading</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bigscience/T0_3B (3B params)</td>
+<td>47.14GB GPU / 2.96GB CPU</td>
+<td>14.4GB GPU / 2.96GB CPU</td>
+<td>9.8GB GPU / 17.8GB CPU</td>
+</tr>
+<tr>
+<td>bigscience/mt0-xxl (12B params)</td>
+<td>OOM GPU</td>
+<td>56GB GPU / 3GB CPU</td>
+<td>22GB GPU / 52GB CPU</td>
+</tr>
+<tr>
+<td>bigscience/bloomz-7b1 (7B params)</td>
+<td>OOM GPU</td>
+<td>32GB GPU / 3.8GB CPU</td>
+<td>18.1GB GPU / 35GB CPU</td>
+</tr>
+</tbody>
+</table>
+<p>如果大家有看过alpaca的代码的话就会发现，其实核心代码都是调用Huggingface的Transformers，<code>train.py</code>那个文件直接调用了transformers的trainer进行训练。
+而<a href="https://github.com/tloen/alpaca-lora">alpaca-lora</a>这个repo实际调用端就是peft的转换函数来训练。</p>
+<h2 id="trlhttpsgithubcomlvwerratrl"><a href="https://github.com/lvwerra/trl">trl</a><a hidden class="anchor" aria-hidden="true" href="#trlhttpsgithubcomlvwerratrl">#</a></h2>
+<p>之前的文章介绍过大模型训练的几个重要算法，其中一个是强化学习算法RLHF，或者更确切的说背后的<a href="https://arxiv.org/pdf/1707.06347.pdf" title="PPO">PPO</a>算法。这个方法可以让模型输出更加符合人类预期的结果，一个典型的应用是让模型更安全，少说有毒的话。但似乎目前玩家圈子里搞这一步的人还比较少，基本做到instruction finetune就结束了（毕竟不是公司，没有太多公众形象负担）。</p>
+<p>目前有几个库可以支持算法，今天介绍一个库也是来自Huggingface的trl。PPO的主要流程如下图所示，分为三个阶段</p>
+<p><img loading="lazy" src="https://wyhhexo.oss-cn-hangzhou.aliyuncs.com/202304081509202.png" alt="PPO工作流"  />
+</p>
+<ol>
+<li>Rollout。就是用模型根据query完成生成，获得response。</li>
+<li>Evaluation。用奖励模型（也可以是人工标注）算出这个response的得分。</li>
+<li>Optimization。实际上这个过程比较复杂，单看图也不是太清晰，我特地花了点时间看了下代码。稍微具体地说，PPO的时候需要有保留两个模型副本，一个是不会被更新的ref model，另一个是持续更新的active model。在一个大的PPO Step里，response和reward是由evaluation步骤确定的，不会变化。语言模型同时产生action和当前状态的value estimation，并且也是一并优化的。即让模型能预估reward，且能产生最大化reward的输出。期间还发现了他们<strong>注释</strong>（注释，注释，重要的问题说三遍）的一些小问题，提了一个PR，现在已经merge到主分支，成为了contributor😂</li>
+</ol>
+<p><img loading="lazy" src="https://wyhhexo.oss-cn-hangzhou.aliyuncs.com/202304081558379.png" alt="应该是我人生中第一次给开源软件交PR"  />
+</p>
+<p>如果你对算法的原理不感兴趣也没关系，这个库也很易用，参考readme几行代码就可以开始PPO训练。</p>
+<h2 id="小结">小结<a hidden class="anchor" aria-hidden="true" href="#小结">#</a></h2>
+<p>以上就是关于大语言模型训练工具的内容。本来计划把训练和推理一起写的，但发现工作量实在太大，还是先写到这里。前几天一个老朋友跟我说大模型这块进展太快了，要学的东西好多。我也深有同感，如果时间紧张的话我建议大家就只看Huggingface的文档和博客，以他们目前的布局，未来一段时间都会是绝对的主流。</p>
+<p>补课系列已经来到第四篇，最多还有一篇关于推理工具。后面在保持学习的同时，我会更多投入到实践中，开始炼丹了。欢迎大家持续关注，多交流。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://www.yuanhao.site/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/">大模型</a></li>
+      <li><a href="https://www.yuanhao.site/tags/nlp/">NLP</a></li>
+      <li><a href="https://www.yuanhao.site/tags/chatgpt/">ChatGPT</a></li>
+      <li><a href="https://www.yuanhao.site/tags/%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/">语言模型</a></li>
+      <li><a href="https://www.yuanhao.site/tags/llama/">LLaMA</a></li>
+      <li><a href="https://www.yuanhao.site/tags/deepspeed/">deepspeed</a></li>
+      <li><a href="https://www.yuanhao.site/tags/transformers/">Transformers</a></li>
+      <li><a href="https://www.yuanhao.site/tags/megatron/">Megatron</a></li>
+      <li><a href="https://www.yuanhao.site/tags/trl/">trl</a></li>
+      <li><a href="https://www.yuanhao.site/tags/peft/">PEFT</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>[大模型补课]模型及训练方法</span>
+  </a>
+  <a class="next" href="https://www.yuanhao.site/post/ml101/2023-03-24-logistic-regression/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Logistic Regression: A Beginner&#39;s Guide</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [大模型补课]模型训练关键工具包 on x"
+            href="https://x.com/intent/tweet/?text=%5b%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%a1%a5%e8%af%be%5d%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e5%85%b3%e9%94%ae%e5%b7%a5%e5%85%b7%e5%8c%85&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f&amp;hashtags=%e5%a4%a7%e6%a8%a1%e5%9e%8b%2cNLP%2cChatGPT%2c%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8b%2cLLaMA%2cdeepspeed%2cTransformers%2cMegatron%2ctrl%2cPEFT">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [大模型补课]模型训练关键工具包 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f&amp;title=%5b%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%a1%a5%e8%af%be%5d%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e5%85%b3%e9%94%ae%e5%b7%a5%e5%85%b7%e5%8c%85&amp;summary=%5b%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%a1%a5%e8%af%be%5d%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e5%85%b3%e9%94%ae%e5%b7%a5%e5%85%b7%e5%8c%85&amp;source=https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [大模型补课]模型训练关键工具包 on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f&title=%5b%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%a1%a5%e8%af%be%5d%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e5%85%b3%e9%94%ae%e5%b7%a5%e5%85%b7%e5%8c%85">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [大模型补课]模型训练关键工具包 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [大模型补课]模型训练关键工具包 on whatsapp"
+            href="https://api.whatsapp.com/send?text=%5b%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%a1%a5%e8%af%be%5d%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e5%85%b3%e9%94%ae%e5%b7%a5%e5%85%b7%e5%8c%85%20-%20https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [大模型补课]模型训练关键工具包 on telegram"
+            href="https://telegram.me/share/url?text=%5b%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%a1%a5%e8%af%be%5d%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e5%85%b3%e9%94%ae%e5%b7%a5%e5%85%b7%e5%8c%85&amp;url=https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [大模型补课]模型训练关键工具包 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%5b%e5%a4%a7%e6%a8%a1%e5%9e%8b%e8%a1%a5%e8%af%be%5d%e6%a8%a1%e5%9e%8b%e8%ae%ad%e7%bb%83%e5%85%b3%e9%94%ae%e5%b7%a5%e5%85%b7%e5%8c%85&u=https%3a%2f%2fwww.yuanhao.site%2fpost%2fdeeplearning%2f2023-03-25-ai-training-tools%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

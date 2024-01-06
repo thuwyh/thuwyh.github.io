@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RACE on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/race/</link>
+    <description>Recent content in RACE on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 01 Mar 2023 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/race/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>大规模语言模型的评价方法</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/</link>
+      <pubDate>Wed, 01 Mar 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/</guid>
+      <description>上一篇文章介绍了大模型是用什么数据训练的，这一篇文章重点来看大模型的评价方法。Chatgpt这轮出圈很大原因是对话这种评价方式非常直观，普通大众就可以从对话质量看出来现在的模型比之前的&amp;quot;人工智障&amp;quot;要强很多。但真正开发大模型肯定不能用这种方式，不仅效率低、价格高，还存在不小的主观因素。这篇文章就来总结一下大模型的评价方式。
+还是先来看LLaMA论文里使用的评价指标。LLaMA里一共使用了**20种数据集（或任务）**来评估和对比模型。这些任务可以分为两大设定：零样本任务和少样本任务，涵盖以下几个大类
+常识推断 闭卷问答 阅读理解 数学推理 代码生成 大规模多任务语言理解 下面一一来看。
+常识推断 这个任务用了8个数据集，分别是BoolQ、PIQA、SIQA、HellaSwag、WinoGrande、ARC easy, ARC challenge和OpenBookQA。不同数据集有不同的形式，包括填空、威诺格拉德模式挑战（英语：Winograd Schema Challenge，缩写WSC）、多选问答。这些数据集在评价中都属于零样本，就是让模型通过预训练来直接回答问题。
+一个威诺格拉德模式的例子为：“	市议会拒绝给示威者颁发许可，因为他们[担心/宣扬]暴力。	” 当这句陈述中使用“担心”一词时，前面的“他们”指的是市议会。而当使用“宣扬”一词时，“他们”所指的则变成了示威者。人类通过常识可以很简单地看出两种情况下“他们”所指分别为何，但对于机器而言这个问题则十分困难。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 不同模型常识推断结果比较。​这种常识问题现在的模型基本都能对个​六成以上。 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+闭卷问答 这个任务包括两个数据集Natural Questions和TriviaQA。所谓闭卷，是相对于数据集原来的设定来说的。已Natural Questions为例，原来的设定是模型可以访问相关维基百科文本，然后根据百科内容回答问题。然而在评价大语言模型的时候，就不给看这个维基页面了。闭卷问答包括zero shot和few shot两种设定。zero shot很好理解，跟上面的常识推断很像，下面是论文附录里few shot的例子，实际上就是列几个问答对作为context。我目前还不太懂这种无关问答对对模型回答问题有什么帮助。
+Context → Answer these questions: Q: Who sang who wants to be a millionaire in high society? A: Frank Sinatra Q: Who wrote the book the origin of species? A: Target -&amp;gt; Charles Darwin
+阅读理解 阅读理解和前面提到的开卷问答有一点像。只是常见的阅读理解数据集用于支撑问题回答的背景材料比较短（相比于NQ里的维基页面）。在LLaMA论文里，使用的是RACE数据集，这个数据集对于做过阅读理解的朋友一定不陌生，是为初高中中文学生设计的英语阅读理解题。</description>
+    </item>
+  </channel>
+</rss>

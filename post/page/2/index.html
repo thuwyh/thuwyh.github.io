@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Posts | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="Posts - 多头注意力">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/post/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/post/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Posts" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/post/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Posts"/>
+<meta name="twitter:description" content=""/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://www.yuanhao.site/post/"
+    }
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a></div>
+  <h1>
+    Posts
+  </h1>
+</header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">基础量化策略
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>以下是一些基本的量化投资策略，它们使用数学模型和算法分析数据并做出投资决策：
+价值投资：该策略涉及寻找低市盈率（P/E）或低市净率（P/B）的被低估股票。价值投资者相信市场有时会低估好公司，以折扣购买这些股票可能会带来长期收益。 成长投资：该策略涉及投资于具有高增长潜力的公司，其收益增长率或其他指标证明。成长投资者相信这些公司将继续以比整个市场更快的速度增长，从而在长期内导致股价上涨。 动量投资：该策略涉及购买最近表现良好的股票，出售最近表现差的股票。动量投资者相信股票价格的趋势在短期内将继续，从而导致盈利交易。 统计套利：该策略涉及使用统计模型来识别相关证券的错误定价，然后在这些错误定价上进行交易。例如，统计套利者可能寻找两个价格高度相关的股票在价格上暂时发生分歧的情况，然后打赌价格最终会再次收敛。 风险平价：该策略涉及将投资资本分配到不同的资产类别中，以平衡风险。风险平价投资者相信在不同风险档案的资产类别之间进行分散投资（如股票、债券和商品）可以带来比仅投资于股票或债券更好的风险调整回报。 品质投资：该策略涉及投资于拥有强大资产负债表、稳定收益和低负债股本比率的高品质公司。品质投资者相信这些公司更有可能经受住经济衰退并在长期内产生稳定的回报。 这些只是一些量化投资策略的例子。每种策略都有其优点和缺点，投资者在选择要跟随的策略之前应仔细考虑其投资目标和风险承受能力。</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-22 00:00:00 +0000 UTC'>March 22, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 基础量化策略" href="https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-22-basic-qi/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">美联储加息周期中一般什么行业的股票会表现更好
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>美联储加息周期中一般什么行业的股票会表现更好 一般而言，在美联储加息周期中表现良好的行业是那些对利率敏感性较低的行业。这些行业包括：
+医疗保健：无论经济情况如何，人们都需要医疗服务，因此医疗保健公司通常对利率变化不太敏感。 消费品：生产食品、家居产品和个人护理用品等消费品的公司在利率上涨期间也往往表现良好，因为人们会继续购买这些基本物品，不受经济条件的影响。 技术：技术公司往往具有高增长潜力，并且不太依赖借贷或利率，因此对利率上涨不太敏感。 公用事业：提供电力和水等基本服务的公司也不太受利率上涨的影响，因为这些服务是不可或缺的，无论经济条件如何。 另一方面，在利率上涨周期中表现不佳的行业是那些对利率敏感性较高的行业。这些行业包括：
+金融：银行和其他金融机构在利率上涨周期中通常会遭受损失，因为他们的借贷成本增加，从而减少了利润。 房地产：更高的利率使抵押贷款更加昂贵，降低了房地产的需求，可能导致房价下跌。 能源：能源公司通常需要大量资本来投资基础设施和勘探，而利率上升可能会增加他们的借贷成本，降低利润。 需要注意的是，股票表现受到许多因素的影响，利率只是其中之一。因此，在做出任何投资决策之前进行全面的研究和分析是至关重要的。 加息幅度和市场市盈率或价格中枢间有没有量化关系 有证据表明，利率上升与市场市盈率或股价水平之间存在量化关系，尽管这种关系很复杂，可能取决于各种因素。
+一般而言，当利率上升时，未来收益和现金流的现值可能会降低，从而导致市场市盈率和股价下降。然而，其他因素也会影响股价，例如公司特定因素、经济增长前景和市场情绪。
+一个常用的衡量利率与股价之间关系的指标是盈利收益率，它是市盈率的倒数。盈利收益率衡量了公司股价相对于其收益的收益率，并可与政府债券收益率进行比较。当利率上升时，债券收益率往往会增加，使其相对于股票更具吸引力，这可能导致股价下降。
+总的来说，虽然利率上升与市场市盈率或股价水平之间可能存在量化关系，但这种关系很复杂，可能取决于许多因素。在做出任何投资决策之前进行全面的研究和分析是至关重要的。
+当从加息周期转为降息周期时，通常什么行业的股票会率先上涨 当利率上升周期转变为降息周期时，对利率敏感度最高的行业往往会最先表现良好。这些行业包括：
+金融业：银行和金融机构往往受益于较低的利率，因为它们可以以更便宜的利率借入资金，然后以更高的利率贷出资金，从而增加其利润率。 房地产业：房地产公司和房屋建筑商可以从较低的利率中受益，因为它可以使人们更容易和更实惠地购买房屋，从而增加房屋需求。 消费周期股：这些是销售非必需品和服务的公司，如零售、旅游和娱乐公司。较低的利率可以提振消费支出，从而使这些公司受益。 公用事业：公用事业公司往往受益于较低的利率，因为它们往往有较高的债务，较低的利率可以降低其借款成本。 需要注意的是，这些行业的表现还可能取决于其他因素，如整体市场情况、经济增长和公司特定因素。投资者在做出任何投资决策之前，应进行全面的研究和分析。</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-21 00:00:00 +0000 UTC'>March 21, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 美联储加息周期中一般什么行业的股票会表现更好" href="https://www.yuanhao.site/post/%E9%87%91%E8%9E%8D/2023-03-21-rate-hike/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">大规模语言模型的评价方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上一篇文章介绍了大模型是用什么数据训练的，这一篇文章重点来看大模型的评价方法。Chatgpt这轮出圈很大原因是对话这种评价方式非常直观，普通大众就可以从对话质量看出来现在的模型比之前的&#34;人工智障&#34;要强很多。但真正开发大模型肯定不能用这种方式，不仅效率低、价格高，还存在不小的主观因素。这篇文章就来总结一下大模型的评价方式。
+还是先来看LLaMA论文里使用的评价指标。LLaMA里一共使用了**20种数据集（或任务）**来评估和对比模型。这些任务可以分为两大设定：零样本任务和少样本任务，涵盖以下几个大类
+常识推断 闭卷问答 阅读理解 数学推理 代码生成 大规模多任务语言理解 下面一一来看。
+常识推断 这个任务用了8个数据集，分别是BoolQ、PIQA、SIQA、HellaSwag、WinoGrande、ARC easy, ARC challenge和OpenBookQA。不同数据集有不同的形式，包括填空、威诺格拉德模式挑战（英语：Winograd Schema Challenge，缩写WSC）、多选问答。这些数据集在评价中都属于零样本，就是让模型通过预训练来直接回答问题。
+一个威诺格拉德模式的例子为：“	市议会拒绝给示威者颁发许可，因为他们[担心/宣扬]暴力。	” 当这句陈述中使用“担心”一词时，前面的“他们”指的是市议会。而当使用“宣扬”一词时，“他们”所指的则变成了示威者。人类通过常识可以很简单地看出两种情况下“他们”所指分别为何，但对于机器而言这个问题则十分困难。
+{: .align-center style=“width:80%”} 不同模型常识推断结果比较。​这种常识问题现在的模型基本都能对个​六成以上。 {: .align-caption style=“text-align:center;font-size:smaller”}
+闭卷问答 这个任务包括两个数据集Natural Questions和TriviaQA。所谓闭卷，是相对于数据集原来的设定来说的。已Natural Questions为例，原来的设定是模型可以访问相关维基百科文本，然后根据百科内容回答问题。然而在评价大语言模型的时候，就不给看这个维基页面了。闭卷问答包括zero shot和few shot两种设定。zero shot很好理解，跟上面的常识推断很像，下面是论文附录里few shot的例子，实际上就是列几个问答对作为context。我目前还不太懂这种无关问答对对模型回答问题有什么帮助。
+Context → Answer these questions: Q: Who sang who wants to be a millionaire in high society? A: Frank Sinatra Q: Who wrote the book the origin of species? A: Target -&gt; Charles Darwin
+阅读理解 阅读理解和前面提到的开卷问答有一点像。只是常见的阅读理解数据集用于支撑问题回答的背景材料比较短（相比于NQ里的维基页面）。在LLaMA论文里，使用的是RACE数据集，这个数据集对于做过阅读理解的朋友一定不陌生，是为初高中中文学生设计的英语阅读理解题。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-01 10:25:03 +0000 UTC'>March 1, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 大规模语言模型的评价方法" href="https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">如何使用ChatGPT算命
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>可能是网站slogan：AI算命，朋克养生的关系，最近我看google search console后台总是有很多&#34;Chatgpt算命&#34;这个查询导致的网站展现。 既然大家有这个需求，我就实践SEO里面的方法，上网搜索了一下如何使用chatgpt算命，总结在这个文章里。
+好多chatgpt算命的查询 {: .align-caption style=“text-align:center;font-size:smaller”}
+基本上，这要用到chatgpt的**“角色扮演”**功能，让它站在算命者的角度回答你的问题。
+先从英文开始，英文里算命先生叫做fortune teller，那么我们可以这么问chatgpt
+Act like a coffee fortune teller, I can see a cat shape in the corner of the cup, what is its meaning?
+翻译成中文就是：
+像个算命先生一样回答我，我在杯子的角落看到了一个猫的形状，这意味着什么？
+英文版的回答是
+The cat shape in the corner of your cup is a sign of good luck and protection. It is a reminder to stay alert and to be aware of any potential danger or obstacles that may arise in your life....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-28 10:25:03 +0000 UTC'>February 28, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 如何使用ChatGPT算命" href="https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">大规模语言模型的基石数据集
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉有很多课需要补。恰好昨天Meta发了新的大模型论文，浏览了一下发现很适合作为补课的切入点。
+今天这部分是关于预训练使用的数据集，是重中之重，说数据是当代AI的基石一点也不为过。GPT3用的数据其实没有公开，Meta这次论文里提到的应该算是开源模型里一个最全的版本。他们使用的数据如下表所示，我们一一来看一下。
+Dataset Sampling prop. Epochs Disk size CommonCrawl 67.0% 1.10 3.3 TB C4 15.0% 1.06 783 GB Github 4.5% 0.64 328 GB Wikipedia 4.5% 2.45 83 GB Books 4.5% 2.23 85 GB ArXiv 2.5% 1.06 92 GB StackExchange 2.0% 1.03 78 GB CommonCrawl 占比最大的数据集，他们的网站是https://commoncrawl.org/。我感觉这真是一个伟大的项目，7年时间爬了超多的互联网网页，涵盖了40种语言。
+CommonCrawl网站截图 {: .align-caption style=“text-align:center;font-size:smaller”}
+根据他们博客的最新数据，2023年二月版的数据包含了400TB的数据（纯文本的数据是9个多tb），三十多亿个网页。
+The crawl archive for January/February 2023 is now available! The data was crawled January 26 – February 9 and contains 3....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-26 10:25:03 +0000 UTC'>February 26, 2023</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 大规模语言模型的基石数据集" href="https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ChatGPT未来会拥有自我情感和思维吗？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>首先批评一下知乎，类似的问题翻来覆去提。感觉和上次的这个问题很像：https://www.zhihu.com/answer/2869775692
+我尝试问了下GPT以下问题，它的回答还挺乐观，哈哈。
+我：什么是情感？
+GPT：情感是一种心理状态，它指的是一种强烈的感情，如欢乐、悲伤、焦虑、愤怒、害怕、爱、厌恶等。它们可以由个人的生活经历、社会环境、文化和道德价值观等因素引起。
+我：语言模型，例如GPT是否具有情感？
+GPT：不具有情感。GPT（Generative Pre-trained Transformer）是一种预训练的自然语言处理模型，它可以帮助机器理解和生成自然语言，但它本身并不具有情感。
+我：为什么说语言模型不具有情感？能说得具体一些吗？
+GPT：语言模型本身并不具有情感，因为它们只是一种机器学习模型，它们可以帮助机器理解和生成自然语言，但不能感受和理解情感。语言模型的输出仅仅反映了输入的语义，它不能表达情感，也不能理解和识别情感。
+我：未来有可能让语言模型具有情感吗？
+GPT：是的，未来有可能让语言模型具有情感。随着技术的发展，许多机器学习技术和深度学习技术已经可以用来识别和理解情感，而语言模型也可以通过这些技术来学习情感，从而具有情感。
+就像GPT自己回答的一样，语言模型目前是没有情感的，本质上还是对文本之间概率分布的刻画。但因为人是有情感和思维的，对语言模型表现出来的一些能力，会不由自主地认为它具有情感或者思维。所以从“我要我觉得，不要你觉得”的角度，这个问题没啥讨论的意义。一千个观众眼里有一千个GPT。
+在上面那个回答里，我还举了两个思维实验来说明这个观点。但评论区网友上来就给我一顿喷。讲真我当时心理是有点小波澜，但我现在学乖了，多利用GPT来回答问题，被网友骂成狗也没啥心理负担。
+我个人认为，按照目前的技术方向，未来也无法获得思维和情感。但这不是个经济的想法。应该像GPT一样，大声说会就完了，然后再说一堆车轱辘话。毕竟未来的事，谁知道呢。
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-16 10:25:03 +0000 UTC'>February 16, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to ChatGPT未来会拥有自我情感和思维吗？" href="https://www.yuanhao.site/post/2023-02-16-chatgpt9/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ChatGpt能成为恋爱大师吗？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我认为能也不能。
+我问GPT：什么是恋爱大师？恋爱大师具有哪些特点和能力？
+GPT回答：恋爱大师是一种专业的恋爱咨询师，专门帮助人们解决恋爱问题。恋爱大师通过提供心理咨询、情感指导和婚姻咨询等服务，帮助人们解决恋爱中的问题，提高恋爱关系的健康水平。恋爱大师具有较强的心理学知识和专业能力，能够从恋爱关系的心理学角度出发，从客观的角度分析恋爱关系中出现的问题，并给出有效的解决方案。
+让我们再来试试他能不能“分析恋爱关系中出现的问题，并给出有效的解决方案”。
+我问GPT：我的女朋友老是迟到，跟她沟通过几次都没有效果，现在说她她还会生气，我该怎么办？
+GPT回答：
+首先，你要明确你的期望，并且要清楚地告诉她，你希望她能够准时到达。 然后，你可以给她一些实际的激励，比如说，如果她能够准时到达，你会给她一个小惊喜。 再者，你可以尝试一些不同的沟通方式，比如用短信或者电话来提醒她，或者在约定的时间前几分钟来接她。 最后，你可以给她一些支持，告诉她你理解她的情况，并且希望她能够改变，但也要表达出你的期望。 我再次追问：那万一我这么做之后她还是没有改变呢？我要和她分手吗？
+GPT回答：如果你采取了上述措施之后，她仍然没有改变，你可以再次和她沟通，让她明白你的期望，并且表达出你的失望。如果她仍然不能改变，你可以考虑是否要分手，但是你也可以尝试一些其他的方式，比如让她参加一些时间管理的课程，或者帮助她制定一些有助于准时到达的计划。
+对上面的回答，作为用户我是会满意的，给出了一些具有可行性的方法。这种人际沟通中的问题往往是有最佳或者较佳实践的。这方面博览群书的GPT可以给出一些不错的建议，对没有经验的小年轻可以有不小的积极作用。
+但感情的事又很复杂，而对感情的处理方式是没有标准答案的。如果上面那个爱迟到的女朋友就是屡教不改你要怎么办呢？你可以选择扬长而去，也可以选择包容承受。但毫无疑问，你考虑的肯定不只是迟到这个问题。她的性格、颜值、知识、财富、你们相处的每个瞬间都可能影响你最后的决定。但这么多的信息，目前甚至是无法通过prompt传递给GPT模型的（GPT模型只能处理一定长度的输入）。这个层面看，它跟人类心理咨询师还是有很大的差距。
+It has a token limit, which I believe is 4097. The total number of tokens used is equal to your message and GPT’s response combined. You can see how many tokens your prompt uses here: https://beta.openai.com/tokenizer
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-16 10:25:03 +0000 UTC'>February 16, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to ChatGpt能成为恋爱大师吗？" href="https://www.yuanhao.site/post/2023-02-16-chatgpt8/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">SEO手记
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近在看一些SEO相关的材料，比较主要的是一本名为《SEO实战密码》的书，虽然看了不少但又好像没学到什么。
+于是我决定用一个小网站，故事101，来进行实践，这个网站是之前做的讲故事小程序的延续，希望通过这个网站能为小程序吸引到更多的用户。
+网站优化 meta信息补充完整，title中增加类别词，找到了一个很棒的插件next seo 在尽可能多的地方插入超链接，例如模仿维基百科在内容中插入关键词的超链接 因为内容都是爬的，准备借助算法来提升内容原创性 外链建设 在这个博客站先加上了一个链接 </p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-10 10:25:03 +0000 UTC'>February 10, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to SEO手记" href="https://www.yuanhao.site/post/2023-02-10-seo/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">一月读书笔记：寻找目标
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>又好久没有写东西了，主要是因为工作和生活都比较忙碌。这段时间ChatGPT比较火，也在知乎参与了一些讨论。作为一个NLP圈内人，其实早在大众之前我们就已经关注到这个模型。不过除了模型的强大，OpenAI CEO奥特曼的生平事迹也很有冲击力，恰巧也和今天想写的东西有点关系。
+在陪产假和春节假期期间，除了初为人父的喜悦，最大的收获就是读了两本书。一本是冯友兰先生的《中国哲学简史》，另一本是畅销书《认知觉醒》。说实话哲学简史这本读起来还挺费力的，因为好多诸子百家的观点是直接引用文言文且没有注释。也正是因为这个原因，才挑了一本现代书籍搭配起来阅读，好在《认知觉醒》还挺不错。
+按照《认知觉醒》里的方法，读完一本书要留下一些最打动自己的东西，写出来。所以今天这篇的主题也很聚焦，就是“寻找目标”。哲学简史里讲到儒家的时候，有一节是《知命》，里面引用了论语里的名句
+君子坦荡荡，小人长戚戚
+不知道大家是否准确知道这句话的意思，翻译成汉语是“君子光明磊落、心胸坦荡，小人则是斤斤计较，患得患失。”。在书里，冯先生更多讨论的是个人和外界的关系，知命的人可以
+竭尽己力，成败在所不计
+但我认为这里的命，也和自身有关，是自己的使命。唯有找到使命，方有竭尽己力的方向。孔子自然是知道自己的使命，他希望在乱世之中重建礼乐秩序，而且一生为之奋斗。奥特曼身上我感觉也有这种气质，才能在大模型这条路上坚持下来。
+反观自己，在这方面还有很大的欠缺。因为没有找到”使命“，只能退而保证”先把每件事做好“，虽然看上去也能取得一些小成果，但这种模式很难产生系统性的大成果，也更容易计较当前的得失。要捡多少芝麻才能拼成一个西瓜？这种模式的天花板实在太低。
+也不是没想过要寻找可以作为使命的目标，但之前确实犯了一些错误，导致效果不佳。比较大的一个问题是“过犹不及”、“眼高手低”——太想定一个宏大的目标了。我们能看到的成功案例往往是非常难得的，几千年只出了一个孔子，这么多公司也只有一个乔布斯，如果一上来就把他们的成就作为标准去找目标是不合适的。特别是像我这种早年求学经历比较顺利的人，很容易有这个问题，总想着、等着干大事，觉得一些当下可以干的事情不够性感。其结果就是没有目标，先随大流，让自己保持选择的权利。我现在感觉可以逐渐提高目标的难度，先尝试定2-5年内的目标，再扩展到10年、15年。
+《认知觉醒》里有一节专门介绍了如何寻找人生使命，虽然有些泛（比较适合用来定15年甚至更长时间的大目标），大家也可以参考
+真正的觉醒者往往会有意无意地用感知力来代替思考力，比如《美好人生运营指南》一书的作者一稼就提出了6条寻找人生使命的建议。
+这个世界有很多事情可以做，你最想帮助哪些人？ 什么事让你废寝忘食？ 你在做什么事情的时候最让自己感动？ 你最让人感动的时刻是什么？ 如果没有任何经济压力，你会如何度过余生？ 闲暇的时候，你关注最多的是哪方面的信息？ 今年，给自己定一个预目标，就是找到未来5年的目标。
+2023.2.12更新 这几天朋友圈都在传精仪师兄们刚上市的公司禾赛，点进李师兄朋友圈，他对自己上市演讲视频配的文字是
+To achieve great things, two things are needed: A PLAN, AND NOT QUITE ENOUGH TIME.</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-09 10:25:03 +0000 UTC'>February 9, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 一月读书笔记：寻找目标" href="https://www.yuanhao.site/post/2023-02-09-%E4%B8%80%E6%9C%88%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%AF%BB%E6%89%BE%E7%9B%AE%E6%A0%87/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ChatGPT在内容创作行业，依据现有的法律，它创作的内容是否享有著作权？如不能，如何界定内容的归属？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>很实际的问题，之前并不是很了解。看了一些资料勉强答一波。
+首先，我国《著作权法》所保护的对象是“作品”，其定义在第3条进行了列明，即“文学、艺术和科学领域内具有独创性并能以一定形式表现的智力成果”。在这里跟本题最相关的一个作品属性是“独创性”。根据资料2的论述，法律界对目前AI的认识我感觉还是比较到位的，即当前的所谓AI并不具备创造性，因此ChatGPT之类的AI工具，性质为“帮助自然人进行创作活动的工具”，其自身无法自主思考，不是进行自主创作主体，AI软件对文章的生成是开发者意志的延伸。
+《著作权法》第2条规定了“中国公民、法人或者非法人组织的作品，不论是否发表，依照本法享有著作权”。因此著作权仅能由民事主体享有，但AI并不是民事主体，因此AI本身无法作为作品的作者，但使用AI的人是可以的。
+至于人是否可以享有AI生产作品的著作权，也要根据实际情况判定。主要的依据也是上面的独创性。
+下面是两个案例，第一个是不享有著作权的
+在北京知识产权法院于2020年审结的“北京菲林律所诉百度公司著作权侵权案”中，菲林律所发布的大数据报告被他人在未经同意的情况下转载至百度百家号，菲林律所由此认为百度公司侵犯了其著作权中的信息网络传播权，遂向百度公司主张侵权赔偿。法院经审理，认为菲林律所所提交的大数据报告仅是根据现有数据搜集并分析而形成，不具备独创性，不属于《著作权法》的保护范围。
+第二个是受著作权保护的
+2018年8月，腾讯公司在其下属网站中发布了一篇由腾讯旗下人工智能写作软件Dreamwriter生成的新闻，而该文在当日即被网贷之家转载，腾讯公司遂向法院起诉。法院经审理认为，相关文章“外在表现符合文字作品的形式要求，其表现的内容体现出对当日上午相关股市信息、数据的选择、分析、判断，文章结构合理、表达逻辑清晰，具有一定的独创性”，同时认为“该文章的表现形式是由原告主创团队相关人员个性化的安排与选择所决定的，其表现形式并非唯一，具有一定的独创性”，并最终确认该篇由人工智能软件生成的文章属于《著作权法》下的“文字作品”，受到我国法律的保护。
+最后，我想说，权利和义务是伴随的。ChatGPT之类的工具，经过大量语料训练，有一定概率会有侵犯他人著作权的情况出现。作为使用者，平常玩玩无所谓，一旦用于正式文本的产出一定要把好关。避免自己陷入侵权的窘境。
+参考资料
+https://www.sohu.com/a/592470873_398071
+http://www.anlilaw.com/100031/200
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-03 10:25:03 +0000 UTC'>February 3, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to ChatGPT在内容创作行业，依据现有的法律，它创作的内容是否享有著作权？如不能，如何界定内容的归属？" href="https://www.yuanhao.site/post/2023-02-03-chatgpt6/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://www.yuanhao.site/post/">
+      «&nbsp;Prev&nbsp;1/8
+    </a>
+    <a class="next" href="https://www.yuanhao.site/post/page/3/">Next&nbsp;3/8&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

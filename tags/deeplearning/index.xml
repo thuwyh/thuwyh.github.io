@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Deeplearning on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/deeplearning/</link>
+    <description>Recent content in Deeplearning on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 10 Mar 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/deeplearning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>编译安装Tensorflow</title>
+      <link>https://www.yuanhao.site/post/review/2017-03-10-tensorflow/</link>
+      <pubDate>Fri, 10 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-03-10-tensorflow/</guid>
+      <description>如果采用官方包安装Tensorflow的话，有许多针对平台的优化都没有打开，会导致性能下降。因此，最佳的安装Tensorflow的方法是从源码编译。整个过程大概如下。
+安装Bazel 安装JDK8 $ sudo add-apt-repository ppa:webupd8team/java $ sudo apt-get update $ sudo apt-get install oracle-java8-installer 下载安装包的时候速度极慢，打开VPN快了许多。。
+安装其他依赖项 sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel 我还修改了系统的默认python到python3版本 ##配置安装Tensorflow 下载Tensorflow的git仓库
+git clone https://github.com/tensorflow/tensorflow 进到目录里，checkout正确的版本
+git checkout r1.0 生成编译配置
+$ cd tensorflow # cd to the top-level directory created $ ./configure 编译pip文件
+bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package 这步执行完后会生成一个脚本，用它可以生成whl包。执行
+bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg 生成包，包存在/tmp/tensorflow_pkg里，包名是自动的。然后再用pip安装这个包
+sudo pip install /tmp/tensorflow_pkg/***.whl 其中***就是生成的包名，到刚才的目录下看一下就知道了。
+##测试
+既然tensorflow可以直接用pip方便地安装，为什么要千辛万苦编译呢？因为官方编译好的软件包为了提高通用性基本不可能发挥硬件的全部性能，很多优化开关都没有打开。而我们自己编译的版本则会根据硬件进行优化。为了测试性能差别，用以下简单的卷积网络在MNIST数据集上进行实验。
+import tensorflow as tf import time def weight_variable(shape): initial = tf.</description>
+    </item>
+  </channel>
+</rss>

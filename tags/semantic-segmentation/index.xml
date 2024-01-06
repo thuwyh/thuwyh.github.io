@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Semantic Segmentation on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/semantic-segmentation/</link>
+    <description>Recent content in Semantic Segmentation on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 30 May 2021 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/semantic-segmentation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tricks of Semantic Segmentation</title>
+      <link>https://www.yuanhao.site/post/2021-05-30-segmentation-tricks/</link>
+      <pubDate>Sun, 30 May 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-05-30-segmentation-tricks/</guid>
+      <description>{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} HuBMAP - Hacking the Kidney {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+Last month, I spent some time doing the “HuBMAP - Hacking the Kidney” competition on Kaggle. The goal of this competition is the implementation of a successful and robust glomeruli FTU detector. It is a classical binary semantic segmentation problem. This is my second semantic segmentation competition, and our team ended up in 43rd place and won a silver medal.</description>
+    </item>
+  </channel>
+</rss>

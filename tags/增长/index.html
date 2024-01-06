@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>增长 | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/%E5%A2%9E%E9%95%BF/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/%E5%A2%9E%E9%95%BF/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="增长" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/%E5%A2%9E%E9%95%BF/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="增长"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    增长
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">《增长黑客》阅读笔记
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>《增长黑客》阅读笔记 最近一年算是在做一个从0开始的项目，用户量看上去涨了不少，但也遇到了很多问题。有时候对问题的原因会有些模糊的猜测，也会想想怎么去解决，但大多不成体系也没有机会验证。
+看这本书的时候感觉很亲切，因为写到了很多遇到过的问题；同时又学到了很多东西，因为它不仅很有体系，还引申到一些心理学、行为学的东西去解释现象背后的原因。它像一面镜子，没有镜子你也知道自己长什么样子，但多照镜子还是能发现自己的很多问题。这篇文章记录一些阅读之后的收获和思考。
+数据驱动 这本书很强调ab实验和深挖数据，这两个概念在过去几年随处可见，甚至有种被奉为圭臬的感觉。之前看到一个说法，只要ab的速度足够快，就不需要产品经理了。但最近我看到不少关于数据驱动的反思，亲身经历后也更深刻地认识到要做好，特别是在产品的增长期（初期）做好数据驱动是很难的。不仅样本少、变量多，很多团队甚至连像样的ab工具都没有。
+在做数据分析的时候我认为有两个大的gap，一个是主观预期和用户实际行为的gap，另一个是当前用户群和目标用户群的gap。 前一个像是一个症状明显的感冒，相对好解决。第二个却像一个难以发现的慢性病，很难搞。 因为第二个gap的存在，数据驱动像是在迎合用户，而产品驱动是在寻找“对味”用户。数据驱动可能带来短期的成功，但长期结果也许是一个没有灵魂的平庸产品。而有个性的产品一旦找到能发生共振的用户，应该能产生更紧密的链接。说到底这是一个选择问题，并不存在silver bullet。
+我个人比较倾向于把数据作为工具，而不是驱动力。或者换一个角度，两种平庸的方案进行ab，并不会让你选到一个牛逼的方案。必须有一个不依赖结果的驱动力让产品不断提升，团队必须自己为送入ab的方案质量负责。
+啊哈时刻 “啊哈时刻”就是产品使用户眼前一亮的时刻，是用户真正发现产品核心价值——产品为何存在、他们为何需要它以及他们能从中得到什么——的时刻
+找到或定义产品的啊哈时刻，然后引导用户到达啊哈时刻应该是这本书里最重要的目标之一。我觉得这是一个很有效的思维模型，但好像在我们的产品里没有被很好地执行。
+因为多线作战、语言不通、缺少用户研究团队，我们对产品在市场的反馈一直没有全面的了解。前几天问同事什么是我们的啊哈时刻，大家答案的方向差不多，但也没有完全达成共识。
+而在引导用户到达啊哈时刻这方面我们也不够努力。例如用户的地点对我们至关重要，但目前的设计只会在ta第一次onboard的时候询问一次，后面就放任自流了。而且之前版本的第一次询问我觉得也不是很好。
+这里有一个我一直没想明白的问题：不同渠道来的用户在提供地点的比例上有很大的差别。虽然之前产品同事给过一个解释，但我不是很能理解。同理心真的是对产品经理一个重要且难得的能力，根据产品猜测不同渠道、不同步骤的流失率可能是一个不错的考察办法。
+储值 大体上讲，用户往产品放入的个人信息或财物被称为储值，储值的形式有很多，例如用户在印象笔记写的笔记，在微信的联系人，在亚马逊购买prime会员的年费等等。储值能很有效地增加用户的粘性。
+比较可惜的是我们的产品几乎没有提供储值的途径（似乎只有收藏夹一个），就像前面说的，我们对用户信息的询问非常保守；用户没有办法花钱来获得增值体验；也没有在产品里设计任何回报和奖励。当用户过了蜜月期，基本上可以毫无负担地离开我们的产品。
+要构建出储值体系对于我们现在的产品其实是比较困难的，但这个真的蛮重要，毕竟我们不具备什么不可替代性，需要多一些和用户建立物质和情感连接的渠道。
+产品雕琢 这个话题散落在本书的很多地方，例如
+找到语言语市场的匹配点，优化广告语 根据三个根本任务：传达相关性，展示产品价值和提供明确的行为召唤来设计landing page。 少并不总是多，便宜的价格不总是能带来更多的用户，因为面人们可能将价格视作质量的信号 根据“相对论”来设计烟幕弹套餐优化定价，例如《经济学人》网络版杂志全年订阅价是59美元，纸质版杂志全年是125美元（烟幕弹），而纸质版加网络版的合订价也是125美元。这一设置可以大大降低用户选59美元套餐的比例而增加用户选购第三种套餐的比例。 我是在微信读书上读的这本书，不得不说微信免费提供这些书籍真的很赞，后面准备再读一下书里提到的《怪诞行为学》和《设计心理学》，读完了再跟大家交流。
+微信读书显示我3小时22分读完的这本书，感觉比我实际花的时间短一些。这种夸大用户单位时间收益的方式也许是他们的一个增长策略？
+团队和工作流 书的第一部分叫“方法”，确实相对比较抽象。首先谈到的是如何构建增长团队，
+大方向是要打破筒仓结构，构建职能齐备的复合型增长团队
+增长团队里应当有对企业战略和目标有深刻了解的人，有能够进行数据分析的人，也要有能够对产品的设计、功能或营销方式进行改动并通过编程测试这些改动的工程师
+对于这一点其实对于创业小团队问题不大，因为还没有像大公司那样的部门墙。</p>
+  </div>
+  <footer class="entry-footer"><span title='2021-09-21 10:25:03 +0000 UTC'>September 21, 2021</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 《增长黑客》阅读笔记" href="https://www.yuanhao.site/post/2021-09-21-%E5%A2%9E%E9%95%BF%E9%BB%91%E5%AE%A2%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

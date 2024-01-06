@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>指令微调 on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83/</link>
+    <description>Recent content in 指令微调 on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 25 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/%E6%8C%87%E4%BB%A4%E5%BE%AE%E8%B0%83/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[大模型补课]模型及训练方法</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/</link>
+      <pubDate>Sat, 25 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/</guid>
+      <description>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 这是大模型补课的第三篇文章，主要关注模型及其训练方法。做算法的人往往最喜欢看模型相关的东西，这期包含的内容也确实很有趣，不需要技术背景也能看懂。
+Encoder vs Decoder 在模型层面，我认为大模型时代最重要的一个变化就是从前几年的Encoder为主变成了Decoder Only占据绝对的主流。相对应的，自然语言生成问题取代了自然语言理解问题成为了主流，并且是在用生成这种范式统一了理解问题。
+transformer编码器和transformer解码器的主要区别在于它们如何处理输入和输出序列。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 最开始的时候Transformer的Encoder和Decoder是成对出现的 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+Transformer编码器处理输入序列（例如句子），并将其转换为一组隐藏表示，以捕获序列的含义。编码器由一堆相同的层组成，每个层对输入序列应用自注意力机制和前馈神经网络。
+另一方面，Transformer解码器基于编码器产生的隐藏表示生成输出序列。它也由类似的层堆叠组成，但每个层还关注编码器产生的隐藏表示，以包含输入序列的信息。解码器还使用自注意力机制以自回归方式生成输出序列，这意味着它逐个标记地生成，条件是它已经生成的标记。
+总之，虽然transformer架构中的编码器和解码器都使用自注意力机制和前馈神经网络，但编码器处理输入序列，解码器通过关注编码器产生的隐藏表示来生成输出序列。
+当下火爆的大语言模型几乎都使用的是decoder only的结构。在知乎有一个问题为什么现在的LLM都是Decoder only的架构？，非常推荐大家阅读。GPT4发布之后，其处理context的能力从3.5的4k一下跃升到32k，不知道openai是不是又加入了encoder。
+涌现、Scaling Law和科学炼丹 模型的规模增大无疑是最近AI进步的重要推动力。目前像GPT3.5这样的语言模型包含了1750亿个参数，相比于人脑中的神经连接其实还小了差不多一个数量级。模型的大小和其能力的关系实际是一个非常有指导意义的值得研究的问题。
+涌现（emergent abilities）是在2022年中的论文Emergent Abilities of Large Language Models 提出的概念，是指在大模型中出现的而在小模型里没有出现的能力，用咱们熟悉的话说就是&amp;quot;量变引起质变&amp;quot;，而且这种现象是不可预测的。这种不可预测性给模型的开发带来了很大的麻烦，因为训练一个100B以上的模型成本是非常高昂的。这篇论文里列举了好几个任务里涌现的案例。
+Emergence is when quantitative changes in a system result in qualitative changes in behavior. &amp;ndash;Nobel prize-winning physicist Philip Anderson
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} Few-shot任务里体现出来的涌现现象 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+实际上，早在几年前人们就训练过巨大的模型，但那时候并没有出现现在这么强的模型。例如可能是世界上最喜欢大模型的公司Nvidia，在2022年训练过一个530B的超大模型MT-NLG，但可能知道这个模型的人都很少。Deepmind的论文Training Compute-Optimal Large Language Models讨论了这个问题，并给出了结论：之前的模型都训练不充分，把数据量提上去小模型也会有大能力。还给出了一套算力消耗一定的情况下合理分配模型规模和训练数据多少的方法论。
+{: .align-center style=&amp;ldquo;width:80%&amp;rdquo;} 典型的大模型参数量及训练数据量，Chinchilla参数少得多但性能更强 {: .</description>
+    </item>
+  </channel>
+</rss>

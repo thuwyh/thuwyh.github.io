@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>电商 on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/%E7%94%B5%E5%95%86/</link>
+    <description>Recent content in 电商 on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 16 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/%E7%94%B5%E5%95%86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>面向电商场景的语言模型E-BERT</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2020-09-16-ebert/</link>
+      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2020-09-16-ebert/</guid>
+      <description>最近跟不少做电商NLP的朋友们聊天，有不少收获。我之前从来没想过【搜索】在电商里的地位是如此重要，可能GMV的50%以上都是从搜索来的。巨大的经济价值也极大地推动了技术的发展，他们的工作做得很细致，毕竟一个百分点的点击率后购买率提升也许对应的就是几百亿的成交额。
+其实之前做的汽车领域NLP工作跟电商有很多相似的地方，场景先验都非常重要。直接使用开放域语料预训练的语言模型效果并不好。我们也尝试过一些方法，例如用本领域语料训练语言模型，结合一些词库词典等等。今天介绍最近看到的一篇针对电商场景调优BERT的论文《E-BERT: Adapting BERT to E-commerce with Adaptive Hybrid Masking and Neighbor Product Reconstruction》，其中的一些方法应该对细分领域NLP都有一些启发。
+方法 论文的创新方法主要有两个：Adaptive Hybrid Masking（AHM，自适应混合掩码）和Neighbor Product Reconstruction（NPR，相似商品重构）。
+E-BERT总览 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+AHM 第一个方法AHM其实是对已有掩码方式的改进。原始版本的BERT采用的是随机mask，这个大家应该都比较清楚。这种mask方式针对的是token，而众所周知token是由单词通过wordpiece tokenizer分割而来。所以这种方式遮盖住的可能是单词的一个部分，学习这种类似看三个字母猜剩下四个字母的任务不是很符合大家的直觉。随后就诞生了更加符合人类认知的Whole Word Masking，这个方法就是说要遮就遮整个词。这里用一个网上的例子帮大家理解
+Input Text: the man jumped up , put his basket on phil ##am ##mon &amp;#39; s head Original Masked Input: [MASK] man [MASK] up , put his [MASK] on phil [MASK] ##mon &amp;#39; s head Whole Word Masked Input: the man [MASK] up , put his basket on [MASK] [MASK] [MASK] &amp;#39; s head philammon是一个词，他会被tokenizer分解成三个token，这时就体现了普通mask和WWM的区别。</description>
+    </item>
+  </channel>
+</rss>

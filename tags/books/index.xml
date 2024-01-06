@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Books on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/books/</link>
+    <description>Recent content in Books on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 26 Feb 2023 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/books/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>大规模语言模型的基石数据集</title>
+      <link>https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/</link>
+      <pubDate>Sun, 26 Feb 2023 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/</guid>
+      <description>最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉有很多课需要补。恰好昨天Meta发了新的大模型论文，浏览了一下发现很适合作为补课的切入点。
+今天这部分是关于预训练使用的数据集，是重中之重，说数据是当代AI的基石一点也不为过。GPT3用的数据其实没有公开，Meta这次论文里提到的应该算是开源模型里一个最全的版本。他们使用的数据如下表所示，我们一一来看一下。
+Dataset Sampling prop. Epochs Disk size CommonCrawl 67.0% 1.10 3.3 TB C4 15.0% 1.06 783 GB Github 4.5% 0.64 328 GB Wikipedia 4.5% 2.45 83 GB Books 4.5% 2.23 85 GB ArXiv 2.5% 1.06 92 GB StackExchange 2.0% 1.03 78 GB CommonCrawl 占比最大的数据集，他们的网站是https://commoncrawl.org/。我感觉这真是一个伟大的项目，7年时间爬了超多的互联网网页，涵盖了40种语言。
+CommonCrawl网站截图 {: .align-caption style=&amp;ldquo;text-align:center;font-size:smaller&amp;rdquo;}
+根据他们博客的最新数据，2023年二月版的数据包含了400TB的数据（纯文本的数据是9个多tb），三十多亿个网页。
+The crawl archive for January/February 2023 is now available! The data was crawled January 26 – February 9 and contains 3.</description>
+    </item>
+  </channel>
+</rss>

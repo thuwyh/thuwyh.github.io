@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>NLP | 多头注意力</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="https://www.yuanhao.site/tags/nlp/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://www.yuanhao.site/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.yuanhao.site/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.yuanhao.site/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.yuanhao.site/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.yuanhao.site/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://www.yuanhao.site/tags/nlp/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="NLP" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.yuanhao.site/tags/nlp/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="NLP"/>
+<meta name="twitter:description" content=""/>
+
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.yuanhao.site" accesskey="h" title="多头注意力 (Alt + H)">多头注意力</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://www.yuanhao.site/archive" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.yuanhao.site/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="https://www.yuanhao.site">Home</a>&nbsp;»&nbsp;<a href="https://www.yuanhao.site/tags/">Tags</a></div>
+  <h1>
+    NLP
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">今天被OpenAI爆了
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>今天第一次体验到来自大语言模型的压力。
+最近在做一个语义匹配的小任务，选择的方案是用2021年的SOTA模型SimCSE在我们的领域数据上先进一步预训练，然后再用任务数据finetune降维。前几天的时候还自我感觉良好，因为比之前的模型效果好，还修复了老语言模型的一些明显badcase。
+但是今天，我们用openai的embedding模型也试了一下，recall指标直接翻了一倍。当时看到结果我都惊呆了。这个模型一千个token只要0.0004美元，相当的便宜，而且开箱即用。
+之前我看到网上帖子说NLP工程师失业啥的还觉得有点夸张，现在感觉还真有可能。
+首先这个事情是有正反馈的，作为一款公开的产品，而且这么便宜，你不用别人也会用，你如果没法超过他（现在看起来确实不容易），那就只能也用，不然产品竞争力就会出问题。
+一旦大规模用，那很多NLP问题的处理范式真的会改变，以前大家在不同场景finetune类似bert这样的小模型，但现在可能会变成在OpenAI embedding基础上finetune最上面的输出层，例如分类层。一个底座可以支撑好几个上层需求。这样的话需要的人力大大减少，公司的inference负担也大大降低。虽然在OpenAI那花了些钱，但算下来大概率是比原来划算的。
+当然这样的方案也有一些问题，例如公司的数据就都让OpenAI知道了，并且OpenAI目前不太稳定，稳定性上有点不可控。
+那作为公司，感觉除了之前大家都看到的在NLG上投入大模型这条独木桥，未来在NLU上投入大模型的应该会有很多。自己跑个10B量级的模型作为底座，做到OpenAI的8、9成应该是个比较好的选择。朋友们，赶紧学起来啊，不然真要成为纺织女工了。</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-28 00:00:00 +0000 UTC'>March 28, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 今天被OpenAI爆了" href="https://www.yuanhao.site/post/thoughts/2023-03-28-impressed_by_openai/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">[大模型补课]模型及训练方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 这是大模型补课的第三篇文章，主要关注模型及其训练方法。做算法的人往往最喜欢看模型相关的东西，这期包含的内容也确实很有趣，不需要技术背景也能看懂。
+Encoder vs Decoder 在模型层面，我认为大模型时代最重要的一个变化就是从前几年的Encoder为主变成了Decoder Only占据绝对的主流。相对应的，自然语言生成问题取代了自然语言理解问题成为了主流，并且是在用生成这种范式统一了理解问题。
+transformer编码器和transformer解码器的主要区别在于它们如何处理输入和输出序列。
+{: .align-center style=“width:80%”} 最开始的时候Transformer的Encoder和Decoder是成对出现的 {: .align-caption style=“text-align:center;font-size:smaller”}
+Transformer编码器处理输入序列（例如句子），并将其转换为一组隐藏表示，以捕获序列的含义。编码器由一堆相同的层组成，每个层对输入序列应用自注意力机制和前馈神经网络。
+另一方面，Transformer解码器基于编码器产生的隐藏表示生成输出序列。它也由类似的层堆叠组成，但每个层还关注编码器产生的隐藏表示，以包含输入序列的信息。解码器还使用自注意力机制以自回归方式生成输出序列，这意味着它逐个标记地生成，条件是它已经生成的标记。
+总之，虽然transformer架构中的编码器和解码器都使用自注意力机制和前馈神经网络，但编码器处理输入序列，解码器通过关注编码器产生的隐藏表示来生成输出序列。
+当下火爆的大语言模型几乎都使用的是decoder only的结构。在知乎有一个问题为什么现在的LLM都是Decoder only的架构？，非常推荐大家阅读。GPT4发布之后，其处理context的能力从3.5的4k一下跃升到32k，不知道openai是不是又加入了encoder。
+涌现、Scaling Law和科学炼丹 模型的规模增大无疑是最近AI进步的重要推动力。目前像GPT3.5这样的语言模型包含了1750亿个参数，相比于人脑中的神经连接其实还小了差不多一个数量级。模型的大小和其能力的关系实际是一个非常有指导意义的值得研究的问题。
+涌现（emergent abilities）是在2022年中的论文Emergent Abilities of Large Language Models 提出的概念，是指在大模型中出现的而在小模型里没有出现的能力，用咱们熟悉的话说就是&#34;量变引起质变&#34;，而且这种现象是不可预测的。这种不可预测性给模型的开发带来了很大的麻烦，因为训练一个100B以上的模型成本是非常高昂的。这篇论文里列举了好几个任务里涌现的案例。
+Emergence is when quantitative changes in a system result in qualitative changes in behavior. –Nobel prize-winning physicist Philip Anderson
+{: .align-center style=“width:80%”} Few-shot任务里体现出来的涌现现象 {: .align-caption style=“text-align:center;font-size:smaller”}
+实际上，早在几年前人们就训练过巨大的模型，但那时候并没有出现现在这么强的模型。例如可能是世界上最喜欢大模型的公司Nvidia，在2022年训练过一个530B的超大模型MT-NLG，但可能知道这个模型的人都很少。Deepmind的论文Training Compute-Optimal Large Language Models讨论了这个问题，并给出了结论：之前的模型都训练不充分，把数据量提上去小模型也会有大能力。还给出了一套算力消耗一定的情况下合理分配模型规模和训练数据多少的方法论。
+{: .align-center style=“width:80%”} 典型的大模型参数量及训练数据量，Chinchilla参数少得多但性能更强 {: ....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-25 00:00:00 +0000 UTC'>March 25, 2023</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to [大模型补课]模型及训练方法" href="https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-model/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">[大模型补课]模型训练关键工具包
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前情提要：
+[大模型补课]当代AI的基石数据集 [大模型补课]当代语言模型的评价体系 [大模型补课]模型及训练方法 这是大模型补课的第四篇文章，主要关注模型背后的训练工具。
+并行：大模型训练的必要手段 如果你使用过多张GPU训练模型，那应该对并行不陌生。最基本并行方式有以下两种
+DataParallel数据并行（DP）。这也是最常用并行方法，在pytorch里有DP和DDP两种原生方式，使用起来都很方便。这种并行方式最好理解，模型在每个worker上都有完整的一份，只是给他们喂的数据不同。在每个worker算完后，需要一个同步过程，来综合大家的梯度信息，再更新模型。数据并行主要解决训练速度的问题，可以在单位时间内学习更多的样本。 ModelParallel模型并行（MP）。模型并行指的是把模型分拆到多个GPU上，主要解决模型太大而无法放到一个GPU上的问题。以目前爆火的大规模语言模型为例，一个175B的GPT模型，整个载入的话需要 $$175*10^9$$ 个参数，每个参数用4个字节，则需要700G的存储空间，目前没有听说过哪个GPU可以放得下，只能把一个模型放到好几张卡上。模型的拆法也有多种，可以把不同层放不同卡，这种称为垂直拆分；也可以在同一层也拆开，这种被称为水平拆分。 以下再介绍几个模型并行的细分方法。
+TensorParallel张量并行（TP）。每个张量被分成多个块，因此不是整个张量驻留在单个 GPU 上，而是每个张量片段驻留在其指定的 GPU 上。在处理期间，每个片段在不同的 GPU 上分别并行处理，结果在步骤结束时进行同步。这就是所谓的水平并行，因为拆分发生在水平层面上。 PipelineParallel流水线并行（PP）。模型在多个 GPU 上垂直（层级）拆分，因此仅将模型的一个或几个层放置在单个 GPU 上。每个 GPU 并行处理管道的不同阶段，并处理一小批数据。流水线并行的主要问题是因为前后依赖而带来的GPU等待（下图中的Bubble区域），这个问题通常用更小批量的数据来缓解。 现代化的并行训练方法以上几种并行方法的有机组合，也就是传说中的三维并行（DP&#43;TP&#43;PP)。
+有关并行的介绍，推荐阅读Huggingface的这篇文档。
+Megatron-LM 提到模型并行，不得不提的软件包是英伟达的Megatron-LM。但实际在这个开源大模型日新月异的今天，需要使用这个库的人也是很少的。这里根据论文介绍一下他的原理，还是挺有趣的。
+目前的语言模型领域，Transformers结构已经是绝对的主流，在这种结构里，主要有两种building block，一个是多层感知机MLP，另一个是自注意机制。
+全连接层可以理解为矩阵乘法 $$Y=XA$$ ，其中 $$A$$ 是参数。第一种并行法是把这个参数按行来分割，而把输入按列分割，假设分成两个小矩阵
+$$X=[X_1, X_2],A=[\begin{matrix}A_1\A_2\end{matrix}]$$
+这样 $$Y=X_1A_1&#43;X_2A_2$$ ，如果全连接后面跟一个非线性激活函数，例如GeLU，那么会遇到下面的问题
+$$GeLU(XA)\ne GeLU(X_1A_1&#43;X_2A_2)$$
+所以只能把A按照列分为 $$[A_1, A_2]$$ ，这样可以得到
+$$Gelu([Y_1,Y_2])=[GeLU(XA_1), GeLU(XA_2)]$$
+整个过程可以用下图表示
+自注意力机制的并行方法是MLP的扩展，具体的说就是把多个注意力头分到不同的GPU去执行。
+上面只是一些模型并行（准确的说是张量并行）的基本思路。并行的时候除了考虑减少单个显卡显存的使用，还要权衡额外产生的通信负担，是个很有意思的领域。我也了解不多，感兴趣的读者可以自己再读一些资料。
+在Megatron论文里，他们合并使用了数据并行和张量并行，从而实现快速训练大模型的目标。
+We efficiently trained transformer based models up to 8.3 bil- lion parameter on 512 NVIDIA V100 GPUs with 8-way model parallelism and achieved up to 15....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-25 00:00:00 +0000 UTC'>March 25, 2023</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to [大模型补课]模型训练关键工具包" href="https://www.yuanhao.site/post/deeplearning/2023-03-25-ai-training-tools/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">大规模语言模型的评价方法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>上一篇文章介绍了大模型是用什么数据训练的，这一篇文章重点来看大模型的评价方法。Chatgpt这轮出圈很大原因是对话这种评价方式非常直观，普通大众就可以从对话质量看出来现在的模型比之前的&#34;人工智障&#34;要强很多。但真正开发大模型肯定不能用这种方式，不仅效率低、价格高，还存在不小的主观因素。这篇文章就来总结一下大模型的评价方式。
+还是先来看LLaMA论文里使用的评价指标。LLaMA里一共使用了**20种数据集（或任务）**来评估和对比模型。这些任务可以分为两大设定：零样本任务和少样本任务，涵盖以下几个大类
+常识推断 闭卷问答 阅读理解 数学推理 代码生成 大规模多任务语言理解 下面一一来看。
+常识推断 这个任务用了8个数据集，分别是BoolQ、PIQA、SIQA、HellaSwag、WinoGrande、ARC easy, ARC challenge和OpenBookQA。不同数据集有不同的形式，包括填空、威诺格拉德模式挑战（英语：Winograd Schema Challenge，缩写WSC）、多选问答。这些数据集在评价中都属于零样本，就是让模型通过预训练来直接回答问题。
+一个威诺格拉德模式的例子为：“	市议会拒绝给示威者颁发许可，因为他们[担心/宣扬]暴力。	” 当这句陈述中使用“担心”一词时，前面的“他们”指的是市议会。而当使用“宣扬”一词时，“他们”所指的则变成了示威者。人类通过常识可以很简单地看出两种情况下“他们”所指分别为何，但对于机器而言这个问题则十分困难。
+{: .align-center style=“width:80%”} 不同模型常识推断结果比较。​这种常识问题现在的模型基本都能对个​六成以上。 {: .align-caption style=“text-align:center;font-size:smaller”}
+闭卷问答 这个任务包括两个数据集Natural Questions和TriviaQA。所谓闭卷，是相对于数据集原来的设定来说的。已Natural Questions为例，原来的设定是模型可以访问相关维基百科文本，然后根据百科内容回答问题。然而在评价大语言模型的时候，就不给看这个维基页面了。闭卷问答包括zero shot和few shot两种设定。zero shot很好理解，跟上面的常识推断很像，下面是论文附录里few shot的例子，实际上就是列几个问答对作为context。我目前还不太懂这种无关问答对对模型回答问题有什么帮助。
+Context → Answer these questions: Q: Who sang who wants to be a millionaire in high society? A: Frank Sinatra Q: Who wrote the book the origin of species? A: Target -&gt; Charles Darwin
+阅读理解 阅读理解和前面提到的开卷问答有一点像。只是常见的阅读理解数据集用于支撑问题回答的背景材料比较短（相比于NQ里的维基页面）。在LLaMA论文里，使用的是RACE数据集，这个数据集对于做过阅读理解的朋友一定不陌生，是为初高中中文学生设计的英语阅读理解题。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-03-01 10:25:03 +0000 UTC'>March 1, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 大规模语言模型的评价方法" href="https://www.yuanhao.site/post/deeplearning/2023-03-01-ai-benchmark/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">如何使用ChatGPT算命
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>可能是网站slogan：AI算命，朋克养生的关系，最近我看google search console后台总是有很多&#34;Chatgpt算命&#34;这个查询导致的网站展现。 既然大家有这个需求，我就实践SEO里面的方法，上网搜索了一下如何使用chatgpt算命，总结在这个文章里。
+好多chatgpt算命的查询 {: .align-caption style=“text-align:center;font-size:smaller”}
+基本上，这要用到chatgpt的**“角色扮演”**功能，让它站在算命者的角度回答你的问题。
+先从英文开始，英文里算命先生叫做fortune teller，那么我们可以这么问chatgpt
+Act like a coffee fortune teller, I can see a cat shape in the corner of the cup, what is its meaning?
+翻译成中文就是：
+像个算命先生一样回答我，我在杯子的角落看到了一个猫的形状，这意味着什么？
+英文版的回答是
+The cat shape in the corner of your cup is a sign of good luck and protection. It is a reminder to stay alert and to be aware of any potential danger or obstacles that may arise in your life....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-28 10:25:03 +0000 UTC'>February 28, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 如何使用ChatGPT算命" href="https://www.yuanhao.site/post/deeplearning/2023-02-28-fortune-teller/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">大规模语言模型的基石数据集
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近AI大火，作为一名稍微有点赶不上趟的NLP工程师，感觉有很多课需要补。恰好昨天Meta发了新的大模型论文，浏览了一下发现很适合作为补课的切入点。
+今天这部分是关于预训练使用的数据集，是重中之重，说数据是当代AI的基石一点也不为过。GPT3用的数据其实没有公开，Meta这次论文里提到的应该算是开源模型里一个最全的版本。他们使用的数据如下表所示，我们一一来看一下。
+Dataset Sampling prop. Epochs Disk size CommonCrawl 67.0% 1.10 3.3 TB C4 15.0% 1.06 783 GB Github 4.5% 0.64 328 GB Wikipedia 4.5% 2.45 83 GB Books 4.5% 2.23 85 GB ArXiv 2.5% 1.06 92 GB StackExchange 2.0% 1.03 78 GB CommonCrawl 占比最大的数据集，他们的网站是https://commoncrawl.org/。我感觉这真是一个伟大的项目，7年时间爬了超多的互联网网页，涵盖了40种语言。
+CommonCrawl网站截图 {: .align-caption style=“text-align:center;font-size:smaller”}
+根据他们博客的最新数据，2023年二月版的数据包含了400TB的数据（纯文本的数据是9个多tb），三十多亿个网页。
+The crawl archive for January/February 2023 is now available! The data was crawled January 26 – February 9 and contains 3....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-26 10:25:03 +0000 UTC'>February 26, 2023</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 大规模语言模型的基石数据集" href="https://www.yuanhao.site/post/deeplearning/2023-02-26-ai-dataset/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ChatGPT未来会拥有自我情感和思维吗？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>首先批评一下知乎，类似的问题翻来覆去提。感觉和上次的这个问题很像：https://www.zhihu.com/answer/2869775692
+我尝试问了下GPT以下问题，它的回答还挺乐观，哈哈。
+我：什么是情感？
+GPT：情感是一种心理状态，它指的是一种强烈的感情，如欢乐、悲伤、焦虑、愤怒、害怕、爱、厌恶等。它们可以由个人的生活经历、社会环境、文化和道德价值观等因素引起。
+我：语言模型，例如GPT是否具有情感？
+GPT：不具有情感。GPT（Generative Pre-trained Transformer）是一种预训练的自然语言处理模型，它可以帮助机器理解和生成自然语言，但它本身并不具有情感。
+我：为什么说语言模型不具有情感？能说得具体一些吗？
+GPT：语言模型本身并不具有情感，因为它们只是一种机器学习模型，它们可以帮助机器理解和生成自然语言，但不能感受和理解情感。语言模型的输出仅仅反映了输入的语义，它不能表达情感，也不能理解和识别情感。
+我：未来有可能让语言模型具有情感吗？
+GPT：是的，未来有可能让语言模型具有情感。随着技术的发展，许多机器学习技术和深度学习技术已经可以用来识别和理解情感，而语言模型也可以通过这些技术来学习情感，从而具有情感。
+就像GPT自己回答的一样，语言模型目前是没有情感的，本质上还是对文本之间概率分布的刻画。但因为人是有情感和思维的，对语言模型表现出来的一些能力，会不由自主地认为它具有情感或者思维。所以从“我要我觉得，不要你觉得”的角度，这个问题没啥讨论的意义。一千个观众眼里有一千个GPT。
+在上面那个回答里，我还举了两个思维实验来说明这个观点。但评论区网友上来就给我一顿喷。讲真我当时心理是有点小波澜，但我现在学乖了，多利用GPT来回答问题，被网友骂成狗也没啥心理负担。
+我个人认为，按照目前的技术方向，未来也无法获得思维和情感。但这不是个经济的想法。应该像GPT一样，大声说会就完了，然后再说一堆车轱辘话。毕竟未来的事，谁知道呢。
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-16 10:25:03 +0000 UTC'>February 16, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to ChatGPT未来会拥有自我情感和思维吗？" href="https://www.yuanhao.site/post/2023-02-16-chatgpt9/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ChatGpt能成为恋爱大师吗？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我认为能也不能。
+我问GPT：什么是恋爱大师？恋爱大师具有哪些特点和能力？
+GPT回答：恋爱大师是一种专业的恋爱咨询师，专门帮助人们解决恋爱问题。恋爱大师通过提供心理咨询、情感指导和婚姻咨询等服务，帮助人们解决恋爱中的问题，提高恋爱关系的健康水平。恋爱大师具有较强的心理学知识和专业能力，能够从恋爱关系的心理学角度出发，从客观的角度分析恋爱关系中出现的问题，并给出有效的解决方案。
+让我们再来试试他能不能“分析恋爱关系中出现的问题，并给出有效的解决方案”。
+我问GPT：我的女朋友老是迟到，跟她沟通过几次都没有效果，现在说她她还会生气，我该怎么办？
+GPT回答：
+首先，你要明确你的期望，并且要清楚地告诉她，你希望她能够准时到达。 然后，你可以给她一些实际的激励，比如说，如果她能够准时到达，你会给她一个小惊喜。 再者，你可以尝试一些不同的沟通方式，比如用短信或者电话来提醒她，或者在约定的时间前几分钟来接她。 最后，你可以给她一些支持，告诉她你理解她的情况，并且希望她能够改变，但也要表达出你的期望。 我再次追问：那万一我这么做之后她还是没有改变呢？我要和她分手吗？
+GPT回答：如果你采取了上述措施之后，她仍然没有改变，你可以再次和她沟通，让她明白你的期望，并且表达出你的失望。如果她仍然不能改变，你可以考虑是否要分手，但是你也可以尝试一些其他的方式，比如让她参加一些时间管理的课程，或者帮助她制定一些有助于准时到达的计划。
+对上面的回答，作为用户我是会满意的，给出了一些具有可行性的方法。这种人际沟通中的问题往往是有最佳或者较佳实践的。这方面博览群书的GPT可以给出一些不错的建议，对没有经验的小年轻可以有不小的积极作用。
+但感情的事又很复杂，而对感情的处理方式是没有标准答案的。如果上面那个爱迟到的女朋友就是屡教不改你要怎么办呢？你可以选择扬长而去，也可以选择包容承受。但毫无疑问，你考虑的肯定不只是迟到这个问题。她的性格、颜值、知识、财富、你们相处的每个瞬间都可能影响你最后的决定。但这么多的信息，目前甚至是无法通过prompt传递给GPT模型的（GPT模型只能处理一定长度的输入）。这个层面看，它跟人类心理咨询师还是有很大的差距。
+It has a token limit, which I believe is 4097. The total number of tokens used is equal to your message and GPT’s response combined. You can see how many tokens your prompt uses here: https://beta.openai.com/tokenizer
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-16 10:25:03 +0000 UTC'>February 16, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to ChatGpt能成为恋爱大师吗？" href="https://www.yuanhao.site/post/2023-02-16-chatgpt8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">ChatGPT在内容创作行业，依据现有的法律，它创作的内容是否享有著作权？如不能，如何界定内容的归属？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>很实际的问题，之前并不是很了解。看了一些资料勉强答一波。
+首先，我国《著作权法》所保护的对象是“作品”，其定义在第3条进行了列明，即“文学、艺术和科学领域内具有独创性并能以一定形式表现的智力成果”。在这里跟本题最相关的一个作品属性是“独创性”。根据资料2的论述，法律界对目前AI的认识我感觉还是比较到位的，即当前的所谓AI并不具备创造性，因此ChatGPT之类的AI工具，性质为“帮助自然人进行创作活动的工具”，其自身无法自主思考，不是进行自主创作主体，AI软件对文章的生成是开发者意志的延伸。
+《著作权法》第2条规定了“中国公民、法人或者非法人组织的作品，不论是否发表，依照本法享有著作权”。因此著作权仅能由民事主体享有，但AI并不是民事主体，因此AI本身无法作为作品的作者，但使用AI的人是可以的。
+至于人是否可以享有AI生产作品的著作权，也要根据实际情况判定。主要的依据也是上面的独创性。
+下面是两个案例，第一个是不享有著作权的
+在北京知识产权法院于2020年审结的“北京菲林律所诉百度公司著作权侵权案”中，菲林律所发布的大数据报告被他人在未经同意的情况下转载至百度百家号，菲林律所由此认为百度公司侵犯了其著作权中的信息网络传播权，遂向百度公司主张侵权赔偿。法院经审理，认为菲林律所所提交的大数据报告仅是根据现有数据搜集并分析而形成，不具备独创性，不属于《著作权法》的保护范围。
+第二个是受著作权保护的
+2018年8月，腾讯公司在其下属网站中发布了一篇由腾讯旗下人工智能写作软件Dreamwriter生成的新闻，而该文在当日即被网贷之家转载，腾讯公司遂向法院起诉。法院经审理认为，相关文章“外在表现符合文字作品的形式要求，其表现的内容体现出对当日上午相关股市信息、数据的选择、分析、判断，文章结构合理、表达逻辑清晰，具有一定的独创性”，同时认为“该文章的表现形式是由原告主创团队相关人员个性化的安排与选择所决定的，其表现形式并非唯一，具有一定的独创性”，并最终确认该篇由人工智能软件生成的文章属于《著作权法》下的“文字作品”，受到我国法律的保护。
+最后，我想说，权利和义务是伴随的。ChatGPT之类的工具，经过大量语料训练，有一定概率会有侵犯他人著作权的情况出现。作为使用者，平常玩玩无所谓，一旦用于正式文本的产出一定要把好关。避免自己陷入侵权的窘境。
+参考资料
+https://www.sohu.com/a/592470873_398071
+http://www.anlilaw.com/100031/200
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-03 10:25:03 +0000 UTC'>February 3, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to ChatGPT在内容创作行业，依据现有的法律，它创作的内容是否享有著作权？如不能，如何界定内容的归属？" href="https://www.yuanhao.site/post/2023-02-03-chatgpt6/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">依据现有 AI 的发展速度，类似 ChatGPT 这样的产品，距诞生自我意识还有多远？
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这个问题其实可以用两个著名的思想实验，从技术和哲学两个角度来回答。
+第一个是“中文房间”，是一个著名的思维实验。它是由美国哲学家约翰·赛尔在上世纪八十年代设计的。
+这个实验是说你想象一个只会说英语的人身处一个房间里，这个房间除了门上有个小窗户，其他地方全都是封闭的。这个人有一本用英语写成的书，里面指示了该如何处理接受到的中文信息，并且用中文进行回复。房间外面的人不停地向房间里塞进用中文写成的问题，房间里那个说英语的人查阅手边的那本指导书将合适的中文回答递出房间。
+虽然房间里的人可以和房间外的人对答如流，房间外的人以为房间里作着个懂中文的人，但实际上那个人只会说英语，只是那本包罗万象的指导书太牛逼了。
+套在这个问题里，ChatGPT就像那本指导书，如今的技术让人类真的可以造出这样的东西了。ChatGPT巨大的训练语料就意味着这个模型可能阅读过这个世界上相当大比例的文本，不管是书籍、论文还是博客文章，甚至是代码片段，然后给你一种无所不知的感觉，这也是为什么ChatGPT可以有如此令人惊艳效果的原因。作为在屋外的人们，很有可能认为屋里的人有理解能力，甚至有意识。
+如果对技术有一定了解就会知道，当给定输入的时候，ChatGPT这样的模型做的最多的就是非常确定性的加减乘除等等数学运算，在某些环节，这些模型会输出一个概率分布，通过在这个输出的分布上进行随机采样，来达到一种丰富、随机应变的效果。
+关于生成式模型的输出采样，可以参考我之前的文章：https://zhuanlan.zhihu.com/p/114669778 和https://zhuanlan.zhihu.com/p/115076102。
+不夸张的说，如果把这种随机采样换成贪心采样，也就是每次都取概率最大的输出，那这个ChatGPT一下就会从牛逼闪闪变成木讷呆板。所以，从技术角度说，ChatGPT距离自我意识还相当遥远。
+另一个词是“图灵测试”。
+图灵测试的内容我直接摘抄维基百科
+1950年，图灵发表了一篇划时代的论文，文中预言了创造出具有真正智能的机器的可能性。由于注意到“智能”这一概念难以确切定义，他提出了著名的图灵测试：如果一台机器能够与人类展开对话（透过电传设备）而不被辨别出其机器身份，那么称这台机器具有智能。这一简化使得图灵能够令人信服地说明“思考的机器”是可能的。论文中还回答了对这一假说的各种常见质疑。图灵测试是人工智能哲学方面首个严肃的提案。
+或者是这样
+如果一个人（代号C）使用测试对象皆理解的语言去询问两个他不能看见的对象任意一串问题。对象为：一个是正常思维的人（代号B）、一个是机器（代号A）。如果经过若干询问以后，C不能得出实质的区别来分辨A与B的不同，则此机器A通过图灵测试。
+我相信当下的ChatGPT已经非常接近或者已经可以通过图灵测试了。那么从这个角度来说，机器已经相当与能思考，或者说有自我意识了。
+我在知乎的原回答</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-02-03 10:25:03 +0000 UTC'>February 3, 2023</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 依据现有 AI 的发展速度，类似 ChatGPT 这样的产品，距诞生自我意识还有多远？" href="https://www.yuanhao.site/post/2023-02-03-chatgpt5/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="https://www.yuanhao.site/tags/nlp/page/2/">Next&nbsp;2/3&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://www.yuanhao.site">多头注意力</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

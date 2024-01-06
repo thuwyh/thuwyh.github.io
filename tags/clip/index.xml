@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CLIP on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/clip/</link>
+    <description>Recent content in CLIP on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 13 Dec 2021 10:25:03 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/clip/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>多模态对比学习预训练模型CLIP</title>
+      <link>https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/</link>
+      <pubDate>Mon, 13 Dec 2021 10:25:03 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2021-12-13-%E5%A4%9A%E6%A8%A1%E6%80%81%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8Bclip/</guid>
+      <description>我经常在面试的时候问候选人如何构建一个文本配图系统，有不少人都会想到OpenAI的
+CLIP (Contrastive Language–Image Pre-training) 模型。确实，CLIP的思路应该是解决这个问题的一个好框架，正好之前的几篇文章又都是关于其中的关键技术，于是这篇文章重温一下CLIP。
+方法 自然语言信号 At the core of our approach is the idea of learning perception from supervision contained in natural language.
+正如作者所说，这是CLIP的核心，但并不是一个新的方法。很多过去的研究都使用自然语言信号来训练图片编码器，但大家使用的方法各不一样。
+用自然语言信号有几个好处，一个是数据收集容易了，有相关性的图文在互联网上很多，不需要标注，第二个是与之前那种类别空间相比，自然语言信号更容易迁移，后面还会具体讲到。
+更大的数据集 CLIP构建了一个400 million 图片-文本对组成的数据集。比之前类似工作所使用的数据集大了二十几倍。而且这些数据集都是互联网上现成的，只是做了一些过滤来保证质量。
+it is trained on a wide variety of images with a wide variety of natural language supervision that’s abundantly available on the internet
+更大的模型 文本编码器使用的是12层8个头512个隐层神经元的Transformers模型，但没有使用预训练模型。我猜测这是因为要跟图像编码器交互，所以预训练可能帮助不大，如果使用预训练模型还需要特殊的策略来让图像和文本编码器的embedding空间匹配起来。
+图像编码器尝试了resnet家族和ViT家族。最佳结果是来自于ViT，并且ViT相比于Resnet有更高的训练效率。图像编码器同样也没有使用Imagenet上的预训练权重来初始化。ViT我们在之前有两篇文章介绍，感兴趣的同学可以参考。
+更高效的训练目标 过去的SOTA CV模型，如Noisy Student EfficientNet-L2，只训练Imagenet就需要耗费大量的训练时长（33个TPU年），如何能够在超大规模、自然语言信号的数据集上训练出一个好模型是个挑战。这部分也是CLIP最核心的地方。
+This data is used to create the following proxy training task for CLIP: given an image, predict which out of a set of 32,768 randomly sampled text snippets, was actually paired with it in our dataset.</description>
+    </item>
+  </channel>
+</rss>

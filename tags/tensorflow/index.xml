@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tensorflow on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/tensorflow/</link>
+    <description>Recent content in Tensorflow on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 20 Mar 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/tensorflow/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>用makefile编译tensorflow</title>
+      <link>https://www.yuanhao.site/post/review/2017-03-20-tensorflow2/</link>
+      <pubDate>Mon, 20 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-03-20-tensorflow2/</guid>
+      <description>官方指南见 https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/makefile
+前几天已经用bazel编译了一遍tensorflow，但是如果想在嵌入式平台例如树莓派上使用这个框架这条路可能行不通。因为受限于平台资源，可能无法用Bazel来编译（github已经有人成功了）。但已经有人提供了用makefile来进行编译的方案，可以编译出一个不含python绑定和gpu支持的静态库，非常适合在嵌入式平台使用。目前可用的目标平台有
+iOS OS X (macOS) Android Raspberry-PI 准备工作 clone tensorflow repo到本地 以下所有的命令都应在在仓库的根目录下执行。首先执行tensorflow/contrib/makefile/download_dependencies.sh下载所需的依赖项。文件保存在tensorflow/contrib/makefile/downloads/目录下。如果是编译Linux版本，这步可以不执行，原因后面会提到。 编译Linux版本 安装必要的包sudo apt-get install autoconf automake libtool curl make g++ unzip zlib1g-dev git python
+执行编译，运行tensorflow/contrib/makefile/build_all_linux.sh。整个编译的过程用了一小会儿。README里说需要先执行download_dependencies.sh，其实在这个脚本里会清空downloads文件夹并重新下载一遍。。
+验证。执行以下命令下载inception模型
+mkdir -p ~/graphs curl -o ~/graphs/inception.zip \ https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip \ &amp;amp;&amp;amp; unzip ~/graphs/inception.zip -d ~/graphs/inception 再执行以下命令，注意graph=后面有引号！
+tensorflow/contrib/makefile/gen/bin/benchmark \ --graph=&amp;#34;~/graphs/inception/tensorflow_inception_graph.pb&amp;#34; 应该就成功了，如果提示找不到网络的话自己检查一下路径。
+在树莓派上编译 tensorflow/contrib/makefile/download_dependencies.sh #跟之前一样，下载依赖库 sudo apt-get install -y autoconf automake libtool gcc-4.8 g++-4.8 #安装编译工具 以下编译protobuffer
+cd tensorflow/contrib/makefile/downloads/protobuf/ ./autogen.sh ./configure make CXX=g++-4.8 sudo make install sudo ldconfig # refresh shared library cache，很重要 然后可以验证一下</description>
+    </item>
+    <item>
+      <title>编译安装Tensorflow</title>
+      <link>https://www.yuanhao.site/post/review/2017-03-10-tensorflow/</link>
+      <pubDate>Fri, 10 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/review/2017-03-10-tensorflow/</guid>
+      <description>如果采用官方包安装Tensorflow的话，有许多针对平台的优化都没有打开，会导致性能下降。因此，最佳的安装Tensorflow的方法是从源码编译。整个过程大概如下。
+安装Bazel 安装JDK8 $ sudo add-apt-repository ppa:webupd8team/java $ sudo apt-get update $ sudo apt-get install oracle-java8-installer 下载安装包的时候速度极慢，打开VPN快了许多。。
+安装其他依赖项 sudo apt-get install python3-numpy python3-dev python3-pip python3-wheel 我还修改了系统的默认python到python3版本 ##配置安装Tensorflow 下载Tensorflow的git仓库
+git clone https://github.com/tensorflow/tensorflow 进到目录里，checkout正确的版本
+git checkout r1.0 生成编译配置
+$ cd tensorflow # cd to the top-level directory created $ ./configure 编译pip文件
+bazel build --config=opt //tensorflow/tools/pip_package:build_pip_package 这步执行完后会生成一个脚本，用它可以生成whl包。执行
+bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg 生成包，包存在/tmp/tensorflow_pkg里，包名是自动的。然后再用pip安装这个包
+sudo pip install /tmp/tensorflow_pkg/***.whl 其中***就是生成的包名，到刚才的目录下看一下就知道了。
+##测试
+既然tensorflow可以直接用pip方便地安装，为什么要千辛万苦编译呢？因为官方编译好的软件包为了提高通用性基本不可能发挥硬件的全部性能，很多优化开关都没有打开。而我们自己编译的版本则会根据硬件进行优化。为了测试性能差别，用以下简单的卷积网络在MNIST数据集上进行实验。
+import tensorflow as tf import time def weight_variable(shape): initial = tf.</description>
+    </item>
+  </channel>
+</rss>

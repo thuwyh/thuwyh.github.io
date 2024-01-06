@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kaggle on 多头注意力</title>
+    <link>https://www.yuanhao.site/tags/kaggle/</link>
+    <description>Recent content in Kaggle on 多头注意力</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 08 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.yuanhao.site/tags/kaggle/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tweet Sentiment Extraction比赛总结</title>
+      <link>https://www.yuanhao.site/post/2020-07-08-tweet/</link>
+      <pubDate>Wed, 08 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>https://www.yuanhao.site/post/2020-07-08-tweet/</guid>
+      <description>这是前段时间结束的Kaggle比赛，之前在文档问答的文章中我也有提到过，最终我们队获得了第七名，这篇文章分享一下我的参赛收获和感受。
+首先感谢队友，特别是曹老师，如果没有曹老师我肯定中途就弃赛了。至于弃赛的原因，在感受部分会详细介绍。我的代码已经传到Github上了，感兴趣的朋友可以看一看，里面包含了我所有的commits，可以完整看到我方案的演进。
+Repo: https://github.com/thuwyh/Tweet-Sentiment-Extraction
+赛题回顾 比赛叫做Tweet Sentiment Extraction，对于给定的tweet和情感极性，需要选手从文本中找出支撑情感的部分。例如下面这条数据
+&amp;#34;My ridiculous dog is amazing.&amp;#34; [sentiment: positive] 模型应该返回amazing这个词。比赛的评价指标是word-level Jaccard score，它的含义看下面的实现就一目了然了。
+def jaccard(str1, str2): a = set(str1.lower().split()) b = set(str2.lower().split()) c = a.intersection(b) return float(len(c)) / (len(a) + len(b) - len(c)) Baseline及一些改进 在比赛的初期讨论区和kernel分享区基本就定下了解题思路的基调，即用机器阅读理解（MRC）的方法来做span prediction。具体的说，就是把数据提供的情感词作为question，把tweet作为context，把预测对象作为answer。
+模型也很简单，在RoBERTa后面接一个questionAnswering head预测start和end位置就可以了。这道题一个比较神奇的地方就是RoBERTa的效果比普通的BERT要好一些。
+在这个框架下，大家也都做了一些改进，例如：
+在语言模型输出后面加dropout； concat语言模型的多层输出结果； 引入FGM等对抗训练方法 以上都是一些比较常规的操作，也比较容易实现，类似FGM是比较稳定能提分的。还有一些稍微复杂一点的trick，例如：
+在词级别进行数据增强，例如同义词替换，随机删词 在token级别的增强 label smoothing 蒸馏 因为是span prediction任务，数据增强如果做成随机动态的，需要考虑到改词后对label的影响，这是实现的一个小难点。英文的同义词替换可以使用wordnet来做，相比中文的一些同义词库来讲质量是比较高的。
+label smoothing和蒸馏是很相关的两个技术，因为他们都需要用到KL散度作为损失函数。我也是趁这个比赛补了一补相关的知识，感觉还蛮有趣的，感兴趣的朋友可以参考这篇文章。做QA任务通常是对位置用CrossEntropyLoss，但是如果label不是一个确定的位置而是平滑过或者是teacher model预测得到的分布，就需要使用KLDivLoss。
+这里在做标签平滑的时候遇到了一个小问题，蛮值得思考的。最开始是Google在Imagenet上用这个技巧，对于这个分类问题标签的种类是确定的K=1000类，所以在Inception论文里直接用一个系数来控制平滑的强度，即
+$$ q&amp;rsquo;(k) = (1-\epsilon)\delta_{k,y}+\frac{\epsilon}{K} $$
+但是如果用同样方法在这些长短不一的句子上做平滑，其实是不合适的。每个位置的平滑概率反比于句子的长度，也就是K，所以我认为更好的确定平滑强度的方法是先确定一个单位平滑强度，再根据句子总长来确定原标签的权重。
+针对数据特点的方法 这次的数据总体质量很差，噪声（其实是错误）很多，给参赛者带来了很多困扰。主要的噪声模式有两种，一种是把整个句子都标注成了支撑情感的selected_text，第二种是数据中有大量“断头词”出现在标签中。下图给出了一些例子。
+对于第一种整句都是标签的情况，早期很多参赛者就发现了对于neutral类型的情感，绝大部分selected_text都和text一样；但对于其他情感，我们在人工审阅数据之后没有发现什么规律。我只好设计了一个辅助的分类任务让模型自己学习，实测下来有些微的提升，但并不明显。
+对于“断头词”的情况，我们在比赛的末期终于发现了其规律。这种情况应该是由于标注环境不一致导致的。例如Twitter数据里有很多@用户的情况，这份比赛数据集会把相关的文本删除，但由于删除脚本的问题会导致文本中多出一个空格。我们猜测标注者看到的数据应该是没有多余空格的，类似于是使用&#39; &#39;.join(text.split())处理过的。这就会导致标出来的span相对于原text的位置产生了位移。且位移的大小就等于多余空格的数量。</description>
+    </item>
+  </channel>
+</rss>
