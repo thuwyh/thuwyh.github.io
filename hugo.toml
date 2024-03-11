@@ -49,7 +49,8 @@ ShowAllPagesInArchive = true
 ShowPageNums = true
 ShowToc = true
 comments = true
-
+Description = "Cool staff about NLP, AI and beyond. 关于 NLP、人工智能的酷东西。"
+author = "Yuanhao"
 
   [params.assets]
   favicon = "/assets/favicon.ico"
