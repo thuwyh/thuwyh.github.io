@@ -10,7 +10,7 @@ tags:
 - LLM
 ---
 
-The recent "Dawn of the East" hype around [Manus.im](https://Manus.im) sparked significant attention. However, its evolution over the past few days has been dramatic, with numerous open-source projects attempting to replicate it. OpenManus, one of the earliest clones, claims to have replicated it in just 3 hours, though its parent team MetaGPT has been working on agents for much longer. I believe both impressive performances and failures are normal at this early industry stage. Projects like OpenManus serve as excellent entry points for learning agent development - simple yet comprehensive. This article shares my learning notes and reflections.
+The recent "Dawn of the East" hype around [Manus.im](https://Manus.im) sparked significant attention. However, its evolution over the past few days has been dramatic, with numerous open-source projects attempting to replicate it. [OpenManus](https://github.com/mannaandpoem/OpenManus), one of the earliest clones, claims to have replicated it in just 3 hours, though its parent team MetaGPT has been working on agents for much longer. I believe both impressive performances and failures are normal at this early industry stage. Projects like OpenManus serve as excellent entry points for learning agent development - simple yet comprehensive. This article shares my learning notes and reflections.
 
 Disclaimer: The codebase evolves rapidly. All content is based on the version downloaded on March 7, 2025. Let's first examine the project structure:
 
