@@ -60,6 +60,7 @@ ShowToc = true
 comments = true
 Description = "Cool staff about NLP, AI and beyond. 关于 NLP、人工智能的酷东西。"
 author = "Yuanhao"
+math = true
 
   [params.assets]
   favicon = "/assets/favicon.ico"
@@ -105,3 +106,19 @@ author = "Yuanhao"
     shortname = 'multihead-attention'
   [services.googleAnalytics]
     id = 'G-NWW8ZQMQ6Y'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [
+            { left = '\[', right = '\]' },
+            { left = '$$', right = '$$' },
+          ]
+          inline = [
+            { left = '\(', right = '\)' },
+          ]
+    [markup.goldmark.renderer]
+      unsafe = true

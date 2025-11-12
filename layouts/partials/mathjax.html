@@ -1,0 +1,23 @@
+<!-- layouts/partials/mathjax.html -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'ams',
+    // 需要哪些宏/包可自行加：
+    packages: {'[+]': ['ams', 'base', 'boldsymbol']}
+  },
+  options: {
+    // 避免在代码块等区域处理
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  // 让 MathJax 在页面 ready 后跑一次
+  startup: {
+    typeset: true
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
